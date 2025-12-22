@@ -1,9 +1,9 @@
-<Application x:Class="Reoreo125.Memopad.App"
+<prism:PrismApplication x:Class="Reoreo125.Memopad.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Reoreo125.Memopad"
-             StartupUri="Views/Windows/MainWindow.xaml">
-    <Application.Resources>
-         
-    </Application.Resources>
-</Application>
+             xmlns:prism="http://prismlibrary.com/">
+    <prism:PrismApplication.Resources>
+
+    </prism:PrismApplication.Resources>
+</prism:PrismApplication>

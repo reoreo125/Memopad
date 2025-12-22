@@ -1,8 +1,7 @@
 using System.Windows;
-using Memopad.Commands;
 using Reoreo125.Memopad.Views.Windows;
 
-namespace Reoreo125.Memopad.Commands;
+namespace Reoreo125.Memopad.Models.Commands;
 
 public class CloseAboutWindowCommand : CommandBase
 {

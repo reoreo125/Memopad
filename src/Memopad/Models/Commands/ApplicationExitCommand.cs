@@ -1,8 +1,7 @@
 using System.Windows;
 using System.Windows.Input;
-using Memopad.Commands;
 
-namespace Reoreo125.Memopad.Commands;
+namespace Reoreo125.Memopad.Models.Commands;
 
 public class ApplicationExitCommand : CommandBase
 {

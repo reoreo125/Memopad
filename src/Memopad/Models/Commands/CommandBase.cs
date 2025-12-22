@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
 
-namespace Memopad.Commands;
+namespace Reoreo125.Memopad.Models.Commands;
 
 public abstract class CommandBase : ICommand
 {
