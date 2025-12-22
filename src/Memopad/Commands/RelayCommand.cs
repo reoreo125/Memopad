@@ -1,8 +1,9 @@
 using System.Windows.Input;
+using Memopad.Commands;
 
 namespace Reoreo125.Memopad.Commands;
 
-public class RelayCommand : ICommand
+public class RelayCommand : CommandBase
 {
     private readonly Action _execute;
     private readonly Func<bool>? _canExecute;
@@ -13,13 +14,7 @@ public class RelayCommand : ICommand
         _canExecute = canExecute;
     }
 
-    public event EventHandler? CanExecuteChanged
-    {
-        add { CommandManager.RequerySuggested += value; }
-        remove { CommandManager.RequerySuggested -= value; }
-    }
+    public override bool CanExecute(object? parameter) => _canExecute?.Invoke() ?? true;
 
-    public bool CanExecute(object? parameter) => _canExecute?.Invoke() ?? true;
-
-    public void Execute(object? parameter) => _execute();
+    public override void Execute(object? parameter) => _execute();
 }

@@ -1,15 +1,15 @@
 using System.Windows;
-using System.Windows.Input;
 using Memopad.Commands;
+using Reoreo125.Memopad.Views.Windows;
 
 namespace Reoreo125.Memopad.Commands;
 
-public class ApplicationExitCommand : CommandBase
+public class CloseAboutWindowCommand : CommandBase
 {
     public override bool CanExecute(object? parameter) => true;
 
     public override void Execute(object? parameter)
     {
-        Application.Current.Shutdown();
+        Application.Current.Windows.OfType<AboutWindow>().FirstOrDefault()?.Close();
     }
 }

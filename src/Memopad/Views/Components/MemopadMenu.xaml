@@ -10,29 +10,29 @@
         <vm:MemopadMenuViewModel />
     </UserControl.DataContext>
     <Menu>
-        <MenuItem Header="ファイル">
-            <MenuItem Header="新規" InputGestureText="Ctrl+N" />
-            <MenuItem Header="開く" InputGestureText="Ctrl+O" />
-            <MenuItem Header="保存" InputGestureText="Ctrl+S" />
-            <MenuItem Header="名前を付けて保存" InputGestureText="Ctrl+Shift+S" />
+        <MenuItem Header="ファイル(_F)">
+            <MenuItem Header="新規作成(_N)" InputGestureText="Ctrl+N" />
+            <MenuItem Header="開く(_O)" InputGestureText="Ctrl+O" />
+            <MenuItem Header="保存(_S)" InputGestureText="Ctrl+S" />
+            <MenuItem Header="名前を付けて保存(_A)" InputGestureText="Ctrl+Shift+S" />
             <Separator />
-            <MenuItem Header="終了" InputGestureText="Alt+F4" Command="{Binding ExitCommand}" />
+            <MenuItem Header="終了(_X)" InputGestureText="Alt+F4" Command="{Binding ApplicationExitCommand}" />
         </MenuItem>
-        <MenuItem Header="編集">
-            <MenuItem Header="元に戻す" InputGestureText="Ctrl+Z" />
-            <MenuItem Header="やり直す" InputGestureText="Ctrl+Y" />
+        <MenuItem Header="編集(_E)">
+            <MenuItem Header="元に戻す(_U)" InputGestureText="Ctrl+Z" />
+            <MenuItem Header="やり直す(_R)" InputGestureText="Ctrl+Y" />
             <Separator />
-            <MenuItem Header="切り取り" InputGestureText="Ctrl+X" />
-            <MenuItem Header="コピー" InputGestureText="Ctrl+C" />
-            <MenuItem Header="貼り付け" InputGestureText="Ctrl+V" />
+            <MenuItem Header="切り取り(_T)" InputGestureText="Ctrl+X" />
+            <MenuItem Header="コピー(_C)" InputGestureText="Ctrl+C" />
+            <MenuItem Header="貼り付け(_P)" InputGestureText="Ctrl+V" />
             <Separator />
-            <MenuItem Header="すべて選択" InputGestureText="Ctrl+A" />
+            <MenuItem Header="すべて選択(_A)" InputGestureText="Ctrl+A" />
         </MenuItem>
-        <MenuItem Header="表示">
-            <MenuItem Header="折り返し" IsCheckable="True" IsChecked="True" />
+        <MenuItem Header="表示(_V)">
+            <MenuItem Header="折り返し(_I)" IsCheckable="True" IsChecked="True" />
         </MenuItem>
-        <MenuItem Header="ヘルプ">
-            <MenuItem Header="バージョン情報" />
+        <MenuItem Header="ヘルプ(_H)">
+            <MenuItem Header="バージョン情報(_V)" Command="{Binding ShowAboutCommand}" />
         </MenuItem>
     </Menu>
 </UserControl>

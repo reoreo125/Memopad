@@ -5,5 +5,6 @@ namespace Reoreo125.Memopad.ViewModels.Components;
 
 public class MemopadMenuViewModel
 {
-    public ICommand ExitCommand { get; } = new ApplicationExitCommand();
+    public ICommand ApplicationExitCommand { get; } = new ApplicationExitCommand();
+    public ICommand ShowAboutCommand { get; } = new ShowAboutWindowCommand();
 }

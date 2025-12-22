@@ -8,17 +8,20 @@
         xmlns:vm="clr-namespace:Reoreo125.Memopad.ViewModels.Windows"
         xmlns:comp="clr-namespace:Reoreo125.Memopad.Views.Components"
         mc:Ignorable="d"
-        Title="Memopad" Height="600" Width="900"
+        Title="{Binding Title.Value}" Height="600" Width="900"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResizeWithGrip">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
     <DockPanel>
-        <!-- メニューコンポーネント -->
+        <!-- Menu Component -->
         <comp:MemopadMenu DockPanel.Dock="Top" />
 
-        <!-- コンテンツエリア -->
+        <!-- Status Bar Component -->
+        <comp:MemopadStatusBar DockPanel.Dock="Bottom" />
+
+        <!-- Content Area -->
         <Grid>
             <TextBox Name="MemoTextBox" 
                      AcceptsReturn="True"
@@ -26,11 +29,10 @@
                      FontFamily="Consolas"
                      FontSize="12"
                      Padding="5"
-                     TextWrapping="Wrap"
-                     VerticalScrollBarVisibility="Auto"
-                     HorizontalScrollBarVisibility="Auto"
-                     Background="White"
-                     Foreground="Black" />
+                     TextWrapping="NoWrap"
+                     VerticalScrollBarVisibility="Visible"
+                     HorizontalScrollBarVisibility="Visible"
+                     Text="{Binding Text.Value, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
     </DockPanel>
 </Window>
