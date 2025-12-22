@@ -5,6 +5,7 @@ using Prism.Ioc;
 using Prism.Mvvm;
 using R3;
 using Reoreo125.Memopad.Models.Commands;
+using Reoreo125.Memopad.Models.Services;
 using Reoreo125.Memopad.ViewModels.Components;
 using Reoreo125.Memopad.ViewModels.Windows;
 using Reoreo125.Memopad.Views.Components;
@@ -23,9 +24,12 @@ public partial class App : PrismApplication
 
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
+        // Services
+        containerRegistry.RegisterInstance<IMemopadCoreService>(new MemopadCoreService());
+
         // Commands
         containerRegistry.Register<IApplicationExitCommand, ApplicationExitCommand>();
-        containerRegistry.Register<IShowAboutWindowCommand, ShowAboutWindowCommand>();
+        containerRegistry.Register<IOpenAboutWindowCommand, OpenAboutWindowCommand>();
     }
 
     protected override Window CreateShell() => Container.Resolve<MainWindow>();

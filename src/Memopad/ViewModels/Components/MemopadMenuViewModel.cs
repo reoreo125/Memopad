@@ -8,5 +8,5 @@ public class MemopadMenuViewModel : BindableBase
     [Dependency]
     public IApplicationExitCommand? ApplicationExitCommand { get; set; }
     [Dependency]
-    public IShowAboutWindowCommand? ShowAboutCommand { get; set; }
+    public IOpenAboutWindowCommand? ShowAboutCommand { get; set; }
 }

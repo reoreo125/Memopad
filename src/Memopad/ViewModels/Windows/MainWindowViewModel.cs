@@ -1,4 +1,5 @@
 using R3;
+using Reoreo125.Memopad.Models.Services;
 
 namespace Reoreo125.Memopad.ViewModels.Windows;
 
@@ -11,6 +12,9 @@ public class MainWindowViewModel : IDisposable
     public BindableReactiveProperty<string> FileName { get; } = new BindableReactiveProperty<string>("新規テキスト");
 
     private DisposableBag _disposableCollection = new();
+
+    [Dependency]
+    public IMemopadCoreService? MemopadCoreService { get; set; }
 
     public MainWindowViewModel()
     {

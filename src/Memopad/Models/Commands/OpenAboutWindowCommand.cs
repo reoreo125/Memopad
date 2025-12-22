@@ -4,8 +4,8 @@ using Reoreo125.Memopad.Views.Windows;
 
 namespace Reoreo125.Memopad.Models.Commands;
 
-public interface IShowAboutWindowCommand : ICommand { }
-public class ShowAboutWindowCommand : CommandBase, IShowAboutWindowCommand
+public interface IOpenAboutWindowCommand : ICommand { }
+public class OpenAboutWindowCommand : CommandBase, IOpenAboutWindowCommand
 {
     public override bool CanExecute(object? parameter) => true;
 
