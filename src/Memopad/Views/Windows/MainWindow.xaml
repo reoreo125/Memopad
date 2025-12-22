@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window x:Class="Reoreo125.Memopad.Views.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Reoreo125.Memopad.Views.Windows"
+        xmlns:vm="clr-namespace:Reoreo125.Memopad.ViewModels.Windows"
+        xmlns:comp="clr-namespace:Reoreo125.Memopad.Views.Components"
+        mc:Ignorable="d"
+        Title="Memopad" Height="600" Width="900"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip">
+    <Window.DataContext>
+        <vm:MainWindowViewModel />
+    </Window.DataContext>
+    <DockPanel>
+        <!-- メニューコンポーネント -->
+        <comp:MemopadMenu DockPanel.Dock="Top" />
+
+        <!-- コンテンツエリア -->
+        <Grid>
+            <TextBox Name="MemoTextBox" 
+                     AcceptsReturn="True"
+                     AcceptsTab="True"
+                     FontFamily="Consolas"
+                     FontSize="12"
+                     Padding="5"
+                     TextWrapping="Wrap"
+                     VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Auto"
+                     Background="White"
+                     Foreground="Black" />
+        </Grid>
+    </DockPanel>
+</Window>
+
