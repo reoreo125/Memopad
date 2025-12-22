@@ -4,22 +4,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Reoreo125.Memopad.Views.Windows"
-        xmlns:vm="clr-namespace:Reoreo125.Memopad.ViewModels.Windows"
-        xmlns:comp="clr-namespace:Reoreo125.Memopad.Views.Components"
+        xmlns:prism="http://prismlibrary.com/"
+        prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
         Title="{Binding Title.Value}" Height="600" Width="900"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResizeWithGrip">
-    <Window.DataContext>
-        <vm:MainWindowViewModel />
-    </Window.DataContext>
     <DockPanel>
         <!-- Menu Component -->
-        <comp:MemopadMenu DockPanel.Dock="Top" />
+        <views:MemopadMenuView DockPanel.Dock="Top" 
+                              xmlns:views="clr-namespace:Reoreo125.Memopad.Views.Components"
+                              prism:ViewModelLocator.AutoWireViewModel="True" />
 
         <!-- Status Bar Component -->
-        <comp:MemopadStatusBar DockPanel.Dock="Bottom" />
+        <views:MemopadStatusBarView DockPanel.Dock="Bottom" 
+                                   xmlns:views="clr-namespace:Reoreo125.Memopad.Views.Components"
+                                   prism:ViewModelLocator.AutoWireViewModel="True" />
 
         <!-- Content Area -->
         <Grid>

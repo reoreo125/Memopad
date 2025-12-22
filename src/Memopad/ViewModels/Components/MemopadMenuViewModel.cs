@@ -3,8 +3,10 @@ using Reoreo125.Memopad.Models.Commands;
 
 namespace Reoreo125.Memopad.ViewModels.Components;
 
-public class MemopadMenuViewModel
+public class MemopadMenuViewModel : BindableBase
 {
-    public ICommand ApplicationExitCommand { get; } = new ApplicationExitCommand();
-    public ICommand ShowAboutCommand { get; } = new ShowAboutWindowCommand();
+    [Dependency]
+    public IApplicationExitCommand? ApplicationExitCommand { get; set; }
+    [Dependency]
+    public IShowAboutWindowCommand? ShowAboutCommand { get; set; }
 }

@@ -2,9 +2,9 @@ using System.Windows;
 
 namespace Reoreo125.Memopad.Views.Windows;
 
-public partial class AboutWindow : Window
+public partial class AboutWindowView : Window
 {
-    public AboutWindow()
+    public AboutWindowView()
     {
         InitializeComponent();
     }

@@ -3,7 +3,9 @@ using System.Windows.Input;
 
 namespace Reoreo125.Memopad.Models.Commands;
 
-public class ApplicationExitCommand : CommandBase
+public interface IApplicationExitCommand : ICommand {}
+
+public class ApplicationExitCommand : CommandBase, IApplicationExitCommand
 {
     public override bool CanExecute(object? parameter) => true;
 

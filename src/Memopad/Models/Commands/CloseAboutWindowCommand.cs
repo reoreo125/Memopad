@@ -9,6 +9,6 @@ public class CloseAboutWindowCommand : CommandBase
 
     public override void Execute(object? parameter)
     {
-        Application.Current.Windows.OfType<AboutWindow>().FirstOrDefault()?.Close();
+        Application.Current.Windows.OfType<AboutWindowView>().FirstOrDefault()?.Close();
     }
 }

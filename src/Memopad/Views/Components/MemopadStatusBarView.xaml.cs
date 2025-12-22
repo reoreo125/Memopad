@@ -2,9 +2,9 @@ using System.Windows.Controls;
 
 namespace Reoreo125.Memopad.Views.Components;
 
-public partial class MemopadMenu : UserControl
+public partial class MemopadStatusBarView : UserControl
 {
-    public MemopadMenu()
+    public MemopadStatusBarView()
     {
         InitializeComponent();
     }
