@@ -26,6 +26,7 @@ public partial class App : PrismApplication
     {
         // Services
         containerRegistry.RegisterSingleton<IMemopadCoreService, MemopadCoreService>();
+        containerRegistry.RegisterSingleton<ITextFileService, TextFileService>();
 
         // Commands
         containerRegistry.Register<IApplicationExitCommand, ApplicationExitCommand>();
@@ -34,6 +35,7 @@ public partial class App : PrismApplication
 
         // ViewModels
         containerRegistry.RegisterSingleton<MainWindowViewModel>();
+        containerRegistry.Register<AboutWindowViewModel>();
         containerRegistry.Register<MemopadMenuViewModel>();
         containerRegistry.Register<MemopadStatusBarViewModel>();
     }

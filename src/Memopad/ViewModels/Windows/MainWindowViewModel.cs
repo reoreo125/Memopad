@@ -1,3 +1,4 @@
+using System.Windows;
 using Prism.Mvvm;
 using R3;
 using Reoreo125.Memopad.Models.Services;
@@ -9,7 +10,8 @@ public class MainWindowViewModel : BindableBase, IDisposable
     public BindableReactiveProperty<string> Title { get; } = new BindableReactiveProperty<string>();
     public BindableReactiveProperty<string> Text { get; } = new BindableReactiveProperty<string>();
     public BindableReactiveProperty<string> FileName { get; } = new BindableReactiveProperty<string>("新規テキスト");
-
+    public BindableReactiveProperty<int> Row { get; } = new BindableReactiveProperty<int>();
+    public BindableReactiveProperty<int> Column { get; } = new BindableReactiveProperty<int>();
     private DisposableBag _disposableCollection = new();
 
     protected IMemopadCoreService MemopadCoreService => _memopadCoreService;
@@ -29,6 +31,18 @@ public class MainWindowViewModel : BindableBase, IDisposable
                 if (text is null) return;
 
                 MemopadCoreService.ChangeText(text);
+            })
+            .AddTo(ref _disposableCollection);
+        Row.Subscribe(row =>
+            {
+                if (row < 1) return;
+                MemopadCoreService.ChangeSelection(row, MemopadCoreService.Column);
+            })
+            .AddTo(ref _disposableCollection);
+        Column.Subscribe(column =>
+            {
+                if (column < 1) return;
+                MemopadCoreService.ChangeSelection(MemopadCoreService.Row, column);
             })
             .AddTo(ref _disposableCollection);
         #endregion

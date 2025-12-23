@@ -32,7 +32,9 @@
                      TextWrapping="NoWrap"
                      VerticalScrollBarVisibility="Visible"
                      HorizontalScrollBarVisibility="Visible"
-                     Text="{Binding Text.Value, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding Text.Value, UpdateSourceTrigger=PropertyChanged}"
+                     SelectionChanged="OnSelectionChanged"
+                     />
         </Grid>
     </DockPanel>
 </Window>
