@@ -25,11 +25,17 @@ public partial class App : PrismApplication
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
         // Services
-        containerRegistry.RegisterInstance<IMemopadCoreService>(new MemopadCoreService());
+        containerRegistry.RegisterSingleton<IMemopadCoreService, MemopadCoreService>();
 
         // Commands
         containerRegistry.Register<IApplicationExitCommand, ApplicationExitCommand>();
         containerRegistry.Register<IOpenAboutWindowCommand, OpenAboutWindowCommand>();
+        containerRegistry.Register<IOpenTextFileWindowCommand, OpenTextFileWindowCommand>();
+
+        // ViewModels
+        containerRegistry.RegisterSingleton<MainWindowViewModel>();
+        containerRegistry.Register<MemopadMenuViewModel>();
+        containerRegistry.Register<MemopadStatusBarViewModel>();
     }
 
     protected override Window CreateShell() => Container.Resolve<MainWindow>();
