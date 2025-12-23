@@ -4,15 +4,17 @@ using Reoreo125.Memopad.Views.Windows;
 
 namespace Reoreo125.Memopad.Models.Commands;
 
-public interface IOpenAboutWindowCommand : ICommand { }
-public class OpenAboutWindowCommand : CommandBase, IOpenAboutWindowCommand
+public interface IOpenAboutCommand : ICommand { }
+public class OpenAboutCommand : CommandBase, IOpenAboutCommand
 {
     public override bool CanExecute(object? parameter) => true;
 
     public override void Execute(object? parameter)
     {
-        var aboutWindow = new AboutWindowView();
-        aboutWindow.Owner = Application.Current.MainWindow;
+        var aboutWindow = new AboutWindowView
+        {
+            Owner = Application.Current.MainWindow
+        };
         aboutWindow.ShowDialog();
     }
 }

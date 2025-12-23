@@ -30,8 +30,9 @@ public partial class App : PrismApplication
 
         // Commands
         containerRegistry.Register<IApplicationExitCommand, ApplicationExitCommand>();
-        containerRegistry.Register<IOpenAboutWindowCommand, OpenAboutWindowCommand>();
-        containerRegistry.Register<IOpenTextFileWindowCommand, OpenTextFileWindowCommand>();
+        containerRegistry.Register<IOpenAboutCommand, OpenAboutCommand>();
+        containerRegistry.Register<INewTextFileCommand, NewTextFileCommand>();
+        containerRegistry.Register<IOpenTextFileCommand, OpenTextFileCommand>();
 
         // ViewModels
         containerRegistry.RegisterSingleton<MainWindowViewModel>();

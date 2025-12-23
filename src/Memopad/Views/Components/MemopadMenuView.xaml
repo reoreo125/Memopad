@@ -9,8 +9,8 @@
              mc:Ignorable="d">
     <Menu>
         <MenuItem Header="ファイル(_F)">
-            <MenuItem Header="新規作成(_N)" InputGestureText="Ctrl+N" />
-            <MenuItem Header="開く(_O)" InputGestureText="Ctrl+O" Command="{Binding OpenTextFileWindowCommand}" />
+            <MenuItem Header="新規作成(_N)" InputGestureText="Ctrl+N" Command="{Binding NewTextFileCommand}"/>
+            <MenuItem Header="開く(_O)" InputGestureText="Ctrl+O" Command="{Binding OpenTextFileCommand}" />
             <MenuItem Header="保存(_S)" InputGestureText="Ctrl+S" />
             <MenuItem Header="名前を付けて保存(_A)" InputGestureText="Ctrl+Shift+S" />
             <Separator />
@@ -33,7 +33,7 @@
             <MenuItem Header="折り返し(_I)" IsCheckable="True" IsChecked="True" />
         </MenuItem>
         <MenuItem Header="ヘルプ(_H)">
-            <MenuItem Header="バージョン情報(_V)" Command="{Binding OpenAboutWindowCommand}" />
+            <MenuItem Header="バージョン情報(_V)" Command="{Binding OpenAboutCommand}" />
         </MenuItem>
     </Menu>
 </UserControl>

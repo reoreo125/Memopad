@@ -3,7 +3,7 @@ using Reoreo125.Memopad.Views.Windows;
 
 namespace Reoreo125.Memopad.Models.Commands;
 
-public class CloseAboutWindowCommand : CommandBase
+public class CloseAboutCommand : CommandBase
 {
     public override bool CanExecute(object? parameter) => true;
 

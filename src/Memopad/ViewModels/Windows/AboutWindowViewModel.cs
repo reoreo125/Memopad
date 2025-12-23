@@ -5,5 +5,5 @@ namespace Reoreo125.Memopad.ViewModels.Windows;
 
 public class AboutWindowViewModel
 {
-    public ICommand CloseAboutWindowCommand { get; } = new CloseAboutWindowCommand();
+    public ICommand CloseAboutWindowCommand { get; } = new CloseAboutCommand();
 }

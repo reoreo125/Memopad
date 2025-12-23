@@ -1,8 +1,5 @@
-using System.ComponentModel;
 using System.IO;
 using System.Text;
-using System.Windows;
-using System.Windows.Input;
 using UtfUnknown;
 
 namespace Reoreo125.Memopad.Models.Services;

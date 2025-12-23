@@ -8,8 +8,8 @@ using UtfUnknown;
 
 namespace Reoreo125.Memopad.Models.Commands;
 
-public interface IOpenTextFileWindowCommand : ICommand { }
-public class OpenTextFileWindowCommand : CommandBase, IOpenTextFileWindowCommand
+public interface IOpenTextFileCommand : ICommand { }
+public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
 {
     [Dependency]
     public IMemopadCoreService? MemopadCoreService { get; set; }

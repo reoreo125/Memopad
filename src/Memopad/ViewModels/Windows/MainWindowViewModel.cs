@@ -65,6 +65,11 @@ public class MainWindowViewModel : BindableBase, IDisposable
                 Title.Value = MemopadCoreService.Title;
             })
             .AddTo(ref _disposableCollection);
+        MemopadCoreService.TitleChanged.Subscribe(_ =>
+            {
+                Title.Value = MemopadCoreService.Title;
+            })
+            .AddTo(ref _disposableCollection);
         #endregion
     }
 
