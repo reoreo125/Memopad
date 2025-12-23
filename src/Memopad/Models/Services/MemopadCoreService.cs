@@ -26,11 +26,11 @@ public interface IMemopadCoreService : IDisposable
     int Column { get; }
     FontFamily TextFont { get; }
 
-    void Initialize(bool skipNotification = false);
+    void Initialize();
     void NofityAllChanges();
     void LoadText(string filePath);
-    void ChangeText(string newText, bool skipDirty = false, bool skipNotification = false);
-    void ChangeSelection(int row, int column, bool skipNotification = false);
+    void ChangeText(string newText, bool skipDirty = false);
+    void ChangeSelection(int row, int column);
 }
 
 public sealed class MemopadCoreService : IMemopadCoreService
@@ -58,6 +58,7 @@ public sealed class MemopadCoreService : IMemopadCoreService
     public string Text { get; private set; } = string.Empty;
     public string PreviousText { get; private set; } = string.Empty;
     public bool IsDirty { get; private set; } = false;
+    public bool CanNotification { get; set; } = true;
     public int Row { get; set; } = 1;
     public int Column { get; set; } = 1;
     public FontFamily TextFont { get; set; } = FontFamily.GenericMonospace;
@@ -72,7 +73,15 @@ public sealed class MemopadCoreService : IMemopadCoreService
 
     }
 
-    public void Initialize(bool skipNotification = false)
+    public void EnableNotification()
+    {
+        CanNotification = true;
+    }
+    public void DisableNotification()
+    {
+        CanNotification = false;
+    }
+    public void Initialize()
     {
         FilePath = string.Empty;
         Encoding = MemopadSettings.DefaultEncoding;
@@ -83,10 +92,12 @@ public sealed class MemopadCoreService : IMemopadCoreService
         Row = 1;
         Column = 1;
 
-        if(!skipNotification) NofityAllChanges();
+        if(CanNotification) NofityAllChanges();
     }
     public void NofityAllChanges()
     {
+        if (!CanNotification) return;
+
         TextChangedSubject.OnNext(Text);
         DirtyChangedSubject.OnNext(IsDirty);
         SelectionChangedSubject.OnNext((Row, Column));
@@ -105,16 +116,19 @@ public sealed class MemopadCoreService : IMemopadCoreService
             return;
         }
 
-        Initialize(true);
+        DisableNotification();
 
-        ChangeText(result.Content, true, true);
-        ChangeEncoding(result.Encoding, true);
-        ChangeLineEnding(result.LineEnding, true);
+        Initialize();
+        ChangeText(result.Content, true);
+        ChangeEncoding(result.Encoding);
+        ChangeLineEnding(result.LineEnding);
         FilePath = result.FilePath;
+
+        EnableNotification();
 
         NofityAllChanges();
     }
-    public void ChangeText(string newText, bool skipDirty = false, bool skipNotification = false)
+    public void ChangeText(string newText, bool skipDirty = false)
     {
         PreviousText = Text;
         Text = newText;
@@ -125,26 +139,26 @@ public sealed class MemopadCoreService : IMemopadCoreService
             IsDirty = true;
         }
 
-        if(!skipNotification) DirtyChangedSubject.OnNext(IsDirty);
+        if(CanNotification) DirtyChangedSubject.OnNext(IsDirty);
     }
-    public void ChangeSelection(int row, int column, bool skipNotification = false)
+    public void ChangeSelection(int row, int column)
     {
         Row = row;
         Column = column;
 
-        if(!skipNotification) SelectionChangedSubject.OnNext((Row, Column));
+        if(CanNotification) SelectionChangedSubject.OnNext((Row, Column));
     }
-    public void ChangeEncoding(Encoding encoding, bool skipNotification = false)
+    public void ChangeEncoding(Encoding encoding)
     {
         Encoding = encoding;
 
-        if(!skipNotification) EncodingChangedSubject.OnNext(Encoding);
+        if(CanNotification) EncodingChangedSubject.OnNext(Encoding);
     }
-    public void ChangeLineEnding(LineEnding lineEnding, bool skipNotification = false)
+    public void ChangeLineEnding(LineEnding lineEnding)
     {
         LineEnding = lineEnding;
 
-        if(!skipNotification) LineEndingChangedSubject.OnNext(LineEnding);
+        if(CanNotification) LineEndingChangedSubject.OnNext(LineEnding);
     }
     public void Dispose()
     {
