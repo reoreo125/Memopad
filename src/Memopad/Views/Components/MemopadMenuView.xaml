@@ -26,6 +26,9 @@
             <Separator />
             <MenuItem Header="すべて選択(_A)" InputGestureText="Ctrl+A" />
         </MenuItem>
+        <MenuItem Header="書式(_O)">
+            <MenuItem Header="nanika(_I)" />
+        </MenuItem>
         <MenuItem Header="表示(_V)">
             <MenuItem Header="折り返し(_I)" IsCheckable="True" IsChecked="True" />
         </MenuItem>
