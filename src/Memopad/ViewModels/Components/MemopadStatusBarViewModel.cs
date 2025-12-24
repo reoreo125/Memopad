@@ -1,3 +1,4 @@
+using System.Text;
 using R3;
 using Reoreo125.Memopad.Models.Services;
 
@@ -19,23 +20,29 @@ public class MemopadStatusBarViewModel : BindableBase, IDisposable
 
         #region Model -> ViewModel -> View
 
-        MemopadCoreService.SelectionChanged.Subscribe(((int row, int column) pos) =>
+        PositionText = Observable.Merge
+            (
+                MemopadCoreService.Row.Select(_ => string.Empty),
+                MemopadCoreService.Column.Select(_ => string.Empty)
+            )
+            .Where(_ => MemopadCoreService.CanNotification)
+            .Select(_ =>
             {
-                PositionText.Value = $"{pos.row}行 {pos.column}列";
+                int row = MemopadCoreService.Row.Value;
+                int column = MemopadCoreService.Column.Value;
+                return $"{row}行 {column}列";
             })
-            .AddTo(ref _disposableCollection);
+            .ToBindableReactiveProperty(MemopadSettings.DefaultPositionText);
+        LineEndingText = MemopadCoreService.LineEnding
+            .Where(_ => MemopadCoreService.CanNotification)
+            .Select(value => CreateLineEndingText(value))
+            .ToBindableReactiveProperty(CreateLineEndingText(MemopadSettings.DefaultLineEnding));
 
-        MemopadCoreService.LineEndingChanged.Subscribe((lineEnding) =>
-            {
-                LineEndingText.Value = CreateLineEndingText(lineEnding);
-            })
-            .AddTo(ref _disposableCollection);
-
-        MemopadCoreService.EncodingChanged.Subscribe((encoding) =>
-            {
-                EncodingText.Value = encoding.WebName.ToUpper();
-            })
-            .AddTo(ref _disposableCollection);
+        EncodingText = MemopadCoreService.Encoding
+            .Where(_ => memopadCoreService.CanNotification)
+            .Select((encoding) => encoding ?? Encoding.UTF8)
+            .Select((encoding) => encoding.WebName.ToUpper())
+            .ToBindableReactiveProperty(string.Empty);
 
         #endregion
     }

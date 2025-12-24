@@ -8,59 +8,44 @@ namespace Reoreo125.Memopad.Models.Services;
 
 public interface IMemopadCoreService : IDisposable
 {
-    Observable<string> TextChanged { get; }
-    Observable<bool> DirtyChanged { get; }
-    Observable<string> TitleChanged { get; }
-    Observable<(int, int)> SelectionChanged { get; }
-    Observable<Encoding> EncodingChanged { get; }
-    Observable<LineEnding> LineEndingChanged { get; }
+    ReactiveProperty<string> FilePath { get; }
+    ReactiveProperty<string> FileName { get; }
+    ReactiveProperty<string> FileNameWithoutExtension { get; }
 
-    string Title { get; }
-    string FilePath { get; }
-    string FileName { get; }
-    string FileNameWithoutExtension { get; }
-    Encoding? Encoding { get; }
-    string Text { get; }
-    bool IsDirty { get; }
-    int Row { get; }
-    int Column { get; }
+    ReactiveProperty<string> Text { get; }
+
+    ReactiveProperty<Encoding?> Encoding { get; }
+    ReactiveProperty<LineEnding> LineEnding { get; }
+    ReactiveProperty<bool> IsDirty { get; }
+    ReactiveProperty<int> Row { get; }
+    ReactiveProperty<int> Column { get; }
     FontFamily TextFont { get; }
+
+    bool CanNotification { get; }
 
     void Initialize();
     void NofityAllChanges();
     void LoadText(string filePath);
     void ChangeText(string newText, bool skipDirty = false);
-    void ChangeSelection(int row, int column);
 }
 
 public sealed class MemopadCoreService : IMemopadCoreService
 {
-    private Subject<string> TextChangedSubject { get; set; } = new ();
-    public Observable<string> TextChanged => TextChangedSubject;
-    private Subject<bool> DirtyChangedSubject { get; set; } = new();
-    public Observable<bool> DirtyChanged => DirtyChangedSubject;
-    private Subject<string> TitleChangedSubject { get; set; } = new();
-    public Observable<string> TitleChanged => TitleChangedSubject;
-    private Subject<(int, int)> SelectionChangedSubject { get; set; } = new();
-    public Observable<(int, int)> SelectionChanged => SelectionChangedSubject;
-    private Subject<Encoding> EncodingChangedSubject { get; set; } = new();
-    public Observable<Encoding> EncodingChanged => EncodingChangedSubject;
-    private Subject<LineEnding> LineEndingChangedSubject { get; set; } = new();
-    public Observable<LineEnding> LineEndingChanged => LineEndingChangedSubject;
+    public ReactiveProperty<string> FilePath { get; private set; } = new();
+    public ReactiveProperty<string> FileName { get; private set; } = new();
+    public ReactiveProperty<string> FileNameWithoutExtension { get; private set; } = new();
 
-    public string Title => $"{FileNameWithoutExtension}{(IsDirty ? "*" : "")} - {MemopadSettings.ApplicationName}";
-    public string FileName => string.IsNullOrEmpty(FilePath) ? $"{MemopadSettings.DefaultNewFileName}.txt" : Path.GetFileName(FilePath);
-    public string FileNameWithoutExtension => string.IsNullOrEmpty(FilePath) ? MemopadSettings.DefaultNewFileName : Path.GetFileNameWithoutExtension(FilePath);
-
-    public string FilePath { get; private set; } = string.Empty;
-    public Encoding? Encoding { get; private set; } = null;
-    public LineEnding LineEnding { get; private set; } = LineEnding.Unknown;
-    public string Text { get; private set; } = string.Empty;
+    public ReactiveProperty<string> Text { get; private set; } = new();
     public string PreviousText { get; private set; } = string.Empty;
-    public bool IsDirty { get; private set; } = false;
+
+    public ReactiveProperty<bool> IsDirty { get; } = new ReactiveProperty<bool>(false);
     public bool CanNotification { get; set; } = true;
-    public int Row { get; set; } = 1;
-    public int Column { get; set; } = 1;
+    public ReactiveProperty<int> Row { get; set; } = new(1);
+    public ReactiveProperty<int> Column { get; set; } = new(1);
+
+
+    public ReactiveProperty<Encoding?> Encoding { get; private set; } = new();
+    public ReactiveProperty<LineEnding> LineEnding { get; private set; } = new();
     public FontFamily TextFont { get; set; } = FontFamily.GenericMonospace;
 
     private DisposableBag _disposableCollection = new();
@@ -70,7 +55,7 @@ public sealed class MemopadCoreService : IMemopadCoreService
 
     public MemopadCoreService()
     {
-
+        Initialize();
     }
 
     public void EnableNotification()
@@ -83,27 +68,31 @@ public sealed class MemopadCoreService : IMemopadCoreService
     }
     public void Initialize()
     {
-        FilePath = string.Empty;
-        Encoding = MemopadSettings.DefaultEncoding;
-        LineEnding = MemopadSettings.DefaultLineEnding;
-        Text = string.Empty;
-        PreviousText = string.Empty;
-        IsDirty = false;
-        Row = 1;
-        Column = 1;
+        FilePath.Value = string.Empty;
+        FileName.Value = MemopadSettings.DefaultNewFileName + MemopadSettings.DefaultFileExtension;
+        FileNameWithoutExtension.Value = MemopadSettings.DefaultNewFileName;
 
-        if(CanNotification) NofityAllChanges();
+        Text.Value = string.Empty;
+        PreviousText = string.Empty;
+
+        Encoding.Value = null;
+        LineEnding.Value = MemopadSettings.DefaultLineEnding;
+        
+        
+        IsDirty.Value = false;
+        Row.Value = 1;
+        Column.Value = 1;
     }
     public void NofityAllChanges()
     {
         if (!CanNotification) return;
 
-        TextChangedSubject.OnNext(Text);
-        DirtyChangedSubject.OnNext(IsDirty);
-        SelectionChangedSubject.OnNext((Row, Column));
-        EncodingChangedSubject.OnNext(Encoding ?? Encoding.UTF8);
-        LineEndingChangedSubject.OnNext(LineEnding);
-        TitleChangedSubject.OnNext(Title);
+        Text.ForceNotify();
+        IsDirty.ForceNotify();
+        Row.ForceNotify();
+        Column.ForceNotify();
+        Encoding.ForceNotify();
+        LineEnding.ForceNotify();
     }
     public void LoadText(string filePath)
     {
@@ -120,9 +109,11 @@ public sealed class MemopadCoreService : IMemopadCoreService
 
         Initialize();
         ChangeText(result.Content, true);
-        ChangeEncoding(result.Encoding);
-        ChangeLineEnding(result.LineEnding);
-        FilePath = result.FilePath;
+        Encoding.Value = result.Encoding;
+        LineEnding.Value = result.LineEnding;
+        FilePath.Value = result.FilePath;
+        FileName.Value = string.IsNullOrEmpty(FilePath.Value) ? $"{MemopadSettings.DefaultNewFileName}.txt" : Path.GetFileName(FilePath.Value);
+        FileNameWithoutExtension.Value = string.IsNullOrEmpty(FilePath.Value) ? MemopadSettings.DefaultNewFileName : Path.GetFileNameWithoutExtension(FilePath.Value);
 
         EnableNotification();
 
@@ -130,36 +121,15 @@ public sealed class MemopadCoreService : IMemopadCoreService
     }
     public void ChangeText(string newText, bool skipDirty = false)
     {
-        PreviousText = Text;
-        Text = newText;
-        TextChangedSubject.OnNext(Text);
+        PreviousText = Text.Value;
+        Text.Value = newText;
 
-        if (!skipDirty && !IsDirty && PreviousText != Text)
+        if (!skipDirty && !IsDirty.Value && PreviousText != Text.Value)
         {
-            IsDirty = true;
+            IsDirty.Value = true;
         }
-
-        if(CanNotification) DirtyChangedSubject.OnNext(IsDirty);
     }
-    public void ChangeSelection(int row, int column)
-    {
-        Row = row;
-        Column = column;
 
-        if(CanNotification) SelectionChangedSubject.OnNext((Row, Column));
-    }
-    public void ChangeEncoding(Encoding encoding)
-    {
-        Encoding = encoding;
-
-        if(CanNotification) EncodingChangedSubject.OnNext(Encoding);
-    }
-    public void ChangeLineEnding(LineEnding lineEnding)
-    {
-        LineEnding = lineEnding;
-
-        if(CanNotification) LineEndingChangedSubject.OnNext(LineEnding);
-    }
     public void Dispose()
     {
         _disposableCollection.Dispose();
@@ -172,6 +142,7 @@ public record MemopadSettings
 
     public static string ApplicationName => "Memopad";
     public static string DefaultNewFileName => "新規テキスト";
+    public static string DefaultFileExtension => ".txt";
     public static LineEnding DefaultLineEnding => LineEnding.CRLF;
     public static Encoding DefaultEncoding => Encoding.UTF8;
     public static string DefaultEncodingText => DefaultEncoding.WebName.ToUpper();

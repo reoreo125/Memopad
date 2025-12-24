@@ -20,7 +20,7 @@ public class NewTextFileCommand : CommandBase, INewTextFileCommand
     {
         if (MemopadCoreService is null) throw new Exception("MemopadCoreService");
 
-        if(MemopadCoreService.IsDirty)
+        if(MemopadCoreService.IsDirty.Value)
         {
             var result = MessageBox.Show(
                 "新しいファイルを作成します。現在の内容は保存されません。",

@@ -17,6 +17,7 @@ public class MainWindowViewModel : BindableBase, IDisposable
     private readonly IMemopadCoreService _memopadCoreService;
     private DisposableBag _disposableCollection = new();
 
+
     public MainWindowViewModel(IMemopadCoreService memopadCoreService)
     {
         _memopadCoreService = memopadCoreService ?? throw new ArgumentNullException(nameof(memopadCoreService));
@@ -25,12 +26,22 @@ public class MainWindowViewModel : BindableBase, IDisposable
         // 保存されていない変更がある状態になった時（＊）やタイトル変更
         Title = Observable.Merge
             (
-                MemopadCoreService.DirtyChanged.Select(_ => MemopadCoreService.Title),
-                MemopadCoreService.TitleChanged
+                MemopadCoreService.IsDirty.Select(_ => string.Empty),
+                MemopadCoreService.FileName
             )
-            .ToBindableReactiveProperty(MemopadCoreService.Title);
+            .Where(_ => memopadCoreService.CanNotification)
+            .Select(_ =>
+            {
+                var dirtyMark = MemopadCoreService.IsDirty.Value ? "*" : "";
+                var fileName = MemopadCoreService.FileNameWithoutExtension.Value;
+                return $"{fileName}{dirtyMark} - {MemopadSettings.ApplicationName}";
+            })
+            .ToBindableReactiveProperty(string.Empty);
+
         // テキストが変更された時
-        Text = MemopadCoreService.TextChanged
+        Text = new BindableReactiveProperty<string>();
+        Text = MemopadCoreService.Text
+            .Where(_ => MemopadCoreService.CanNotification)
             .Where(value => Text!.Value != value) // 循環防止
             .ToBindableReactiveProperty(string.Empty);
         Row = new BindableReactiveProperty<int>(1);
@@ -38,16 +49,18 @@ public class MainWindowViewModel : BindableBase, IDisposable
         #endregion
 
         #region View -> ViewModel -> Model
-        // テキスト変更 
+        // TextBoxの内容変更 
         Text.Where(value => value is not null)
             .Debounce(TimeSpan.FromMilliseconds(500))
             .Subscribe(value => MemopadCoreService.ChangeText(value))
             .AddTo(ref _disposableCollection);
+        // TextBoxからの行変更
         Row.Where(value => 0 < value)
-            .Subscribe(value => MemopadCoreService.ChangeSelection(value, MemopadCoreService.Column))
+            .Subscribe(value => MemopadCoreService.Row.Value = value)
             .AddTo(ref _disposableCollection);
+        // TextBoxからの列変更
         Column.Where(value => 0 < value)
-              .Subscribe(value => MemopadCoreService.ChangeSelection(MemopadCoreService.Row, value))
+              .Subscribe(value => MemopadCoreService.Column.Value = value)
               .AddTo(ref _disposableCollection);
         #endregion
     }
