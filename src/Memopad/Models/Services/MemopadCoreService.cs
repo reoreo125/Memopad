@@ -23,6 +23,11 @@ public interface IMemopadCoreService : IDisposable
     ReactiveProperty<bool> ShowStatusBar { get; }
     ReactiveProperty<bool> IsWordWrap { get; }
 
+    ReactiveProperty<DateTime> InsertDateTime { get; }
+
+    ReactiveProperty<int> CaretIndex { get; }
+    ReactiveProperty<int> SelectionLength { get; }
+
     bool CanNotification { get; }
 
     void Initialize();
@@ -51,7 +56,10 @@ public sealed class MemopadCoreService : IMemopadCoreService
     public ReactiveProperty<LineEnding> LineEnding { get; private set; } = new();
     public ReactiveProperty<bool> IsWordWrap { get; set; } = new(false);
 
+    public ReactiveProperty<DateTime> InsertDateTime { get; } = new(DateTime.MinValue);
 
+    public ReactiveProperty<int> CaretIndex { get; } = new(0);
+    public ReactiveProperty<int> SelectionLength { get; } = new(0);
 
     private DisposableBag _disposableCollection = new();
     
@@ -69,6 +77,23 @@ public sealed class MemopadCoreService : IMemopadCoreService
                 {
                     IsDirty.Value = true;
                 }
+            })
+            .AddTo(ref _disposableCollection);
+        InsertDateTime.Subscribe(value =>
+            {
+                if (value == DateTime.MinValue) return;
+
+                var now = DateTime.Now.ToString("H:mm yyyy/MM/dd");
+                var currentText = Text.Value ?? ""; // 生成後は最新の Value が取れる
+                var start = CaretIndex.Value;
+                var length = SelectionLength.Value;
+
+                // 文字列挿入
+                var newText = currentText.Remove(start, length).Insert(start, now);
+
+                Text.Value = newText;
+
+                CaretIndex.Value = start + now.Length;
             })
             .AddTo(ref _disposableCollection);
     }
@@ -148,7 +173,6 @@ public sealed class MemopadCoreService : IMemopadCoreService
 
         IsDirty.Value = false;
     }
-
     public void Dispose()
     {
         _disposableCollection.Dispose();

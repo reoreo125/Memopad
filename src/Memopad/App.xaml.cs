@@ -23,6 +23,7 @@ public partial class App : PrismApplication
         // Services
         containerRegistry.RegisterSingleton<IMemopadCoreService, MemopadCoreService>();
         containerRegistry.RegisterSingleton<ITextFileService, TextFileService>();
+        containerRegistry.RegisterSingleton<IHistoricalService, HistoricalService>();
 
         // Commands
         containerRegistry.Register<IApplicationExitCommand, ApplicationExitCommand>();
@@ -33,6 +34,7 @@ public partial class App : PrismApplication
         containerRegistry.Register<IZoomCommand, ZoomCommand>();
         containerRegistry.Register<IToggleStatusBarCommand, ToggleStatusBarCommand>();
         containerRegistry.Register<IToggleWordWrapCommand, ToggleWordWrapCommand>();
+        containerRegistry.Register<IInsertDateTimeCommand, InsertDateTimeCommand>();
 
         // ViewModels
         containerRegistry.RegisterSingleton<MainWindowViewModel>();

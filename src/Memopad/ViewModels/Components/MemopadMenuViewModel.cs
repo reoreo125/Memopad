@@ -20,6 +20,8 @@ public class MemopadMenuViewModel : BindableBase
     public IToggleStatusBarCommand? ToggleStatusBarCommand { get; set; }
     [Dependency]
     public IToggleWordWrapCommand? ToggleWordWrapCommand { get; set; }
+    [Dependency]
+    public IInsertDateTimeCommand? InsertDateTimeCommand { get; set; }
 
     public BindableReactiveProperty<bool> ShowStatusBar { get; }
     public BindableReactiveProperty<bool> IsWordWrap { get; }

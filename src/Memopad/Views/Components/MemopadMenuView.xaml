@@ -60,7 +60,8 @@
             <MenuItem Header="すべて選択(_A)"
                       InputGestureText="Ctrl+A" />
             <MenuItem Header="日付と時刻(_D)"
-                      InputGestureText="F5" />
+                      InputGestureText="F5"
+                      Command="{Binding InsertDateTimeCommand}"/>
         </MenuItem>
         <MenuItem Header="書式(_O)">
             <MenuItem Header="右端で折り返す(_W)"
