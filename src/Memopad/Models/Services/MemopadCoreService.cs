@@ -20,6 +20,7 @@ public interface IMemopadCoreService : IDisposable
     ReactiveProperty<int> Row { get; }
     ReactiveProperty<int> Column { get; }
     ReactiveProperty<double> ZoomLevel { get; }
+    ReactiveProperty<bool> ShowStatusBar { get; }
 
     bool CanNotification { get; }
 
@@ -40,10 +41,11 @@ public sealed class MemopadCoreService : IMemopadCoreService
     public ReactiveProperty<bool> IsDirty { get; } = new ReactiveProperty<bool>(false);
     public bool CanNotification { get; set; } = true;
     public bool CanCheckDirty { get; set; } = true;
+
+    public ReactiveProperty<bool> ShowStatusBar { get; set; } = new(true);
     public ReactiveProperty<int> Row { get; set; } = new(1);
     public ReactiveProperty<int> Column { get; set; } = new(1);
     public ReactiveProperty<double> ZoomLevel { get; set; } = new(1.0);
-
     public ReactiveProperty<Encoding?> Encoding { get; private set; } = new();
     public ReactiveProperty<LineEnding> LineEnding { get; private set; } = new();
 
@@ -57,7 +59,6 @@ public sealed class MemopadCoreService : IMemopadCoreService
         Initialize();
 
         Text.Pairwise()
-            .Where(_ => CanNotification)
             .Subscribe(pair =>
             {
                 if (CanCheckDirty && !IsDirty.Value && pair.Previous != pair.Current)
@@ -101,6 +102,7 @@ public sealed class MemopadCoreService : IMemopadCoreService
         Column.ForceNotify();
         Encoding.ForceNotify();
         LineEnding.ForceNotify();
+        ShowStatusBar.ForceNotify();
     }
     public void LoadText(string filePath)
     {

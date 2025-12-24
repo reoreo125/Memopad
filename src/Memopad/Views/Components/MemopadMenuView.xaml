@@ -10,34 +10,57 @@
              mc:Ignorable="d">
     <Menu>
         <MenuItem Header="ファイル(_F)">
-            <MenuItem Header="新規(_N)" InputGestureText="Ctrl+N" Command="{Binding NewTextFileCommand}"/>
-            <MenuItem Header="新しいウィンドウ(_W)" InputGestureText="Ctrl+Shift+N" />
-            <MenuItem Header="開く(_O)..." InputGestureText="Ctrl+O" Command="{Binding OpenTextFileCommand}" />
-            <MenuItem Header="上書き保存(_S)" InputGestureText="Ctrl+S" />
-            <MenuItem Header="名前を付けて保存(_A)..." InputGestureText="Ctrl+Shift+S" />
+            <MenuItem Header="新規(_N)"
+                      InputGestureText="Ctrl+N"
+                      Command="{Binding NewTextFileCommand}"/>
+            <MenuItem Header="新しいウィンドウ(_W)"
+                      InputGestureText="Ctrl+Shift+N"/>
+            <MenuItem Header="開く(_O)..."
+                      InputGestureText="Ctrl+O"
+                      Command="{Binding OpenTextFileCommand}" />
+            <MenuItem Header="上書き保存(_S)"
+                      InputGestureText="Ctrl+S" />
+            <MenuItem Header="名前を付けて保存(_A)..."
+                      InputGestureText="Ctrl+Shift+S" />
             <Separator />
             <MenuItem Header="ページ設定(_U)..." />
-            <MenuItem Header="印刷(_P)..." InputGestureText="Ctrl+P" />
+            <MenuItem Header="印刷(_P)..."
+                      InputGestureText="Ctrl+P" />
             <Separator />
-            <MenuItem Header="終了(_X)" InputGestureText="Alt+F4" Command="{Binding ApplicationExitCommand}" />
+            <MenuItem Header="終了(_X)"
+                      InputGestureText="Alt+F4"
+                      Command="{Binding ApplicationExitCommand}" />
         </MenuItem>
         <MenuItem Header="編集(_E)">
-            <MenuItem Header="元に戻す(_U)" InputGestureText="Ctrl+Z" />
-            <MenuItem Header="やり直す(_R)" InputGestureText="Ctrl+Y" />
+            <MenuItem Header="元に戻す(_U)"
+                      InputGestureText="Ctrl+Z" />
+            <MenuItem Header="やり直す(_R)"
+                      InputGestureText="Ctrl+Y" />
             <Separator />
-            <MenuItem Header="切り取り(_T)" InputGestureText="Ctrl+X" />
-            <MenuItem Header="コピー(_C)" InputGestureText="Ctrl+C" />
-            <MenuItem Header="貼り付け(_P)" InputGestureText="Ctrl+V" />
-            <MenuItem Header="削除(_L)" InputGestureText="Del" />
+            <MenuItem Header="切り取り(_T)"
+                      InputGestureText="Ctrl+X" />
+            <MenuItem Header="コピー(_C)"
+                      InputGestureText="Ctrl+C" />
+            <MenuItem Header="貼り付け(_P)"
+                      InputGestureText="Ctrl+V" />
+            <MenuItem Header="削除(_L)"
+                      InputGestureText="Del" />
             <Separator />
-            <MenuItem Header="検索(_F)..." InputGestureText="Ctrl+F" />
-            <MenuItem Header="次を検索(_N)" InputGestureText="F3" />
-            <MenuItem Header="前を検索(_V)" InputGestureText="Shift+F3" />
-            <MenuItem Header="置換(_R)" InputGestureText="ctrl+H" />
-            <MenuItem Header="行へ移動(_G)" InputGestureText="ctrl+G" />
+            <MenuItem Header="検索(_F)..."
+                      InputGestureText="Ctrl+F" />
+            <MenuItem Header="次を検索(_N)"
+                      InputGestureText="F3" />
+            <MenuItem Header="前を検索(_V)"
+                      InputGestureText="Shift+F3" />
+            <MenuItem Header="置換(_R)"
+                      InputGestureText="ctrl+H" />
+            <MenuItem Header="行へ移動(_G)"
+                      InputGestureText="ctrl+G" />
             <Separator />
-            <MenuItem Header="すべて選択(_A)" InputGestureText="Ctrl+A" />
-            <MenuItem Header="日付と時刻(_D)" InputGestureText="F5" />
+            <MenuItem Header="すべて選択(_A)"
+                      InputGestureText="Ctrl+A" />
+            <MenuItem Header="日付と時刻(_D)"
+                      InputGestureText="F5" />
         </MenuItem>
         <MenuItem Header="書式(_O)">
             <MenuItem Header="右端で折り返す(_W)" />
@@ -58,10 +81,14 @@
                           Command="{Binding ZoomCommand}"
                           CommandParameter="{x:Static commands:ZoomOperation.Reset}"/>
             </MenuItem>
-            <MenuItem Header="ステータスバー(_S)" IsCheckable="True" IsChecked="True" />
+            <MenuItem Header="ステータスバー(_S)"
+                      IsCheckable="True"
+                      Command="{Binding ToggleStatusBarCommand}"
+                      IsChecked="{Binding ShowStatusBar.Value}"/>
         </MenuItem>
         <MenuItem Header="ヘルプ(_H)">
-            <MenuItem Header="バージョン情報(_A)" Command="{Binding OpenAboutCommand}" />
+            <MenuItem Header="バージョン情報(_A)"
+                      Command="{Binding OpenAboutCommand}" />
         </MenuItem>
     </Menu>
 </UserControl>

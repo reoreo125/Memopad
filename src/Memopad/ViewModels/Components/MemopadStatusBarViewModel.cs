@@ -1,4 +1,5 @@
 using System.Text;
+using System.Windows;
 using R3;
 using Reoreo125.Memopad.Models.Services;
 
@@ -6,10 +7,13 @@ namespace Reoreo125.Memopad.ViewModels.Components;
 
 public class MemopadStatusBarViewModel : BindableBase, IDisposable
 {
+    public BindableReactiveProperty<Visibility> ShowStatusBar { get; }
     public BindableReactiveProperty<string> PositionText { get; }
     public BindableReactiveProperty<string> ZoomLevelText { get; }
     public BindableReactiveProperty<string> LineEndingText { get; }
     public BindableReactiveProperty<string> EncodingText { get; }
+
+
     protected IMemopadCoreService MemopadCoreService => _memopadCoreService;
     private readonly IMemopadCoreService _memopadCoreService;
 
@@ -21,6 +25,10 @@ public class MemopadStatusBarViewModel : BindableBase, IDisposable
 
         #region Model -> ViewModel -> View
 
+        ShowStatusBar = MemopadCoreService.ShowStatusBar
+            .Where(_ => memopadCoreService.CanNotification)
+            .Select(value => value ? Visibility.Visible : Visibility.Collapsed)
+            .ToBindableReactiveProperty(Visibility.Visible);
         PositionText = Observable.Merge
             (
                 MemopadCoreService.Row.Select(_ => string.Empty),
@@ -42,7 +50,6 @@ public class MemopadStatusBarViewModel : BindableBase, IDisposable
             .Where(_ => MemopadCoreService.CanNotification)
             .Select(value => CreateLineEndingText(value))
             .ToBindableReactiveProperty(CreateLineEndingText(MemoPadDefaults.LineEnding));
-
         EncodingText = MemopadCoreService.Encoding
             .Where(_ => memopadCoreService.CanNotification)
             .Select((encoding) => encoding ?? Encoding.UTF8)

@@ -35,12 +35,13 @@ public partial class App : PrismApplication
         containerRegistry.Register<IOpenTextFileCommand, OpenTextFileCommand>();
         containerRegistry.Register<ICloseAboutCommand, CloseAboutCommand>();
         containerRegistry.Register<IZoomCommand, ZoomCommand>();
+        containerRegistry.Register<IToggleStatusBarCommand, ToggleStatusBarCommand>();
 
         // ViewModels
         containerRegistry.RegisterSingleton<MainWindowViewModel>();
         containerRegistry.Register<AboutWindowViewModel>();
-        containerRegistry.Register<MemopadMenuViewModel>();
-        containerRegistry.Register<MemopadStatusBarViewModel>();
+        containerRegistry.RegisterSingleton<MemopadMenuViewModel>();
+        containerRegistry.RegisterSingleton<MemopadStatusBarViewModel>();
     }
 
     protected override Window CreateShell() => Container.Resolve<MainWindow>();

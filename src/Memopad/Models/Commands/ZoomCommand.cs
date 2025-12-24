@@ -10,19 +10,17 @@ public interface IZoomCommand : ICommand
 
 public class ZoomCommand : CommandBase, IZoomCommand
 {
-    public ZoomOperation ZoomOperation { get; private set; } = ZoomOperation.Default;
-
     [Dependency]
     public IMemopadCoreService? MemopadCoreService { get; set; }
+
     public override bool CanExecute(object? parameter) => true;
 
     public override void Execute(object? parameter)
     {
         if(MemopadCoreService is null) throw new Exception("MemopadCoreService");
-        if(parameter is null) return;
-        ZoomOperation = (ZoomOperation)parameter;
+        if(parameter is null || parameter is not ZoomOperation) return;
 
-        switch(ZoomOperation)
+        switch((ZoomOperation)parameter)
         {
             case ZoomOperation.In:
                 MemopadCoreService.ZoomLevel.Value = Math.Min(MemopadCoreService.ZoomLevel.Value + MemoPadDefaults.ZoomStep, MemoPadDefaults.ZoomMax);
