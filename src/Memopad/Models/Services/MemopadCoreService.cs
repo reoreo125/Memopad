@@ -48,7 +48,7 @@ public sealed class MemopadCoreService : IMemopadCoreService
     private Subject<LineEnding> LineEndingChangedSubject { get; set; } = new();
     public Observable<LineEnding> LineEndingChanged => LineEndingChangedSubject;
 
-    public string Title => $"{FileNameWithoutExtension}{(IsDirty ? "*" : "")} - Memopad";
+    public string Title => $"{FileNameWithoutExtension}{(IsDirty ? "*" : "")} - {MemopadSettings.ApplicationName}";
     public string FileName => string.IsNullOrEmpty(FilePath) ? $"{MemopadSettings.DefaultNewFileName}.txt" : Path.GetFileName(FilePath);
     public string FileNameWithoutExtension => string.IsNullOrEmpty(FilePath) ? MemopadSettings.DefaultNewFileName : Path.GetFileNameWithoutExtension(FilePath);
 
@@ -170,7 +170,7 @@ public record MemopadSettings
 {
     public string LastOpenedFolder { get; set; } = string.Empty;
 
-
+    public static string ApplicationName => "Memopad";
     public static string DefaultNewFileName => "新規テキスト";
     public static LineEnding DefaultLineEnding => LineEnding.CRLF;
     public static Encoding DefaultEncoding => Encoding.UTF8;
