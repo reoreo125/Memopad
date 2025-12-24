@@ -177,4 +177,5 @@ public record MemoPadDefaults
     public static string ZoomLevelText => "100%";
     public static int FontSize => 12;
     public static TextWrapping TextWrapping => TextWrapping.NoWrap;
+    public static int TextBoxDebounce => 500;
 }

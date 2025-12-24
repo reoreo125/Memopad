@@ -1,5 +1,3 @@
-using System.Windows;
-using System.Windows.Input;
 using R3;
 using Reoreo125.Memopad.Models.Commands;
 using Reoreo125.Memopad.Models.Services;

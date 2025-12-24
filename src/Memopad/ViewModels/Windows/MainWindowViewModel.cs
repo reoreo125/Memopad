@@ -1,7 +1,4 @@
-using System.Data.Common;
 using System.Windows;
-using System.Windows.Input;
-using Prism.Mvvm;
 using R3;
 using Reoreo125.Memopad.Models.Services;
 
@@ -62,7 +59,7 @@ public class MainWindowViewModel : BindableBase, IDisposable
         #region View -> ViewModel -> Model
         // TextBoxの内容変更 
         Text.Where(value => value is not null)
-            .Debounce(TimeSpan.FromMilliseconds(500))
+            .Debounce(TimeSpan.FromMilliseconds(MemoPadDefaults.TextBoxDebounce))
             .Subscribe(value => MemopadCoreService.Text.Value = value)
             .AddTo(ref _disposableCollection);
         // TextBoxからの行変更
