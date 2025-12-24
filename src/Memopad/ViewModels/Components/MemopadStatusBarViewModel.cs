@@ -30,7 +30,7 @@ public class MemopadStatusBarViewModel : BindableBase, IDisposable
             {
                 int row = MemopadCoreService.Row.Value;
                 int column = MemopadCoreService.Column.Value;
-                return $"{row}行 {column}列";
+                return $"{row}行、{column}列";
             })
             .ToBindableReactiveProperty(MemoPadDefaults.PositionText);
         LineEndingText = MemopadCoreService.LineEnding
