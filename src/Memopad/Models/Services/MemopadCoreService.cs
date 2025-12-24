@@ -19,6 +19,7 @@ public interface IMemopadCoreService : IDisposable
     ReactiveProperty<bool> IsDirty { get; }
     ReactiveProperty<int> Row { get; }
     ReactiveProperty<int> Column { get; }
+    ReactiveProperty<double> ZoomLevel { get; }
 
     bool CanNotification { get; }
 
@@ -41,7 +42,7 @@ public sealed class MemopadCoreService : IMemopadCoreService
     public bool CanCheckDirty { get; set; } = true;
     public ReactiveProperty<int> Row { get; set; } = new(1);
     public ReactiveProperty<int> Column { get; set; } = new(1);
-
+    public ReactiveProperty<double> ZoomLevel { get; set; } = new(1.0);
 
     public ReactiveProperty<Encoding?> Encoding { get; private set; } = new();
     public ReactiveProperty<LineEnding> LineEnding { get; private set; } = new();
@@ -149,4 +150,9 @@ public record MemoPadDefaults
     public static string EncodingText => Encoding.WebName.ToUpper();
     public static string PositionText => "1行、1列";
     public static FontFamily TextFont => FontFamily.GenericMonospace;
+    public static double ZoomLevel => 1.0;
+    public static double ZoomStep => 0.1;
+    public static double ZoomMax => 5.0;
+    public static double ZoomMin => 0.1;
+    public static int FontSize => 12;
 }

@@ -1,11 +1,16 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using Reoreo125.Memopad.Models.Commands;
 using Reoreo125.Memopad.ViewModels.Windows;
 
 namespace Reoreo125.Memopad.Views.Windows;
 
 public partial class MainWindow : Window
 {
+    [Dependency]
+    public ZoomCommand? ZoomCommand { get; set; }
+
     public MainWindow()
     {
         InitializeComponent();
@@ -29,6 +34,28 @@ public partial class MainWindow : Window
                 vm.Row.Value = lineIndex + 1;    // 1開始にする
                 vm.Column.Value = columnIndex + 1;
             }
+        }
+    }
+    void TextBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        // Ctrlキーが押されているかチェック
+        if (Keyboard.Modifiers == ModifierKeys.Control)
+        {
+            switch (e.Delta)
+            {
+                case > 0:
+                    ZoomCommand?.Execute(ZoomOperation.In);
+                    break;
+                case < 0:
+                    ZoomCommand?.Execute(ZoomOperation.Out);
+                    break;
+                case 0:
+                    ZoomCommand?.Execute(ZoomOperation.Default);
+                    break;
+                default:
+            }
+            // イベントをここで完結させ、通常のスクロールを防ぐ
+            e.Handled = true;
         }
     }
 }

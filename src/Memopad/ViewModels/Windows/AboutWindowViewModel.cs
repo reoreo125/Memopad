@@ -3,7 +3,8 @@ using Reoreo125.Memopad.Models.Commands;
 
 namespace Reoreo125.Memopad.ViewModels.Windows;
 
-public class AboutWindowViewModel
+public class AboutWindowViewModel : BindableBase
 {
-    public ICommand CloseAboutWindowCommand { get; } = new CloseAboutCommand();
+    [Dependency]
+    public ICloseAboutCommand? CloseAboutCommand { get; set; }
 }

@@ -1,5 +1,6 @@
 using System.Data.Common;
 using System.Windows;
+using System.Windows.Input;
 using Prism.Mvvm;
 using R3;
 using Reoreo125.Memopad.Models.Services;
@@ -12,6 +13,7 @@ public class MainWindowViewModel : BindableBase, IDisposable
     public BindableReactiveProperty<string> Text { get; }
     public BindableReactiveProperty<int> Row { get; }
     public BindableReactiveProperty<int> Column { get; }
+    public BindableReactiveProperty<double> FontSize { get; }
 
     protected IMemopadCoreService MemopadCoreService => _memopadCoreService;
     private readonly IMemopadCoreService _memopadCoreService;
@@ -46,6 +48,10 @@ public class MainWindowViewModel : BindableBase, IDisposable
             .ToBindableReactiveProperty(string.Empty);
         Row = new BindableReactiveProperty<int>(1);
         Column = new BindableReactiveProperty<int>(1);
+        FontSize = MemopadCoreService.ZoomLevel
+            .Where(_ => MemopadCoreService.CanNotification)
+            .Select(value => MemoPadDefaults.FontSize * value)
+            .ToBindableReactiveProperty(MemoPadDefaults.FontSize);
         #endregion
 
         #region View -> ViewModel -> Model

@@ -23,18 +23,19 @@
 
         <!-- Content Area -->
         <Grid>
-            <TextBox Name="MemoTextBox" 
+            <TextBox Name="EditorBox" 
                      AcceptsReturn="True"
                      AcceptsTab="True"
                      FontFamily="Consolas"
-                     FontSize="12"
+                     FontSize="{Binding FontSize.Value}"
                      Padding="5"
                      TextWrapping="NoWrap"
                      VerticalScrollBarVisibility="Visible"
                      HorizontalScrollBarVisibility="Visible"
                      Text="{Binding Text.Value, UpdateSourceTrigger=PropertyChanged}"
                      SelectionChanged="OnSelectionChanged"
-                     />
+                     PreviewMouseWheel="TextBox_PreviewMouseWheel">
+            </TextBox>
         </Grid>
     </DockPanel>
 </Window>

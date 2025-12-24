@@ -21,7 +21,7 @@
         <Button Content="OK" 
                 Width="100" 
                 Height="40"
-                Command="{Binding CloseAboutWindowCommand}"
+                Command="{Binding CloseAboutCommand}"
                 HorizontalAlignment="Center" 
                 Margin="0,20,0,0" />
     </StackPanel>
