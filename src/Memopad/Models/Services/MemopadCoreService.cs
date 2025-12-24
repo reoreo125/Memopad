@@ -26,7 +26,6 @@ public interface IMemopadCoreService : IDisposable
     void Initialize();
     void NofityAllChanges();
     void LoadText(string filePath);
-    void ChangeText(string newText, bool skipDirty = false);
 }
 
 public sealed class MemopadCoreService : IMemopadCoreService
@@ -40,6 +39,7 @@ public sealed class MemopadCoreService : IMemopadCoreService
 
     public ReactiveProperty<bool> IsDirty { get; } = new ReactiveProperty<bool>(false);
     public bool CanNotification { get; set; } = true;
+    public bool CanCheckDirty { get; set; } = true;
     public ReactiveProperty<int> Row { get; set; } = new(1);
     public ReactiveProperty<int> Column { get; set; } = new(1);
 
@@ -56,16 +56,24 @@ public sealed class MemopadCoreService : IMemopadCoreService
     public MemopadCoreService()
     {
         Initialize();
+
+        Text.Pairwise()
+            .Where(_ => CanNotification)
+            .Subscribe(pair =>
+            {
+                if (CanCheckDirty && !IsDirty.Value && pair.Previous != pair.Current)
+                {
+                    IsDirty.Value = true;
+                }
+            })
+            .AddTo(ref _disposableCollection);
     }
 
-    public void EnableNotification()
-    {
-        CanNotification = true;
-    }
-    public void DisableNotification()
-    {
-        CanNotification = false;
-    }
+    public void EnableNotification() => CanNotification = true;
+    public void DisableNotification() => CanNotification = false;
+    private void EnableCheckDirty() => CanCheckDirty = true;
+    private void DisableCheckDirty() => CanCheckDirty = false;
+
     public void Initialize()
     {
         FilePath.Value = string.Empty;
@@ -106,9 +114,10 @@ public sealed class MemopadCoreService : IMemopadCoreService
         }
 
         DisableNotification();
+        DisableCheckDirty();
 
         Initialize();
-        ChangeText(result.Content, true);
+        Text.Value = result.Content;
         Encoding.Value = result.Encoding;
         LineEnding.Value = result.LineEnding;
         FilePath.Value = result.FilePath;
@@ -116,18 +125,9 @@ public sealed class MemopadCoreService : IMemopadCoreService
         FileNameWithoutExtension.Value = string.IsNullOrEmpty(FilePath.Value) ? MemopadSettings.DefaultNewFileName : Path.GetFileNameWithoutExtension(FilePath.Value);
 
         EnableNotification();
+        EnableCheckDirty();
 
         NofityAllChanges();
-    }
-    public void ChangeText(string newText, bool skipDirty = false)
-    {
-        PreviousText = Text.Value;
-        Text.Value = newText;
-
-        if (!skipDirty && !IsDirty.Value && PreviousText != Text.Value)
-        {
-            IsDirty.Value = true;
-        }
     }
 
     public void Dispose()

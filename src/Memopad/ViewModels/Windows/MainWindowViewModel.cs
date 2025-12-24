@@ -52,7 +52,7 @@ public class MainWindowViewModel : BindableBase, IDisposable
         // TextBoxの内容変更 
         Text.Where(value => value is not null)
             .Debounce(TimeSpan.FromMilliseconds(500))
-            .Subscribe(value => MemopadCoreService.ChangeText(value))
+            .Subscribe(value => MemopadCoreService.Text.Value = value)
             .AddTo(ref _disposableCollection);
         // TextBoxからの行変更
         Row.Where(value => 0 < value)
