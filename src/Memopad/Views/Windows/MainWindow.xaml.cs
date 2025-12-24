@@ -19,20 +19,23 @@ public partial class MainWindow : Window
     {
         if (sender is TextBox textBox)
         {
-            // 1. キャレット位置から行インデックス(0開始)を取得
-            int lineIndex = textBox.GetLineIndexFromCharacterIndex(textBox.CaretIndex);
+            // 現在のカーソル位置（0から始まるインデックス）
+            int caretIndex = textBox.CaretIndex;
 
-            // 2. その行の開始文字インデックスを取得
-            int lineStartIndex = textBox.GetCharacterIndexFromLineIndex(lineIndex);
+            // 0文字目からカーソル位置までのテキストを切り出す
+            string textUntilCaret = textBox.Text.Substring(0, caretIndex);
 
-            // 3. 列番号を計算
-            int columnIndex = textBox.CaretIndex - lineStartIndex;
+            // 行数：そこまでに含まれる改行コード '\n' の数 + 1
+            int line = textUntilCaret.Count(c => c == '\n') + 1;
 
-            // 4. ViewModelに値を渡す (DataContextをキャスト)
+            // 列数：最後の改行コードのインデックスを探し、そこからの距離を測る
+            int lastNewLineIndex = textUntilCaret.LastIndexOf('\n');
+            int column = caretIndex - lastNewLineIndex;
+
             if (DataContext is MainWindowViewModel vm)
             {
-                vm.Row.Value = lineIndex + 1;    // 1開始にする
-                vm.Column.Value = columnIndex + 1;
+                vm.Row.Value = line;
+                vm.Column.Value = column;
             }
         }
     }

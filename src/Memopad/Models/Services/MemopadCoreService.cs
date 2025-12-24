@@ -21,6 +21,7 @@ public interface IMemopadCoreService : IDisposable
     ReactiveProperty<int> Column { get; }
     ReactiveProperty<double> ZoomLevel { get; }
     ReactiveProperty<bool> ShowStatusBar { get; }
+    ReactiveProperty<bool> IsWordWrap { get; }
 
     bool CanNotification { get; }
 
@@ -48,9 +49,12 @@ public sealed class MemopadCoreService : IMemopadCoreService
     public ReactiveProperty<double> ZoomLevel { get; set; } = new(1.0);
     public ReactiveProperty<Encoding?> Encoding { get; private set; } = new();
     public ReactiveProperty<LineEnding> LineEnding { get; private set; } = new();
+    public ReactiveProperty<bool> IsWordWrap { get; set; } = new(false);
+
+
 
     private DisposableBag _disposableCollection = new();
-
+    
     [Dependency]
     public ITextFileService? TextFileService { get; set; }
 
@@ -131,6 +135,19 @@ public sealed class MemopadCoreService : IMemopadCoreService
 
         NofityAllChanges();
     }
+    public void SaveText(string filePath)
+    {
+        if (TextFileService is null) throw new Exception("TextFileService");
+        var result = TextFileService.Save(this);
+
+        if (!result.IsSuccess)
+        {
+            MessageBox.Show("ファイルの保存に失敗しました。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
+        IsDirty.Value = false;
+    }
 
     public void Dispose()
     {
@@ -159,4 +176,5 @@ public record MemoPadDefaults
     public static double ZoomMin => 0.1;
     public static string ZoomLevelText => "100%";
     public static int FontSize => 12;
+    public static TextWrapping TextWrapping => TextWrapping.NoWrap;
 }

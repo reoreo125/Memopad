@@ -14,6 +14,7 @@ public class MainWindowViewModel : BindableBase, IDisposable
     public BindableReactiveProperty<int> Row { get; }
     public BindableReactiveProperty<int> Column { get; }
     public BindableReactiveProperty<double> FontSize { get; }
+    public BindableReactiveProperty<TextWrapping> TextWrapping { get; }
 
     protected IMemopadCoreService MemopadCoreService => _memopadCoreService;
     private readonly IMemopadCoreService _memopadCoreService;
@@ -52,6 +53,10 @@ public class MainWindowViewModel : BindableBase, IDisposable
             .Where(_ => MemopadCoreService.CanNotification)
             .Select(value => MemoPadDefaults.FontSize * value)
             .ToBindableReactiveProperty(MemoPadDefaults.FontSize);
+        TextWrapping = MemopadCoreService.IsWordWrap
+            .Where(_ => memopadCoreService.CanNotification)
+            .Select(value => value ? System.Windows.TextWrapping.Wrap : System.Windows.TextWrapping.NoWrap)
+            .ToBindableReactiveProperty(MemoPadDefaults.TextWrapping);
         #endregion
 
         #region View -> ViewModel -> Model

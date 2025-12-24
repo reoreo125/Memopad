@@ -29,7 +29,7 @@
                      FontFamily="Consolas"
                      FontSize="{Binding FontSize.Value}"
                      Padding="5"
-                     TextWrapping="NoWrap"
+                     TextWrapping="{Binding TextWrapping.Value}"
                      VerticalScrollBarVisibility="Visible"
                      HorizontalScrollBarVisibility="Visible"
                      Text="{Binding Text.Value, UpdateSourceTrigger=PropertyChanged}"

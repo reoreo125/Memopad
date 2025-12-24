@@ -20,8 +20,11 @@ public class MemopadMenuViewModel : BindableBase
     public IOpenAboutCommand? OpenAboutCommand { get; set; }
     [Dependency]
     public IToggleStatusBarCommand? ToggleStatusBarCommand { get; set; }
+    [Dependency]
+    public IToggleWordWrapCommand? ToggleWordWrapCommand { get; set; }
 
     public BindableReactiveProperty<bool> ShowStatusBar { get; }
+    public BindableReactiveProperty<bool> IsWordWrap { get; }
 
     protected IMemopadCoreService MemopadCoreService => _memopadCoreService;
     private readonly IMemopadCoreService _memopadCoreService;
@@ -30,8 +33,13 @@ public class MemopadMenuViewModel : BindableBase
     {
         _memopadCoreService = memopadCoreService ?? throw new ArgumentNullException(nameof(memopadCoreService));
 
+        #region Model -> ViewModel -> View
         ShowStatusBar = MemopadCoreService.ShowStatusBar
             .Where(_ => memopadCoreService.CanNotification)
             .ToBindableReactiveProperty(true);
+        IsWordWrap = MemopadCoreService.IsWordWrap
+            .Where(_ => memopadCoreService.CanNotification)
+            .ToBindableReactiveProperty(true);
+        #endregion
     }
 }

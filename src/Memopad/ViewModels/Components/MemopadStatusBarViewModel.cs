@@ -1,3 +1,4 @@
+using System.Data.Common;
 using System.Text;
 using System.Windows;
 using R3;
@@ -12,7 +13,6 @@ public class MemopadStatusBarViewModel : BindableBase, IDisposable
     public BindableReactiveProperty<string> ZoomLevelText { get; }
     public BindableReactiveProperty<string> LineEndingText { get; }
     public BindableReactiveProperty<string> EncodingText { get; }
-
 
     protected IMemopadCoreService MemopadCoreService => _memopadCoreService;
     private readonly IMemopadCoreService _memopadCoreService;
@@ -35,12 +35,7 @@ public class MemopadStatusBarViewModel : BindableBase, IDisposable
                 MemopadCoreService.Column.Select(_ => string.Empty)
             )
             .Where(_ => MemopadCoreService.CanNotification)
-            .Select(_ =>
-            {
-                int row = MemopadCoreService.Row.Value;
-                int column = MemopadCoreService.Column.Value;
-                return $"{row}行、{column}列";
-            })
+            .Select(_ => $"{MemopadCoreService.Row.Value}行、{MemopadCoreService.Column.Value}列")
             .ToBindableReactiveProperty(MemoPadDefaults.PositionText);
         ZoomLevelText = MemopadCoreService.ZoomLevel
             .Where(_ => MemopadCoreService.CanNotification)

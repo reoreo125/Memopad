@@ -63,7 +63,9 @@
                       InputGestureText="F5" />
         </MenuItem>
         <MenuItem Header="書式(_O)">
-            <MenuItem Header="右端で折り返す(_W)" />
+            <MenuItem Header="右端で折り返す(_W)"
+                      Command="{Binding ToggleWordWrapCommand}"
+                      IsChecked="{Binding IsWordWrap.Value}"/>
             <MenuItem Header="フォント(_F)..." />
         </MenuItem>
         <MenuItem Header="表示(_V)">

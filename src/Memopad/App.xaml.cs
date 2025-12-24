@@ -36,6 +36,7 @@ public partial class App : PrismApplication
         containerRegistry.Register<ICloseAboutCommand, CloseAboutCommand>();
         containerRegistry.Register<IZoomCommand, ZoomCommand>();
         containerRegistry.Register<IToggleStatusBarCommand, ToggleStatusBarCommand>();
+        containerRegistry.Register<IToggleWordWrapCommand, ToggleWordWrapCommand>();
 
         // ViewModels
         containerRegistry.RegisterSingleton<MainWindowViewModel>();

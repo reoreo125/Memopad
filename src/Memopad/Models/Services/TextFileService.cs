@@ -7,7 +7,7 @@ namespace Reoreo125.Memopad.Models.Services;
 public interface ITextFileService
 {
     TextFileLoadResult Load(string filePath);
-    void Save(string filePath, string content);
+    TextFileSaveResult Save(IMemopadCoreService memopadCoreService);
     bool Exists(string filePath);
 }
 
@@ -59,9 +59,19 @@ public class TextFileService : ITextFileService
 
             var fileContent = File.ReadAllText(filePath, encodingResult.Encoding);
 
+            // 内部用に改行コードを CRLF に統一する処理
+            var sb = new StringBuilder();
+            sb.Append(fileContent);
+            // 混在している可能性も考慮し、一旦すべて \n (LF) に統一
+            sb.Replace("\r\n", "\n");
+            sb.Replace("\r", "\n");
+            // すべての \n を \r\n (CRLF) に変換
+            // これにより、LFのみ、CRのみ、混在ファイルがすべて CRLF に統一される
+            sb.Replace("\n", "\r\n");
+
             var result = new TextFileLoadResult(
                 IsSuccess: true,
-                Content: fileContent,
+                Content: sb.ToString(),
                 Encoding: encodingResult.Encoding,
                 LineEnding: lineEnding,
                 FilePath: filePath
@@ -81,9 +91,44 @@ public class TextFileService : ITextFileService
         }
 
     }
-    public void Save(string filePath, string content)
+    public TextFileSaveResult Save(IMemopadCoreService memopadCoreService)
     {
+        try
+        {
+            using (var writer = new StreamWriter(memopadCoreService.FilePath.Value, false, memopadCoreService.Encoding.Value))
+            {
+                var lineEnding = GetStringFromLineEnding(memopadCoreService.LineEnding.Value);
 
+                writer.NewLine = lineEnding;
+
+                var sb = new StringBuilder();
+                sb.Append(memopadCoreService.Text.Value);
+
+                sb.Replace("\r\n", "\n");
+                sb.Replace("\r", "\n");
+
+                if (lineEnding != "\n")
+                {
+                    sb.Replace("\n", lineEnding);
+                }
+
+                foreach(var chunk in sb.GetChunks())
+                {
+                    writer.Write(chunk.Span);
+                }
+            }
+            return new TextFileSaveResult(
+                IsSuccess: true,
+                FilePath: memopadCoreService.FilePath.Value
+                );
+        }
+        catch
+        {
+            return new TextFileSaveResult(
+                IsSuccess: false,
+                FilePath: memopadCoreService.FilePath.Value
+                );
+        }
     }
     public bool Exists(string filePath) => File.Exists(filePath);
 
@@ -94,6 +139,13 @@ public class TextFileService : ITextFileService
         "\r" => LineEnding.CR,
         _ => LineEnding.Unknown
     };
+    public static string GetStringFromLineEnding(LineEnding lineEnding) => lineEnding switch
+    {
+        LineEnding.CRLF => "\r\n",
+        LineEnding.LF => "\n",
+        LineEnding.CR => "\r",
+        _ => string.Empty
+    };
 
 }
 public record TextFileLoadResult(
@@ -101,6 +153,10 @@ public record TextFileLoadResult(
     string Content,
     Encoding Encoding,
     LineEnding LineEnding,
+    string FilePath
+    );
+public record TextFileSaveResult(
+    bool IsSuccess,
     string FilePath
     );
 public enum LineEnding
