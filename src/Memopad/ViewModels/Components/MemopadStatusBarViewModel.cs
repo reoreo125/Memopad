@@ -6,9 +6,10 @@ namespace Reoreo125.Memopad.ViewModels.Components;
 
 public class MemopadStatusBarViewModel : BindableBase, IDisposable
 {
-    public BindableReactiveProperty<string> PositionText { get; } = new BindableReactiveProperty<string>(MemoPadDefaults.PositionText);
-    public BindableReactiveProperty<string> LineEndingText { get; } = new BindableReactiveProperty<string>(CreateLineEndingText(MemoPadDefaults.LineEnding));
-    public BindableReactiveProperty<string> EncodingText { get; } = new BindableReactiveProperty<string>(MemoPadDefaults.EncodingText);
+    public BindableReactiveProperty<string> PositionText { get; }
+    public BindableReactiveProperty<string> ZoomLevelText { get; }
+    public BindableReactiveProperty<string> LineEndingText { get; }
+    public BindableReactiveProperty<string> EncodingText { get; }
     protected IMemopadCoreService MemopadCoreService => _memopadCoreService;
     private readonly IMemopadCoreService _memopadCoreService;
 
@@ -33,6 +34,10 @@ public class MemopadStatusBarViewModel : BindableBase, IDisposable
                 return $"{row}行、{column}列";
             })
             .ToBindableReactiveProperty(MemoPadDefaults.PositionText);
+        ZoomLevelText = MemopadCoreService.ZoomLevel
+            .Where(_ => MemopadCoreService.CanNotification)
+            .Select(value => $"{(int)(value * 100)}%")
+            .ToBindableReactiveProperty(MemoPadDefaults.ZoomLevelText);
         LineEndingText = MemopadCoreService.LineEnding
             .Where(_ => MemopadCoreService.CanNotification)
             .Select(value => CreateLineEndingText(value))

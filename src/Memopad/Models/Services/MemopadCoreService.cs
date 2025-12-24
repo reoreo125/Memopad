@@ -82,13 +82,14 @@ public sealed class MemopadCoreService : IMemopadCoreService
         Text.Value = string.Empty;
         PreviousText = string.Empty;
 
-        Encoding.Value = null;
+        Encoding.Value = MemoPadDefaults.Encoding;
         LineEnding.Value = MemoPadDefaults.LineEnding;
         
         
         IsDirty.Value = false;
         Row.Value = 1;
         Column.Value = 1;
+        ZoomLevel.Value = MemoPadDefaults.ZoomLevel;
     }
     public void NofityAllChanges()
     {
@@ -154,5 +155,6 @@ public record MemoPadDefaults
     public static double ZoomStep => 0.1;
     public static double ZoomMax => 5.0;
     public static double ZoomMin => 0.1;
+    public static string ZoomLevelText => "100%";
     public static int FontSize => 12;
 }

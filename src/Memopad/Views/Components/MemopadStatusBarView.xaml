@@ -14,7 +14,7 @@
                 <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
                 <TextBlock Text="{Binding PositionText.Value, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 5 0" Width="110" Foreground="Black" HorizontalAlignment="Left"/>
                 <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
-                <TextBlock Text="100%" Margin="5 0 5 0" Width="40" Foreground="Black" HorizontalAlignment="Left"/>
+                <TextBlock Text="{Binding ZoomLevelText.Value, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 5 0" Width="40" Foreground="Black" HorizontalAlignment="Left"/>
                 <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
                 <TextBlock Text="{Binding LineEndingText.Value, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 5 0" Width="110" Foreground="Black" HorizontalAlignment="Left"/>
                 <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
