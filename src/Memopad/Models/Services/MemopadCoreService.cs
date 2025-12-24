@@ -12,6 +12,7 @@ public interface IMemopadCoreService : IDisposable
     ReactiveProperty<string> FileName { get; }
     ReactiveProperty<string> FileNameWithoutExtension { get; }
 
+    ReactiveProperty<string> Title { get; }
     ReactiveProperty<string> Text { get; }
 
     ReactiveProperty<Encoding?> Encoding { get; }
@@ -41,6 +42,7 @@ public sealed class MemopadCoreService : IMemopadCoreService
     public ReactiveProperty<string> FileName { get; private set; } = new();
     public ReactiveProperty<string> FileNameWithoutExtension { get; private set; } = new();
 
+    public ReactiveProperty<string> Title { get; private set; } = new();
     public ReactiveProperty<string> Text { get; private set; } = new();
     public string PreviousText { get; private set; } = string.Empty;
 
@@ -70,6 +72,18 @@ public sealed class MemopadCoreService : IMemopadCoreService
     {
         Initialize();
 
+        // タイトルを作るためのインナーメソッド
+        string CreateTitle() => $"{(IsDirty.Value ? "*" : "")}{FileNameWithoutExtension.Value} - {MemoPadDefaults.ApplicationName}";
+
+        // テキスト変更フラグが変化するたびにタイトルを更新
+        IsDirty.Subscribe(_ => Title.Value = CreateTitle())
+               .AddTo(ref _disposableCollection);
+
+        // ファイル名が変化するたびにタイトルを更新
+        FileName.Subscribe(_ => Title.Value = CreateTitle())
+                .AddTo(ref _disposableCollection);
+
+        // テキスト内容が変化したら変更フラグを立てる
         Text.Pairwise()
             .Subscribe(pair =>
             {
@@ -79,6 +93,8 @@ public sealed class MemopadCoreService : IMemopadCoreService
                 }
             })
             .AddTo(ref _disposableCollection);
+
+        // 日付挿入要求が来たらテキストに日付を挿入してキャレット位置を更新
         InsertDateTime.Subscribe(value =>
             {
                 if (value == DateTime.MinValue) return;

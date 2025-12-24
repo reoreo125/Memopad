@@ -26,44 +26,43 @@ public class MainWindowViewModel : BindableBase, IDisposable
         _memopadCoreService = memopadCoreService ?? throw new ArgumentNullException(nameof(memopadCoreService));
 
         #region Model -> ViewModel -> View
-        // 保存されていない変更がある状態になった時（＊）やタイトル変更
-        Title = Observable.Merge
-            (
-                MemopadCoreService.IsDirty.Select(_ => string.Empty),
-                MemopadCoreService.FileName
-            )
+
+        Title = MemopadCoreService.Title
             .Where(_ => memopadCoreService.CanNotification)
-            .Select(_ =>
-            {
-                var dirtyMark = MemopadCoreService.IsDirty.Value ? "*" : "";
-                var fileName = MemopadCoreService.FileNameWithoutExtension.Value;
-                return $"{dirtyMark}{fileName} - {MemoPadDefaults.ApplicationName}";
-            })
             .ToBindableReactiveProperty(string.Empty);
+
         CaretIndex = new BindableReactiveProperty<int>(0);
+
         SelectionLength = new BindableReactiveProperty<int>(0);
-        // テキストが変更された時
-        Text = new BindableReactiveProperty<string>();
+
+        Text = new BindableReactiveProperty<string>(string.Empty);
         Text = MemopadCoreService.Text
             .Where(_ => MemopadCoreService.CanNotification)
             .Where(value => Text!.Value != value) // 循環防止
             .ToBindableReactiveProperty(string.Empty);
+
         Row = new BindableReactiveProperty<int>(1);
+
         Column = new BindableReactiveProperty<int>(1);
+
         FontSize = MemopadCoreService.ZoomLevel
             .Where(_ => MemopadCoreService.CanNotification)
             .Select(value => MemoPadDefaults.FontSize * value)
             .ToBindableReactiveProperty(MemoPadDefaults.FontSize);
+
         TextWrapping = MemopadCoreService.IsWordWrap
             .Where(_ => memopadCoreService.CanNotification)
             .Select(value => value ? System.Windows.TextWrapping.Wrap : System.Windows.TextWrapping.NoWrap)
             .ToBindableReactiveProperty(MemoPadDefaults.TextWrapping);
+
         CaretIndex = MemopadCoreService.CaretIndex
             .Where(_ => MemopadCoreService.CanNotification)
             .ToBindableReactiveProperty(0);
+
         SelectionLength = MemopadCoreService.SelectionLength
             .Where(_ => MemopadCoreService.CanNotification)
             .ToBindableReactiveProperty(0);
+
         #endregion
 
         #region View -> ViewModel -> Model
