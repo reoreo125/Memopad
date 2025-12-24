@@ -34,7 +34,7 @@ public class MainWindowViewModel : BindableBase, IDisposable
             {
                 var dirtyMark = MemopadCoreService.IsDirty.Value ? "*" : "";
                 var fileName = MemopadCoreService.FileNameWithoutExtension.Value;
-                return $"{fileName}{dirtyMark} - {MemopadSettings.ApplicationName}";
+                return $"{fileName}{dirtyMark} - {MemoPadDefaults.ApplicationName}";
             })
             .ToBindableReactiveProperty(string.Empty);
 

@@ -6,9 +6,9 @@ namespace Reoreo125.Memopad.ViewModels.Components;
 
 public class MemopadStatusBarViewModel : BindableBase, IDisposable
 {
-    public BindableReactiveProperty<string> PositionText { get; } = new BindableReactiveProperty<string>(MemopadSettings.DefaultPositionText);
-    public BindableReactiveProperty<string> LineEndingText { get; } = new BindableReactiveProperty<string>(CreateLineEndingText(MemopadSettings.DefaultLineEnding));
-    public BindableReactiveProperty<string> EncodingText { get; } = new BindableReactiveProperty<string>(MemopadSettings.DefaultEncodingText);
+    public BindableReactiveProperty<string> PositionText { get; } = new BindableReactiveProperty<string>(MemoPadDefaults.PositionText);
+    public BindableReactiveProperty<string> LineEndingText { get; } = new BindableReactiveProperty<string>(CreateLineEndingText(MemoPadDefaults.LineEnding));
+    public BindableReactiveProperty<string> EncodingText { get; } = new BindableReactiveProperty<string>(MemoPadDefaults.EncodingText);
     protected IMemopadCoreService MemopadCoreService => _memopadCoreService;
     private readonly IMemopadCoreService _memopadCoreService;
 
@@ -32,11 +32,11 @@ public class MemopadStatusBarViewModel : BindableBase, IDisposable
                 int column = MemopadCoreService.Column.Value;
                 return $"{row}行 {column}列";
             })
-            .ToBindableReactiveProperty(MemopadSettings.DefaultPositionText);
+            .ToBindableReactiveProperty(MemoPadDefaults.PositionText);
         LineEndingText = MemopadCoreService.LineEnding
             .Where(_ => MemopadCoreService.CanNotification)
             .Select(value => CreateLineEndingText(value))
-            .ToBindableReactiveProperty(CreateLineEndingText(MemopadSettings.DefaultLineEnding));
+            .ToBindableReactiveProperty(CreateLineEndingText(MemoPadDefaults.LineEnding));
 
         EncodingText = MemopadCoreService.Encoding
             .Where(_ => memopadCoreService.CanNotification)

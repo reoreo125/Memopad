@@ -13,7 +13,16 @@ public interface ITextFileService
 
 public class TextFileService : ITextFileService
 {
-    
+    public MemopadSettings LoadSettings()
+    {
+        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+
+        var settings = new MemopadSettings
+        {
+
+        };
+        return null;
+    }
     public TextFileLoadResult Load(string filePath)
     {
         try

@@ -19,7 +19,6 @@ public interface IMemopadCoreService : IDisposable
     ReactiveProperty<bool> IsDirty { get; }
     ReactiveProperty<int> Row { get; }
     ReactiveProperty<int> Column { get; }
-    FontFamily TextFont { get; }
 
     bool CanNotification { get; }
 
@@ -46,7 +45,6 @@ public sealed class MemopadCoreService : IMemopadCoreService
 
     public ReactiveProperty<Encoding?> Encoding { get; private set; } = new();
     public ReactiveProperty<LineEnding> LineEnding { get; private set; } = new();
-    public FontFamily TextFont { get; set; } = FontFamily.GenericMonospace;
 
     private DisposableBag _disposableCollection = new();
 
@@ -77,14 +75,14 @@ public sealed class MemopadCoreService : IMemopadCoreService
     public void Initialize()
     {
         FilePath.Value = string.Empty;
-        FileName.Value = MemopadSettings.DefaultNewFileName + MemopadSettings.DefaultFileExtension;
-        FileNameWithoutExtension.Value = MemopadSettings.DefaultNewFileName;
+        FileName.Value = MemoPadDefaults.NewFileName + MemoPadDefaults.FileExtension;
+        FileNameWithoutExtension.Value = MemoPadDefaults.NewFileName;
 
         Text.Value = string.Empty;
         PreviousText = string.Empty;
 
         Encoding.Value = null;
-        LineEnding.Value = MemopadSettings.DefaultLineEnding;
+        LineEnding.Value = MemoPadDefaults.LineEnding;
         
         
         IsDirty.Value = false;
@@ -121,8 +119,8 @@ public sealed class MemopadCoreService : IMemopadCoreService
         Encoding.Value = result.Encoding;
         LineEnding.Value = result.LineEnding;
         FilePath.Value = result.FilePath;
-        FileName.Value = string.IsNullOrEmpty(FilePath.Value) ? $"{MemopadSettings.DefaultNewFileName}.txt" : Path.GetFileName(FilePath.Value);
-        FileNameWithoutExtension.Value = string.IsNullOrEmpty(FilePath.Value) ? MemopadSettings.DefaultNewFileName : Path.GetFileNameWithoutExtension(FilePath.Value);
+        FileName.Value = string.IsNullOrEmpty(FilePath.Value) ? $"{MemoPadDefaults.NewFileName}.txt" : Path.GetFileName(FilePath.Value);
+        FileNameWithoutExtension.Value = string.IsNullOrEmpty(FilePath.Value) ? MemoPadDefaults.NewFileName : Path.GetFileNameWithoutExtension(FilePath.Value);
 
         EnableNotification();
         EnableCheckDirty();
@@ -139,12 +137,16 @@ public sealed class MemopadCoreService : IMemopadCoreService
 public record MemopadSettings
 {
     public string LastOpenedFolder { get; set; } = string.Empty;
-
+    public FontFamily TextFont { get; set; } = FontFamily.GenericMonospace;
+}
+public record MemoPadDefaults
+{
     public static string ApplicationName => "Memopad";
-    public static string DefaultNewFileName => "新規テキスト";
-    public static string DefaultFileExtension => ".txt";
-    public static LineEnding DefaultLineEnding => LineEnding.CRLF;
-    public static Encoding DefaultEncoding => Encoding.UTF8;
-    public static string DefaultEncodingText => DefaultEncoding.WebName.ToUpper();
-    public static string DefaultPositionText => "1行 1列";
+    public static string NewFileName => "新規テキスト";
+    public static string FileExtension => ".txt";
+    public static LineEnding LineEnding => LineEnding.CRLF;
+    public static Encoding Encoding => Encoding.UTF8;
+    public static string EncodingText => Encoding.WebName.ToUpper();
+    public static string PositionText => "1行 1列";
+    public static FontFamily TextFont => FontFamily.GenericMonospace;
 }
