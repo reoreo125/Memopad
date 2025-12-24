@@ -12,5 +12,7 @@ public class MemopadMenuViewModel : BindableBase
     [Dependency]
     public IOpenTextFileCommand? OpenTextFileCommand { get; set; }
     [Dependency]
+    public IZoomCommand? ZoomCommand { get; set; }
+    [Dependency]
     public IOpenAboutCommand? OpenAboutCommand { get; set; }
 }

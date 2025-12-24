@@ -33,7 +33,8 @@ public partial class App : PrismApplication
         containerRegistry.Register<IOpenAboutCommand, OpenAboutCommand>();
         containerRegistry.Register<INewTextFileCommand, NewTextFileCommand>();
         containerRegistry.Register<IOpenTextFileCommand, OpenTextFileCommand>();
-        containerRegistry.Register<ICloseAboutCommand, ICloseAboutCommand>();
+        containerRegistry.Register<ICloseAboutCommand, CloseAboutCommand>();
+        containerRegistry.Register<IZoomCommand, ZoomCommand>();
 
         // ViewModels
         containerRegistry.RegisterSingleton<MainWindowViewModel>();

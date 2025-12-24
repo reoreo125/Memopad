@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:commands="clr-namespace:Reoreo125.Memopad.Models.Commands"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
@@ -44,9 +45,18 @@
         </MenuItem>
         <MenuItem Header="表示(_V)">
             <MenuItem Header="ズーム(_Z)">
-                <MenuItem Header="拡大(_I)" InputGestureText="Ctrl+プラス記号"/>
-                <MenuItem Header="縮小(_O)" InputGestureText="Ctrl+マイナス記号"/>
-                <MenuItem Header="規定の倍率に戻す(_R)" InputGestureText="Ctrl+0"/>
+                <MenuItem Header="拡大(_I)"
+                          InputGestureText="Ctrl+プラス記号"
+                          Command="{Binding ZoomCommand}"
+                          CommandParameter="{x:Static commands:ZoomOperation.In}"/>
+                <MenuItem Header="縮小(_O)"
+                          InputGestureText="Ctrl+マイナス記号"
+                          Command="{Binding ZoomCommand}"
+                          CommandParameter="{x:Static commands:ZoomOperation.Out}"/>
+                <MenuItem Header="規定の倍率に戻す(_R)"
+                          InputGestureText="Ctrl+0"
+                          Command="{Binding ZoomCommand}"
+                          CommandParameter="{x:Static commands:ZoomOperation.Reset}"/>
             </MenuItem>
             <MenuItem Header="ステータスバー(_S)" IsCheckable="True" IsChecked="True" />
         </MenuItem>
