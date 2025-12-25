@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using R3;
@@ -11,6 +13,7 @@ public class MainWindowViewModel : BindableBase, IDisposable
     public BindableReactiveProperty<string> Text { get; }
     public BindableReactiveProperty<int> Row { get; }
     public BindableReactiveProperty<int> Column { get; }
+    public BindableReactiveProperty<string> FontFamily { get; }
     public BindableReactiveProperty<double> FontSize { get; }
     public BindableReactiveProperty<TextWrapping> TextWrapping { get; }
     public BindableReactiveProperty<int> CaretIndex { get; }
@@ -41,9 +44,9 @@ public class MainWindowViewModel : BindableBase, IDisposable
             .ToBindableReactiveProperty(string.Empty);
 
         Row = new BindableReactiveProperty<int>(1);
-
         Column = new BindableReactiveProperty<int>(1);
-
+        FontFamily = EditorService.Settings.FontFamilyName
+            .ToBindableReactiveProperty(Defaults.FontFamilyName);
         FontSize = EditorService.Settings.ZoomLevel
             .Select(value => Defaults.FontSize * value)
             .ToBindableReactiveProperty(Defaults.FontSize);

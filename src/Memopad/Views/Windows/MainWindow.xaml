@@ -27,7 +27,7 @@
             <TextBox Name="EditorBox" 
                      AcceptsReturn="True"
                      AcceptsTab="True"
-                     FontFamily="Consolas"
+                     FontFamily="{Binding FontFamily.Value}"
                      FontSize="{Binding FontSize.Value}"
                      Padding="5"
                      TextWrapping="{Binding TextWrapping.Value}"
