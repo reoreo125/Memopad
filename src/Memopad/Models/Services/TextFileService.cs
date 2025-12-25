@@ -7,7 +7,7 @@ namespace Reoreo125.Memopad.Models.Services;
 public interface ITextFileService
 {
     TextFileLoadResult Load(string filePath);
-    TextFileSaveResult Save(IMemopadCoreService memopadCoreService);
+    TextFileSaveResult Save(string filepath, string text, Encoding encoding, LineEnding lineEnding);
     bool Exists(string filePath);
 }
 
@@ -91,25 +91,25 @@ public class TextFileService : ITextFileService
         }
 
     }
-    public TextFileSaveResult Save(IMemopadCoreService memopadCoreService)
+    public TextFileSaveResult Save(string filepath, string text, Encoding encoding, LineEnding lineEnding)
     {
         try
         {
-            using (var writer = new StreamWriter(memopadCoreService.FilePath.Value, false, memopadCoreService.Encoding.Value))
+            using (var writer = new StreamWriter(filepath, false, encoding))
             {
-                var lineEnding = GetStringFromLineEnding(memopadCoreService.LineEnding.Value);
+                var lineEndingString = GetStringFromLineEnding(lineEnding);
 
-                writer.NewLine = lineEnding;
+                writer.NewLine = lineEndingString;
 
                 var sb = new StringBuilder();
-                sb.Append(memopadCoreService.Text.Value);
+                sb.Append(text);
 
                 sb.Replace("\r\n", "\n");
                 sb.Replace("\r", "\n");
 
-                if (lineEnding != "\n")
+                if (lineEndingString != "\n")
                 {
-                    sb.Replace("\n", lineEnding);
+                    sb.Replace("\n", lineEndingString);
                 }
 
                 foreach(var chunk in sb.GetChunks())
@@ -119,14 +119,14 @@ public class TextFileService : ITextFileService
             }
             return new TextFileSaveResult(
                 IsSuccess: true,
-                FilePath: memopadCoreService.FilePath.Value
+                FilePath: filepath
                 );
         }
         catch
         {
             return new TextFileSaveResult(
                 IsSuccess: false,
-                FilePath: memopadCoreService.FilePath.Value
+                FilePath: filepath
                 );
         }
     }

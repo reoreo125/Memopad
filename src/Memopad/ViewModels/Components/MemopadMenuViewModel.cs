@@ -22,6 +22,8 @@ public class MemopadMenuViewModel : BindableBase
     public IToggleWordWrapCommand? ToggleWordWrapCommand { get; set; }
     [Dependency]
     public IInsertDateTimeCommand? InsertDateTimeCommand { get; set; }
+    [Dependency]
+    public ISaveAsTextFileCommand? SaveAsTextFileCommand { get; set; }
 
     public BindableReactiveProperty<bool> ShowStatusBar { get; }
     public BindableReactiveProperty<bool> IsWordWrap { get; }

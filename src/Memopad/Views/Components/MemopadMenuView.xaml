@@ -21,6 +21,7 @@
             <MenuItem Header="上書き保存(_S)"
                       InputGestureText="Ctrl+S" />
             <MenuItem Header="名前を付けて保存(_A)..."
+                      Command="{Binding SaveAsTextFileCommand}"
                       InputGestureText="Ctrl+Shift+S" />
             <Separator />
             <MenuItem Header="ページ設定(_U)..." />

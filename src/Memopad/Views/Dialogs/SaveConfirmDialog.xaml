@@ -1,0 +1,22 @@
+<UserControl x:Class="Reoreo125.Memopad.Views.Dialogs.SaveConfirmDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Reoreo125.Memopad.Views.Dialogs"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <DockPanel>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="保存する(_S)" Command="{Binding SaveCommand}" Width="85" Margin="5"/>
+                <Button Content="保存しない(_N)" Command="{Binding DontSaveCommand}" Width="85" Margin="5"/>
+                <Button Content="キャンセル" Command="{Binding CancelCommand}" Width="85" Margin="5"/>
+            </StackPanel>
+        </StatusBar>
+        <Grid Margin="10">
+            <TextBlock Text="{Binding Message}" Margin="0,0,0,20" FontSize="14"/>
+        </Grid>
+    </DockPanel>
+
+</UserControl>

@@ -4,7 +4,9 @@ using R3;
 using Reoreo125.Memopad.Models.Commands;
 using Reoreo125.Memopad.Models.Services;
 using Reoreo125.Memopad.ViewModels.Components;
+using Reoreo125.Memopad.ViewModels.Dialogs;
 using Reoreo125.Memopad.ViewModels.Windows;
+using Reoreo125.Memopad.Views.Dialogs;
 using Reoreo125.Memopad.Views.Windows;
 
 namespace Reoreo125.Memopad;
@@ -27,20 +29,24 @@ public partial class App : PrismApplication
 
         // Commands
         containerRegistry.Register<IApplicationExitCommand, ApplicationExitCommand>();
-        containerRegistry.Register<IOpenAboutCommand, OpenAboutCommand>();
-        containerRegistry.Register<INewTextFileCommand, NewTextFileCommand>();
-        containerRegistry.Register<IOpenTextFileCommand, OpenTextFileCommand>();
         containerRegistry.Register<ICloseAboutCommand, CloseAboutCommand>();
-        containerRegistry.Register<IZoomCommand, ZoomCommand>();
+        containerRegistry.Register<IInsertDateTimeCommand, InsertDateTimeCommand>();
+        containerRegistry.Register<INewTextFileCommand, NewTextFileCommand>();
+        containerRegistry.Register<IOpenAboutCommand, OpenAboutCommand>();
+        containerRegistry.Register<IOpenTextFileCommand, OpenTextFileCommand>();
+        containerRegistry.Register<ISaveAsTextFileCommand, SaveAsTextFileCommand>();
         containerRegistry.Register<IToggleStatusBarCommand, ToggleStatusBarCommand>();
         containerRegistry.Register<IToggleWordWrapCommand, ToggleWordWrapCommand>();
-        containerRegistry.Register<IInsertDateTimeCommand, InsertDateTimeCommand>();
+        containerRegistry.Register<IZoomCommand, ZoomCommand>();
 
         // ViewModels
         containerRegistry.RegisterSingleton<MainWindowViewModel>();
         containerRegistry.Register<AboutWindowViewModel>();
         containerRegistry.RegisterSingleton<MemopadMenuViewModel>();
         containerRegistry.RegisterSingleton<MemopadStatusBarViewModel>();
+
+        // Dialogs
+        containerRegistry.RegisterDialog<SaveConfirmDialog, SaveConfirmDialogViewModel>();
     }
 
     protected override Window CreateShell() => Container.Resolve<MainWindow>();

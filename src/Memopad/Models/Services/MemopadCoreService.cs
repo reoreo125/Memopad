@@ -34,6 +34,8 @@ public interface IMemopadCoreService : IDisposable
     void Initialize();
     void NofityAllChanges();
     void LoadText(string filePath);
+    void SaveText();
+    void SaveText(string filePath);
 }
 
 public sealed class MemopadCoreService : IMemopadCoreService
@@ -76,11 +78,19 @@ public sealed class MemopadCoreService : IMemopadCoreService
         string CreateTitle() => $"{(IsDirty.Value ? "*" : "")}{FileNameWithoutExtension.Value} - {MemoPadDefaults.ApplicationName}";
 
         // テキスト変更フラグが変化するたびにタイトルを更新
-        IsDirty.Subscribe(_ => Title.Value = CreateTitle())
+        IsDirty.Subscribe(_ =>
+            {
+                Title.Value = CreateTitle();
+                Title.ForceNotify(); // なぜか変化が伝わらないことがあるので強制通知
+            })
                .AddTo(ref _disposableCollection);
 
         // ファイル名が変化するたびにタイトルを更新
-        FileName.Subscribe(_ => Title.Value = CreateTitle())
+        FileName.Subscribe(_ =>
+            {
+                Title.Value = CreateTitle();
+                Title.ForceNotify();
+            })
                 .AddTo(ref _disposableCollection);
 
         // テキスト内容が変化したら変更フラグを立てる
@@ -148,6 +158,7 @@ public sealed class MemopadCoreService : IMemopadCoreService
         Encoding.ForceNotify();
         LineEnding.ForceNotify();
         ShowStatusBar.ForceNotify();
+        IsDirty.ForceNotify();
     }
     public void LoadText(string filePath)
     {
@@ -166,7 +177,8 @@ public sealed class MemopadCoreService : IMemopadCoreService
         Initialize();
         Text.Value = result.Content;
         Encoding.Value = result.Encoding;
-        LineEnding.Value = result.LineEnding;
+        // LineEnding が不明な場合はデフォルト値を使う
+        LineEnding.Value = (result.LineEnding is Services.LineEnding.Unknown) ? MemoPadDefaults.LineEnding : result.LineEnding;
         FilePath.Value = result.FilePath;
         FileName.Value = string.IsNullOrEmpty(FilePath.Value) ? $"{MemoPadDefaults.NewFileName}.txt" : Path.GetFileName(FilePath.Value);
         FileNameWithoutExtension.Value = string.IsNullOrEmpty(FilePath.Value) ? MemoPadDefaults.NewFileName : Path.GetFileNameWithoutExtension(FilePath.Value);
@@ -176,10 +188,13 @@ public sealed class MemopadCoreService : IMemopadCoreService
 
         NofityAllChanges();
     }
+    public void SaveText() => SaveText(FilePath.Value);
     public void SaveText(string filePath)
     {
-        if (TextFileService is null) throw new Exception("TextFileService");
-        var result = TextFileService.Save(this);
+        if (TextFileService is null) throw new Exception(nameof(TextFileService));
+        if (FilePath is null) return;
+
+        var result = TextFileService.Save(filePath, Text.Value, Encoding.Value, LineEnding.Value);
 
         if (!result.IsSuccess)
         {
@@ -187,7 +202,19 @@ public sealed class MemopadCoreService : IMemopadCoreService
             return;
         }
 
+        DisableNotification();
+        DisableCheckDirty();
+
+        FilePath.Value = result.FilePath;
+        FileName.Value = Path.GetFileName(FilePath.Value);
+        FileNameWithoutExtension.Value = Path.GetFileNameWithoutExtension(FilePath.Value);
+
         IsDirty.Value = false;
+
+        EnableNotification();
+        EnableCheckDirty();
+
+        NofityAllChanges();
     }
     public void Dispose()
     {
