@@ -5,13 +5,16 @@ using Reoreo125.Memopad.Views.Windows;
 
 namespace Reoreo125.Memopad.Models.Commands;
 
-public interface ISaveAsTextFileCommand : ICommand { }
-public class SaveAsTextFileCommand : CommandBase, ISaveAsTextFileCommand
+public interface ISaveTextFileCommand : ICommand { }
+public class SaveTextFileCommand : CommandBase, ISaveTextFileCommand
 {
     [Dependency]
     public IMemopadCoreService? MemopadCoreService { get; set; }
     [Dependency]
     public IMemopadDialogService? MemopadDialogService { get; set; }
+    [Dependency]
+    public ISaveAsTextFileCommand? SaveAsTextFileCommand { get; set; }
+
     public override bool CanExecute(object? parameter) => true;
 
     public override void Execute(object? parameter)
@@ -19,9 +22,11 @@ public class SaveAsTextFileCommand : CommandBase, ISaveAsTextFileCommand
         if (MemopadCoreService is null) throw new Exception(nameof(MemopadCoreService));
         if (MemopadDialogService is null) throw new Exception(nameof(MemopadDialogService));
 
-        var saveFilePath = MemopadDialogService.ShowSaveFile();
-        if (string.IsNullOrEmpty(saveFilePath)) return;
+        if(string.IsNullOrEmpty(MemopadCoreService.FilePath.Value))
+        {
+            SaveAsTextFileCommand!.Execute(null);
+        }
 
-        MemopadCoreService.SaveText(saveFilePath);
+        MemopadCoreService.SaveText(MemopadCoreService.FilePath.Value);
     }
 }

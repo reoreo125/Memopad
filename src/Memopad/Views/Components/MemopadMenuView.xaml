@@ -19,10 +19,11 @@
                       InputGestureText="Ctrl+O"
                       Command="{Binding OpenTextFileCommand}" />
             <MenuItem Header="上書き保存(_S)"
-                      InputGestureText="Ctrl+S" />
+                      InputGestureText="Ctrl+S"
+                      Command="{Binding SaveTextFileCommand}" />
             <MenuItem Header="名前を付けて保存(_A)..."
-                      Command="{Binding SaveAsTextFileCommand}"
-                      InputGestureText="Ctrl+Shift+S" />
+                      InputGestureText="Ctrl+Shift+S"
+                      Command="{Binding SaveAsTextFileCommand}" />
             <Separator />
             <MenuItem Header="ページ設定(_U)..." />
             <MenuItem Header="印刷(_P)..."

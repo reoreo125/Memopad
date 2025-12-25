@@ -23,6 +23,8 @@ public class MemopadMenuViewModel : BindableBase
     [Dependency]
     public IInsertDateTimeCommand? InsertDateTimeCommand { get; set; }
     [Dependency]
+    public ISaveTextFileCommand? SaveTextFileCommand { get; set; }
+    [Dependency]
     public ISaveAsTextFileCommand? SaveAsTextFileCommand { get; set; }
 
     public BindableReactiveProperty<bool> ShowStatusBar { get; }
