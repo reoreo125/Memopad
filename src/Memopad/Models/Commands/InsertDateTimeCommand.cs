@@ -1,6 +1,5 @@
 using System.Windows.Input;
 using R3;
-using Reoreo125.Memopad.Models.Services;
 
 namespace Reoreo125.Memopad.Models.Commands;
 

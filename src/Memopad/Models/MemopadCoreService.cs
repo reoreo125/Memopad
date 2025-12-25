@@ -1,10 +1,10 @@
-using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows;
 using R3;
+using Reoreo125.Memopad.Models.TextProcessing;
 
-namespace Reoreo125.Memopad.Models.Services;
+namespace Reoreo125.Memopad.Models;
 
 public interface IMemopadCoreService : IDisposable
 {
@@ -75,7 +75,7 @@ public sealed class MemopadCoreService : IMemopadCoreService
         Initialize();
 
         // タイトルを作るためのインナーメソッド
-        string CreateTitle() => $"{(IsDirty.Value ? "*" : "")}{FileNameWithoutExtension.Value} - {MemoPadDefaults.ApplicationName}";
+        string CreateTitle() => $"{(IsDirty.Value ? "*" : "")}{FileNameWithoutExtension.Value} - {MemopadDefaults.ApplicationName}";
 
         // テキスト変更フラグが変化するたびにタイトルを更新
         IsDirty.Subscribe(_ =>
@@ -132,20 +132,20 @@ public sealed class MemopadCoreService : IMemopadCoreService
     public void Initialize()
     {
         FilePath.Value = string.Empty;
-        FileName.Value = MemoPadDefaults.NewFileName + MemoPadDefaults.FileExtension;
-        FileNameWithoutExtension.Value = MemoPadDefaults.NewFileName;
+        FileName.Value = MemopadDefaults.NewFileName + MemopadDefaults.FileExtension;
+        FileNameWithoutExtension.Value = MemopadDefaults.NewFileName;
 
         Text.Value = string.Empty;
         PreviousText = string.Empty;
 
-        Encoding.Value = MemoPadDefaults.Encoding;
-        LineEnding.Value = MemoPadDefaults.LineEnding;
+        Encoding.Value = MemopadDefaults.Encoding;
+        LineEnding.Value = MemopadDefaults.LineEnding;
         
         
         IsDirty.Value = false;
         Row.Value = 1;
         Column.Value = 1;
-        ZoomLevel.Value = MemoPadDefaults.ZoomLevel;
+        ZoomLevel.Value = MemopadDefaults.ZoomLevel;
     }
     public void NofityAllChanges()
     {
@@ -178,10 +178,10 @@ public sealed class MemopadCoreService : IMemopadCoreService
         Text.Value = result.Content;
         Encoding.Value = result.Encoding;
         // LineEnding が不明な場合はデフォルト値を使う
-        LineEnding.Value = (result.LineEnding is Services.LineEnding.Unknown) ? MemoPadDefaults.LineEnding : result.LineEnding;
+        LineEnding.Value = (result.LineEnding is TextProcessing.LineEnding.Unknown) ? MemopadDefaults.LineEnding : result.LineEnding;
         FilePath.Value = result.FilePath;
-        FileName.Value = string.IsNullOrEmpty(FilePath.Value) ? $"{MemoPadDefaults.NewFileName}.txt" : Path.GetFileName(FilePath.Value);
-        FileNameWithoutExtension.Value = string.IsNullOrEmpty(FilePath.Value) ? MemoPadDefaults.NewFileName : Path.GetFileNameWithoutExtension(FilePath.Value);
+        FileName.Value = string.IsNullOrEmpty(FilePath.Value) ? $"{MemopadDefaults.NewFileName}.txt" : Path.GetFileName(FilePath.Value);
+        FileNameWithoutExtension.Value = string.IsNullOrEmpty(FilePath.Value) ? MemopadDefaults.NewFileName : Path.GetFileNameWithoutExtension(FilePath.Value);
 
         EnableNotification();
         EnableCheckDirty();
@@ -220,10 +220,4 @@ public sealed class MemopadCoreService : IMemopadCoreService
     {
         _disposableCollection.Dispose();
     }
-}
-
-public record MemopadSettings
-{
-    public string LastOpenedFolder { get; set; } = string.Empty;
-    public FontFamily TextFont { get; set; } = FontFamily.GenericMonospace;
 }

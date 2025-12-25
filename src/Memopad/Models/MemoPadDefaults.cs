@@ -1,11 +1,11 @@
 using System.Drawing;
 using System.Text;
 using System.Windows;
-using Reoreo125.Memopad.Models.Services;
+using Reoreo125.Memopad.Models.TextProcessing;
 
 namespace Reoreo125.Memopad.Models;
 
-public record MemoPadDefaults
+public record MemopadDefaults
 {
     public static string ApplicationName => "Memopad";
     public static string NewFileName => "無題";

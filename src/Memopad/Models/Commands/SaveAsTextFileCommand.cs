@@ -1,7 +1,6 @@
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
-using Reoreo125.Memopad.Models.Services;
 using Reoreo125.Memopad.Views.Windows;
 
 namespace Reoreo125.Memopad.Models.Commands;

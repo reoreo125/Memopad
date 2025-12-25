@@ -2,7 +2,7 @@ using System.Text;
 using System.Windows;
 using R3;
 using Reoreo125.Memopad.Models;
-using Reoreo125.Memopad.Models.Services;
+using Reoreo125.Memopad.Models.TextProcessing;
 
 namespace Reoreo125.Memopad.ViewModels.Components;
 
@@ -36,15 +36,15 @@ public class MemopadStatusBarViewModel : BindableBase, IDisposable
             )
             .Where(_ => MemopadCoreService.CanNotification)
             .Select(_ => $"{MemopadCoreService.Row.Value}行、{MemopadCoreService.Column.Value}列")
-            .ToBindableReactiveProperty(MemoPadDefaults.PositionText);
+            .ToBindableReactiveProperty(MemopadDefaults.PositionText);
         ZoomLevelText = MemopadCoreService.ZoomLevel
             .Where(_ => MemopadCoreService.CanNotification)
             .Select(value => $"{(int)(value * 100)}%")
-            .ToBindableReactiveProperty(MemoPadDefaults.ZoomLevelText);
+            .ToBindableReactiveProperty(MemopadDefaults.ZoomLevelText);
         LineEndingText = MemopadCoreService.LineEnding
             .Where(_ => MemopadCoreService.CanNotification)
             .Select(value => CreateLineEndingText(value))
-            .ToBindableReactiveProperty(CreateLineEndingText(MemoPadDefaults.LineEnding));
+            .ToBindableReactiveProperty(CreateLineEndingText(MemopadDefaults.LineEnding));
         EncodingText = MemopadCoreService.Encoding
             .Where(_ => memopadCoreService.CanNotification)
             .Select((encoding) => encoding ?? Encoding.UTF8)

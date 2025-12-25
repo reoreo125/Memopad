@@ -2,7 +2,6 @@ using System.Windows;
 using System.Windows.Controls;
 using R3;
 using Reoreo125.Memopad.Models;
-using Reoreo125.Memopad.Models.Services;
 
 namespace Reoreo125.Memopad.ViewModels.Windows;
 
@@ -48,13 +47,13 @@ public class MainWindowViewModel : BindableBase, IDisposable
 
         FontSize = MemopadCoreService.ZoomLevel
             .Where(_ => MemopadCoreService.CanNotification)
-            .Select(value => MemoPadDefaults.FontSize * value)
-            .ToBindableReactiveProperty(MemoPadDefaults.FontSize);
+            .Select(value => MemopadDefaults.FontSize * value)
+            .ToBindableReactiveProperty(MemopadDefaults.FontSize);
 
         TextWrapping = MemopadCoreService.IsWordWrap
             .Where(_ => memopadCoreService.CanNotification)
             .Select(value => value ? System.Windows.TextWrapping.Wrap : System.Windows.TextWrapping.NoWrap)
-            .ToBindableReactiveProperty(MemoPadDefaults.TextWrapping);
+            .ToBindableReactiveProperty(MemopadDefaults.TextWrapping);
 
         CaretIndex = MemopadCoreService.CaretIndex
             .Where(_ => MemopadCoreService.CanNotification)
@@ -69,7 +68,7 @@ public class MainWindowViewModel : BindableBase, IDisposable
         #region View -> ViewModel -> Model
         // TextBoxの内容変更 
         Text.Where(value => value is not null)
-            .Debounce(TimeSpan.FromMilliseconds(MemoPadDefaults.TextBoxDebounce))
+            .Debounce(TimeSpan.FromMilliseconds(MemopadDefaults.TextBoxDebounce))
             .Subscribe(value => MemopadCoreService.Text.Value = value)
             .AddTo(ref _disposableCollection);
         // TextBoxからの行変更

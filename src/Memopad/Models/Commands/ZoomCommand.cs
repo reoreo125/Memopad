@@ -1,5 +1,4 @@
 using System.Windows.Input;
-using Reoreo125.Memopad.Models.Services;
 
 namespace Reoreo125.Memopad.Models.Commands;
 
@@ -22,13 +21,13 @@ public class ZoomCommand : CommandBase, IZoomCommand
         switch((ZoomOperation)parameter)
         {
             case ZoomOperation.In:
-                MemopadCoreService.ZoomLevel.Value = Math.Min(MemopadCoreService.ZoomLevel.Value + MemoPadDefaults.ZoomStep, MemoPadDefaults.ZoomMax);
+                MemopadCoreService.ZoomLevel.Value = Math.Min(MemopadCoreService.ZoomLevel.Value + MemopadDefaults.ZoomStep, MemopadDefaults.ZoomMax);
                 break;
             case ZoomOperation.Out:
-                MemopadCoreService.ZoomLevel.Value = Math.Max(MemopadCoreService.ZoomLevel.Value - MemoPadDefaults.ZoomStep, MemoPadDefaults.ZoomMin);
+                MemopadCoreService.ZoomLevel.Value = Math.Max(MemopadCoreService.ZoomLevel.Value - MemopadDefaults.ZoomStep, MemopadDefaults.ZoomMin);
                 break;
             case ZoomOperation.Reset:
-                MemopadCoreService.ZoomLevel.Value = MemoPadDefaults.ZoomLevel;
+                MemopadCoreService.ZoomLevel.Value = MemopadDefaults.ZoomLevel;
                 break;
             default:
                 break;

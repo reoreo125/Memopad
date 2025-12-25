@@ -2,7 +2,7 @@ using System.IO;
 using System.Text;
 using UtfUnknown;
 
-namespace Reoreo125.Memopad.Models.Services;
+namespace Reoreo125.Memopad.Models.TextProcessing;
 
 public interface ITextFileService
 {

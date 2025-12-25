@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Input;
-using Reoreo125.Memopad.Models.Services;
 
 namespace Reoreo125.Memopad.Models.Commands;
 
@@ -18,6 +17,7 @@ public class NewTextFileCommand : CommandBase, INewTextFileCommand
 
         if(MemopadCoreService.IsDirty.Value)
         {
+            /*
             var result = MessageBox.Show(
                 "新しいファイルを作成します。現在の内容は保存されません。",
                 "確認",
@@ -25,6 +25,7 @@ public class NewTextFileCommand : CommandBase, INewTextFileCommand
                 MessageBoxImage.Warning);
 
             if (result != MessageBoxResult.OK) return;
+            */
         }
         
 
