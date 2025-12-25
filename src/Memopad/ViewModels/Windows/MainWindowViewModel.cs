@@ -16,19 +16,19 @@ public class MainWindowViewModel : BindableBase, IDisposable
     public BindableReactiveProperty<int> CaretIndex { get; }
     public BindableReactiveProperty<int> SelectionLength { get; }
 
-    protected ICoreService MemopadCoreService => _memopadCoreService;
-    private readonly ICoreService _memopadCoreService;
+    protected IEditorService EditorService => _editorService;
+    private readonly IEditorService _editorService;
     private DisposableBag _disposableCollection = new();
 
 
-    public MainWindowViewModel(ICoreService memopadCoreService)
+    public MainWindowViewModel(IEditorService editorService)
     {
-        _memopadCoreService = memopadCoreService ?? throw new ArgumentNullException(nameof(memopadCoreService));
+        _editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
 
         #region Model -> ViewModel -> View
 
-        Title = MemopadCoreService.Title
-            .Where(_ => memopadCoreService.CanNotification)
+        Title = EditorService.Title
+            .Where(_ => EditorService.CanNotification)
             .ToBindableReactiveProperty(string.Empty);
 
         CaretIndex = new BindableReactiveProperty<int>(0);
@@ -36,8 +36,8 @@ public class MainWindowViewModel : BindableBase, IDisposable
         SelectionLength = new BindableReactiveProperty<int>(0);
 
         Text = new BindableReactiveProperty<string>(string.Empty);
-        Text = MemopadCoreService.Text
-            .Where(_ => MemopadCoreService.CanNotification)
+        Text = EditorService.Text
+            .Where(_ => EditorService.CanNotification)
             .Where(value => Text!.Value != value) // 循環防止
             .ToBindableReactiveProperty(string.Empty);
 
@@ -45,22 +45,22 @@ public class MainWindowViewModel : BindableBase, IDisposable
 
         Column = new BindableReactiveProperty<int>(1);
 
-        FontSize = MemopadCoreService.Settings.ZoomLevel
-            .Where(_ => MemopadCoreService.CanNotification)
+        FontSize = EditorService.Settings.ZoomLevel
+            .Where(_ => EditorService.CanNotification)
             .Select(value => Defaults.FontSize * value)
             .ToBindableReactiveProperty(Defaults.FontSize);
 
-        TextWrapping = MemopadCoreService.Settings.IsWordWrap
-            .Where(_ => memopadCoreService.CanNotification)
+        TextWrapping = EditorService.Settings.IsWordWrap
+            .Where(_ => EditorService.CanNotification)
             .Select(value => value ? System.Windows.TextWrapping.Wrap : System.Windows.TextWrapping.NoWrap)
             .ToBindableReactiveProperty(Defaults.TextWrapping);
 
-        CaretIndex = MemopadCoreService.CaretIndex
-            .Where(_ => MemopadCoreService.CanNotification)
+        CaretIndex = EditorService.CaretIndex
+            .Where(_ => EditorService.CanNotification)
             .ToBindableReactiveProperty(0);
 
-        SelectionLength = MemopadCoreService.SelectionLength
-            .Where(_ => MemopadCoreService.CanNotification)
+        SelectionLength = EditorService.SelectionLength
+            .Where(_ => EditorService.CanNotification)
             .ToBindableReactiveProperty(0);
 
         #endregion
@@ -69,19 +69,19 @@ public class MainWindowViewModel : BindableBase, IDisposable
         // TextBoxの内容変更 
         Text.Where(value => value is not null)
             .Debounce(TimeSpan.FromMilliseconds(Defaults.TextBoxDebounce))
-            .Subscribe(value => MemopadCoreService.Text.Value = value)
+            .Subscribe(value => EditorService.Text.Value = value)
             .AddTo(ref _disposableCollection);
         // TextBoxからの行変更
         Row.Where(value => 0 < value)
-            .Subscribe(value => MemopadCoreService.Row.Value = value)
+            .Subscribe(value => EditorService.Row.Value = value)
             .AddTo(ref _disposableCollection);
         // TextBoxからの列変更
         Column.Where(value => 0 < value)
-              .Subscribe(value => MemopadCoreService.Column.Value = value)
+              .Subscribe(value => EditorService.Column.Value = value)
               .AddTo(ref _disposableCollection);
-        CaretIndex.Subscribe(value => MemopadCoreService.CaretIndex.Value = value)
+        CaretIndex.Subscribe(value => EditorService.CaretIndex.Value = value)
             .AddTo(ref _disposableCollection);
-        SelectionLength.Subscribe(value => MemopadCoreService.SelectionLength.Value = value)
+        SelectionLength.Subscribe(value => EditorService.SelectionLength.Value = value)
             .AddTo(ref _disposableCollection);
         #endregion
     }

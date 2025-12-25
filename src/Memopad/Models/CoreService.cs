@@ -6,7 +6,7 @@ using Reoreo125.Memopad.Models.TextProcessing;
 
 namespace Reoreo125.Memopad.Models;
 
-public interface ICoreService : IDisposable
+public interface IEditorService : IDisposable
 {
     public ReactiveProperty<string> FilePath { get; }
     public ReactiveProperty<string> FileName { get; }
@@ -38,7 +38,7 @@ public interface ICoreService : IDisposable
     public void SaveText(string filePath);
 }
 
-public sealed class CoreService : ICoreService
+public sealed class EditorService : IEditorService
 {
     public ReactiveProperty<string> FilePath { get; } = new();
     public ReactiveProperty<string> FileName { get; } = new();
@@ -72,7 +72,7 @@ public sealed class CoreService : ICoreService
     private ISettingsService MemopadSettingsService { get; }
     private ITextFileService? TextFileService { get; }
 
-    public CoreService(ISettingsService settingsService, ITextFileService textFileService)
+    public EditorService(ISettingsService settingsService, ITextFileService textFileService)
     {
         MemopadSettingsService = settingsService;
         TextFileService = textFileService;

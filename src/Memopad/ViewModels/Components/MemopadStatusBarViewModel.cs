@@ -14,48 +14,48 @@ public class MemopadStatusBarViewModel : BindableBase, IDisposable
     public BindableReactiveProperty<string> LineEndingText { get; }
     public BindableReactiveProperty<string> EncodingText { get; }
 
-    protected ICoreService MemopadCoreService => _memopadCoreService;
-    private readonly ICoreService _memopadCoreService;
+    protected IEditorService EditorService => _editorService;
+    private readonly IEditorService _editorService;
 
     private DisposableBag _disposableCollection = new();
 
-    public MemopadStatusBarViewModel(ICoreService memopadCoreService)
+    public MemopadStatusBarViewModel(IEditorService editorService)
     {
-        _memopadCoreService = memopadCoreService ?? throw new ArgumentNullException(nameof(memopadCoreService));
+        _editorService = editorService ?? throw new ArgumentNullException(nameof(EditorService));
 
         #region Model -> ViewModel -> View
 
-        ShowStatusBar = MemopadCoreService.Settings.ShowStatusBar
-            .Where(_ => memopadCoreService.CanNotification)
+        ShowStatusBar = EditorService.Settings.ShowStatusBar
+            .Where(_ => EditorService.CanNotification)
             .Select(value => value ? Visibility.Visible : Visibility.Collapsed)
             .ToBindableReactiveProperty(Visibility.Visible);
         PositionText = Observable.Merge
             (
-                MemopadCoreService.Row.Select(_ => string.Empty),
-                MemopadCoreService.Column.Select(_ => string.Empty)
+                EditorService.Row.Select(_ => string.Empty),
+                EditorService.Column.Select(_ => string.Empty)
             )
-            .Where(_ => MemopadCoreService.CanNotification)
-            .Select(_ => $"{MemopadCoreService.Row.Value}行、{MemopadCoreService.Column.Value}列")
+            .Where(_ => EditorService.CanNotification)
+            .Select(_ => $"{EditorService.Row.Value}行、{EditorService.Column.Value}列")
             .ToBindableReactiveProperty(Defaults.PositionText);
-        ZoomLevelText = MemopadCoreService.Settings.ZoomLevel
-            .Where(_ => MemopadCoreService.CanNotification)
+        ZoomLevelText = EditorService.Settings.ZoomLevel
+            .Where(_ => EditorService.CanNotification)
             .Select(value => $"{(int)(value * 100)}%")
             .ToBindableReactiveProperty(Defaults.ZoomLevelText);
-        LineEndingText = MemopadCoreService.LineEnding
-            .Where(_ => MemopadCoreService.CanNotification)
+        LineEndingText = EditorService.LineEnding
+            .Where(_ => EditorService.CanNotification)
             .Select(value => CreateLineEndingText(value))
             .ToBindableReactiveProperty(CreateLineEndingText(Defaults.LineEnding));
         EncodingText = Observable.Merge
             (
-                MemopadCoreService.Encoding,
-                MemopadCoreService.HasBom.Select(_ => MemopadCoreService.Encoding.Value)
+                EditorService.Encoding,
+                EditorService.HasBom.Select(_ => EditorService.Encoding.Value)
             )
-            .Where(_ => memopadCoreService.CanNotification)
+            .Where(_ => EditorService.CanNotification)
             .Select(encoding => encoding ?? Encoding.UTF8)
             .Select(encoding =>
             {
                 var encodingText = encoding.WebName.ToUpper();
-                var bomText = MemopadCoreService.HasBom.Value ? "(BOM 付き)" : string.Empty;
+                var bomText = EditorService.HasBom.Value ? "(BOM 付き)" : string.Empty;
                 return $"{encodingText} {bomText}";
             })
             .ToBindableReactiveProperty(string.Empty);

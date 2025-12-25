@@ -9,13 +9,13 @@ public interface IToggleWordWrapCommand : ICommand
 public class ToggleWordWrapCommand : CommandBase, IToggleWordWrapCommand
 {
     [Dependency]
-    public ICoreService? MemopadCoreService { get; set; }
+    public IEditorService? EditorService { get; set; }
     public override bool CanExecute(object? parameter) => true;
 
     public override void Execute(object? parameter)
     {
-        if (MemopadCoreService is null) throw new Exception("MemopadCoreService");
+        if (EditorService is null) throw new Exception(nameof(EditorService));
 
-        MemopadCoreService.Settings.IsWordWrap.Value = !MemopadCoreService.Settings.IsWordWrap.Value;
+        EditorService.Settings.IsWordWrap.Value = !EditorService.Settings.IsWordWrap.Value;
     }
 }

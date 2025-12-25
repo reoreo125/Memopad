@@ -9,9 +9,9 @@ public interface ISaveTextFileCommand : ICommand { }
 public class SaveTextFileCommand : CommandBase, ISaveTextFileCommand
 {
     [Dependency]
-    public ICoreService? MemopadCoreService { get; set; }
+    public IEditorService? EditorService { get; set; }
     [Dependency]
-    public IDialogService? MemopadDialogService { get; set; }
+    public IDialogService? DialogService { get; set; }
     [Dependency]
     public ISaveAsTextFileCommand? SaveAsTextFileCommand { get; set; }
 
@@ -19,16 +19,16 @@ public class SaveTextFileCommand : CommandBase, ISaveTextFileCommand
 
     public override void Execute(object? parameter)
     {
-        if (MemopadCoreService is null) throw new Exception(nameof(MemopadCoreService));
-        if (MemopadDialogService is null) throw new Exception(nameof(MemopadDialogService));
+        if (EditorService is null) throw new Exception(nameof(EditorService));
+        if (DialogService is null) throw new Exception(nameof(DialogService));
         if (SaveAsTextFileCommand is null) throw new Exception(nameof(SaveAsTextFileCommand));
 
-        if (string.IsNullOrEmpty(MemopadCoreService.FilePath.Value))
+        if (string.IsNullOrEmpty(EditorService.FilePath.Value))
         {
             SaveAsTextFileCommand.Execute(null);
             return;
         }
 
-        MemopadCoreService.SaveText(MemopadCoreService.FilePath.Value);
+        EditorService.SaveText(EditorService.FilePath.Value);
     }
 }

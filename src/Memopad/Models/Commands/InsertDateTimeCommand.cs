@@ -10,14 +10,14 @@ public interface IInsertDateTimeCommand : ICommand
 public class InsertDateTimeCommand : CommandBase, IInsertDateTimeCommand
 {
     [Dependency]
-    public ICoreService? MemopadCoreService { get; set; }
+    public IEditorService? EditorService { get; set; }
 
     public override bool CanExecute(object? parameter) => true;
 
     public override void Execute(object? parameter)
     {
-        if(MemopadCoreService is null) throw new Exception("MemopadCoreService");
+        if(EditorService is null) throw new Exception(nameof(EditorService));
 
-        MemopadCoreService.InsertDateTime.OnNext(DateTime.Now);
+        EditorService.InsertDateTime.OnNext(DateTime.Now);
     }
 }

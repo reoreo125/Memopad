@@ -32,7 +32,7 @@ public partial class App : PrismApplication
 
         // Services
         containerRegistry.RegisterSingleton<ISettingsService, SettingsService>();
-        containerRegistry.RegisterSingleton<ICoreService, CoreService>();
+        containerRegistry.RegisterSingleton<IEditorService, EditorService>();
         containerRegistry.RegisterSingleton<ITextFileService, TextFileService>();
         containerRegistry.RegisterSingleton<IHistoricalService, HistoricalService>();
         containerRegistry.RegisterSingleton<IDialogService, DialogService>();

@@ -6,7 +6,8 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
 {
     public class SaveConfirmDialogViewModel : BindableBase, IDialogAware
     {
-        public string? Message { get; private set; }
+        public string? Title { get; set; }
+        public string? Message { get; set; }
 
         public DialogCloseListener RequestClose { get; }
 
@@ -15,7 +16,11 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
         public DelegateCommand DontSaveCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.No)));
         public DelegateCommand CancelCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
 
-        public void OnDialogOpened(IDialogParameters parameters) => Message = parameters.GetValue<string>("message");
+        public void OnDialogOpened(IDialogParameters parameters)
+        {
+            Title = parameters.GetValue<string>("title");
+            Message = parameters.GetValue<string>("message");
+        }
         public bool CanCloseDialog() => true;
         public void OnDialogClosed() { }
     }

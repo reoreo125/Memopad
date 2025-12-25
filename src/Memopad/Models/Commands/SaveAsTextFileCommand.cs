@@ -9,20 +9,20 @@ public interface ISaveAsTextFileCommand : ICommand { }
 public class SaveAsTextFileCommand : CommandBase, ISaveAsTextFileCommand
 {
     [Dependency]
-    public ICoreService? MemopadCoreService { get; set; }
+    public IEditorService? EditorService { get; set; }
     [Dependency]
-    public IDialogService? MemopadDialogService { get; set; }
+    public IDialogService? DialogService { get; set; }
 
     public override bool CanExecute(object? parameter) => true;
 
     public override void Execute(object? parameter)
     {
-        if (MemopadCoreService is null) throw new Exception(nameof(MemopadCoreService));
-        if (MemopadDialogService is null) throw new Exception(nameof(MemopadDialogService));
+        if (EditorService is null) throw new Exception(nameof(EditorService));
+        if (DialogService is null) throw new Exception(nameof(DialogService));
 
-        var saveFilePath = MemopadDialogService.ShowSaveFile();
+        var saveFilePath = DialogService.ShowSaveFile();
         if (string.IsNullOrEmpty(saveFilePath)) return;
 
-        MemopadCoreService.SaveText(saveFilePath);
+        EditorService.SaveText(saveFilePath);
     }
 }

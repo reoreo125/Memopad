@@ -5,7 +5,6 @@ using Reoreo125.Memopad.Views.Dialogs;
 
 using PrismDialogService = Prism.Dialogs.DialogService;
 using IPrismDialogService = Prism.Dialogs.IDialogService;
-
 namespace Reoreo125.Memopad.Models;
 
 public interface IDialogService
@@ -22,7 +21,11 @@ public class DialogService : IDialogService
 
     public IDialogResult? ConfirmSave(string fileNameWithoutExtension)
     {
-        var parameters = new DialogParameters { { "message", $"{fileNameWithoutExtension} への変更内容を保存しますか？" } };
+        var parameters = new DialogParameters
+        {
+            { "title", "Memopad" },
+            { "message", $"{fileNameWithoutExtension} への変更内容を保存しますか？" }
+        };
 
         IDialogResult? result = null;
         PrismDialogService.ShowDialog(

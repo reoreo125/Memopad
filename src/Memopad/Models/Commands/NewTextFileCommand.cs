@@ -10,9 +10,9 @@ public interface INewTextFileCommand : ICommand { }
 public class NewTextFileCommand : CommandBase, INewTextFileCommand
 {
     [Dependency]
-    public ICoreService? MemopadCoreService { get; set; }
+    public IEditorService? EditorService { get; set; }
     [Dependency]
-    public IDialogService? MemopadDialogService { get; set; }
+    public IDialogService? DialogService { get; set; }
     [Dependency]
     public ISaveTextFileCommand? SaveTextFileCommand { get; set; }
 
@@ -20,14 +20,14 @@ public class NewTextFileCommand : CommandBase, INewTextFileCommand
 
     public override void Execute(object? parameter)
     {
-        if (MemopadCoreService is null) throw new Exception(nameof(MemopadCoreService));
-        if (MemopadDialogService is null) throw new Exception(nameof(MemopadDialogService));
+        if (EditorService is null) throw new Exception(nameof(EditorService));
+        if (DialogService is null) throw new Exception(nameof(DialogService));
         if (SaveTextFileCommand is null) throw new Exception(nameof(SaveTextFileCommand));
 
         var save = false;
-        if (MemopadCoreService.IsDirty.Value)
+        if (EditorService.IsDirty.Value)
         {
-            IDialogResult? result = MemopadDialogService.ConfirmSave(MemopadCoreService.FileNameWithoutExtension.Value);
+            IDialogResult? result = DialogService.ConfirmSave(EditorService.FileNameWithoutExtension.Value);
             if (result is null) return;
 
             if (result.Result is ButtonResult.Yes)
@@ -41,15 +41,15 @@ public class NewTextFileCommand : CommandBase, INewTextFileCommand
             }
         }
 
-        if (save && string.IsNullOrEmpty(MemopadCoreService.FilePath.Value))
+        if (save && string.IsNullOrEmpty(EditorService.FilePath.Value))
         {
-            var saveFilePath = MemopadDialogService.ShowSaveFile();
+            var saveFilePath = DialogService.ShowSaveFile();
             if (saveFilePath is null) return;
 
-            MemopadCoreService.FilePath.Value = saveFilePath;
+            EditorService.FilePath.Value = saveFilePath;
         }
 
-        if (save) MemopadCoreService.SaveText(MemopadCoreService.FilePath.Value);
-        MemopadCoreService.Initialize();
+        if (save) EditorService.SaveText(EditorService.FilePath.Value);
+        EditorService.Initialize();
     }
 }

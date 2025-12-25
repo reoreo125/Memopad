@@ -9,13 +9,13 @@ public interface IToggleStatusBarCommand : ICommand
 public class ToggleStatusBarCommand : CommandBase, IToggleStatusBarCommand
 {
     [Dependency]
-    public ICoreService? MemopadCoreService { get; set; }
+    public IEditorService? EditorService { get; set; }
     public override bool CanExecute(object? parameter) => true;
 
     public override void Execute(object? parameter)
     {
-        if (MemopadCoreService is null) throw new Exception("MemopadCoreService");
+        if (EditorService is null) throw new Exception(nameof(EditorService));
 
-        MemopadCoreService.Settings.ShowStatusBar.Value = !MemopadCoreService.Settings.ShowStatusBar.Value;
+        EditorService.Settings.ShowStatusBar.Value = !EditorService.Settings.ShowStatusBar.Value;
     }
 }

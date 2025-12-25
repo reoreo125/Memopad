@@ -10,7 +10,7 @@ public interface IOpenTextFileCommand : ICommand { }
 public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
 {
     [Dependency]
-    public ICoreService? MemopadCoreService { get; set; }
+    public IEditorService? EditorService { get; set; }
     [Dependency]
     public ITextFileService? TextFileService { get; set; }
     [Dependency]
@@ -21,13 +21,13 @@ public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
 
     public override void Execute(object? parameter)
     {
-        if(MemopadCoreService is null) throw new Exception(nameof(MemopadCoreService));
+        if(EditorService is null) throw new Exception(nameof(EditorService));
         if(MemopadDialogService is null) throw new Exception(nameof(MemopadDialogService));
 
         var save = false;
-        if (MemopadCoreService.IsDirty.Value)
+        if (EditorService.IsDirty.Value)
         {
-            IDialogResult?  result = MemopadDialogService.ConfirmSave(MemopadCoreService.FileNameWithoutExtension.Value);
+            IDialogResult?  result = MemopadDialogService.ConfirmSave(EditorService.FileNameWithoutExtension.Value);
             if (result is null) return;
 
             if (result.Result is ButtonResult.Yes)
@@ -41,18 +41,18 @@ public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
             }
         }
 
-        if(save && string.IsNullOrEmpty(MemopadCoreService.FilePath.Value))
+        if(save && string.IsNullOrEmpty(EditorService.FilePath.Value))
         {
             var saveFilePath = MemopadDialogService.ShowSaveFile();
             if (saveFilePath is null) return;
 
-            MemopadCoreService.FilePath.Value = saveFilePath;
+            EditorService.FilePath.Value = saveFilePath;
         }
 
         string? openFilePath = MemopadDialogService.ShowOpenFile();
         if (openFilePath is null) return;
 
-        if (save) MemopadCoreService.SaveText(MemopadCoreService.FilePath.Value);
-        MemopadCoreService.LoadText(openFilePath);
+        if (save) EditorService.SaveText(EditorService.FilePath.Value);
+        EditorService.LoadText(openFilePath);
     }
 }

@@ -30,19 +30,19 @@ public class MemopadMenuViewModel : BindableBase
     public BindableReactiveProperty<bool> ShowStatusBar { get; }
     public BindableReactiveProperty<bool> IsWordWrap { get; }
 
-    protected ICoreService MemopadCoreService => _memopadCoreService;
-    private readonly ICoreService _memopadCoreService;
+    protected IEditorService EditorService => _editorService;
+    private readonly IEditorService _editorService;
 
-    public MemopadMenuViewModel(ICoreService memopadCoreService)
+    public MemopadMenuViewModel(IEditorService editorService)
     {
-        _memopadCoreService = memopadCoreService ?? throw new ArgumentNullException(nameof(memopadCoreService));
+        _editorService = editorService ?? throw new ArgumentNullException(nameof(EditorService));
 
         #region Model -> ViewModel -> View
-        ShowStatusBar = MemopadCoreService.Settings.ShowStatusBar
-            .Where(_ => memopadCoreService.CanNotification)
+        ShowStatusBar = EditorService.Settings.ShowStatusBar
+            .Where(_ => EditorService.CanNotification)
             .ToBindableReactiveProperty(true);
-        IsWordWrap = MemopadCoreService.Settings.IsWordWrap
-            .Where(_ => memopadCoreService.CanNotification)
+        IsWordWrap = EditorService.Settings.IsWordWrap
+            .Where(_ => EditorService.CanNotification)
             .ToBindableReactiveProperty(true);
         #endregion
     }
