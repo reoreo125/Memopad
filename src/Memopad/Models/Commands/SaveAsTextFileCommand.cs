@@ -12,6 +12,7 @@ public class SaveAsTextFileCommand : CommandBase, ISaveAsTextFileCommand
     public IMemopadCoreService? MemopadCoreService { get; set; }
     [Dependency]
     public IMemopadDialogService? MemopadDialogService { get; set; }
+
     public override bool CanExecute(object? parameter) => true;
 
     public override void Execute(object? parameter)

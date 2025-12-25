@@ -12,6 +12,7 @@ public record MemopadDefaults
     public static string FileExtension => ".txt";
     public static LineEnding LineEnding => LineEnding.CRLF;
     public static Encoding Encoding => Encoding.UTF8;
+    public static bool HasBOM => false;
     public static string EncodingText => Encoding.WebName.ToUpper();
     public static string PositionText => "1行、1列";
     public static FontFamily TextFont => FontFamily.GenericMonospace;

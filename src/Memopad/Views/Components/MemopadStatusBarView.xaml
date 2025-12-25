@@ -18,7 +18,7 @@
                 <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
                 <TextBlock Text="{Binding LineEndingText.Value, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 5 0" Width="110" Foreground="Black" HorizontalAlignment="Left"/>
                 <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
-                <TextBlock Text="{Binding EncodingText.Value, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 5 0" Width="100" Foreground="Black" HorizontalAlignment="Left"/>
+                <TextBlock Text="{Binding EncodingText.Value, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 5 0" Width="110" Foreground="Black" HorizontalAlignment="Left"/>
             </StackPanel>
         </StatusBarItem>
     </StatusBar>

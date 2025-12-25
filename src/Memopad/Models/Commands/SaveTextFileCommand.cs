@@ -21,10 +21,12 @@ public class SaveTextFileCommand : CommandBase, ISaveTextFileCommand
     {
         if (MemopadCoreService is null) throw new Exception(nameof(MemopadCoreService));
         if (MemopadDialogService is null) throw new Exception(nameof(MemopadDialogService));
+        if (SaveAsTextFileCommand is null) throw new Exception(nameof(SaveAsTextFileCommand));
 
-        if(string.IsNullOrEmpty(MemopadCoreService.FilePath.Value))
+        if (string.IsNullOrEmpty(MemopadCoreService.FilePath.Value))
         {
-            SaveAsTextFileCommand!.Execute(null);
+            SaveAsTextFileCommand.Execute(null);
+            return;
         }
 
         MemopadCoreService.SaveText(MemopadCoreService.FilePath.Value);

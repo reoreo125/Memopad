@@ -45,10 +45,19 @@ public class MemopadStatusBarViewModel : BindableBase, IDisposable
             .Where(_ => MemopadCoreService.CanNotification)
             .Select(value => CreateLineEndingText(value))
             .ToBindableReactiveProperty(CreateLineEndingText(MemopadDefaults.LineEnding));
-        EncodingText = MemopadCoreService.Encoding
+        EncodingText = Observable.Merge
+            (
+                MemopadCoreService.Encoding,
+                MemopadCoreService.HasBom.Select(_ => MemopadCoreService.Encoding.Value)
+            )
             .Where(_ => memopadCoreService.CanNotification)
-            .Select((encoding) => encoding ?? Encoding.UTF8)
-            .Select((encoding) => encoding.WebName.ToUpper())
+            .Select(encoding => encoding ?? Encoding.UTF8)
+            .Select(encoding =>
+            {
+                var encodingText = encoding.WebName.ToUpper();
+                var bomText = MemopadCoreService.HasBom.Value ? "(BOM 付き)" : string.Empty;
+                return $"{encodingText} {bomText}";
+            })
             .ToBindableReactiveProperty(string.Empty);
 
         #endregion

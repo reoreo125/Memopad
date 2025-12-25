@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text;
+using R3;
 using UtfUnknown;
 
 namespace Reoreo125.Memopad.Models.TextProcessing;
@@ -7,7 +8,7 @@ namespace Reoreo125.Memopad.Models.TextProcessing;
 public interface ITextFileService
 {
     TextFileLoadResult Load(string filePath);
-    TextFileSaveResult Save(string filepath, string text, Encoding encoding, LineEnding lineEnding);
+    TextFileSaveResult Save(string filepath, string text, Encoding encoding, bool hasBom, LineEnding lineEnding);
     bool Exists(string filePath);
 }
 
@@ -25,12 +26,57 @@ public class TextFileService : ITextFileService
     }
     public TextFileLoadResult Load(string filePath)
     {
+        var failedResult = new TextFileLoadResult
+            (
+                IsSuccess: false,
+                Content: string.Empty,
+                Encoding: Encoding.Default,
+                HasBOM: false,
+                LineEnding: LineEnding.Unknown,
+                FilePath: filePath
+            );
+        var emptyResult = new TextFileLoadResult
+            (
+                IsSuccess: true,
+                Content: string.Empty,
+                Encoding: MemopadDefaults.Encoding,
+                HasBOM: MemopadDefaults.HasBOM,
+                LineEnding: MemopadDefaults.LineEnding,
+                FilePath: filePath
+            );
+
+        var info = new FileInfo(filePath);
+        if (!info.Exists) return failedResult;
+        if (info.Length == 0) return emptyResult;
+
         try
         {
             // ファイルのエンコーディングを検出
             var detection = CharsetDetector.DetectFromFile(filePath);
-            if (detection is null || detection.Detected is null) throw new InvalidOperationException($"ファイルのエンコーディングを検出できませんでした: {filePath}");
+
+            // バイナリっぽかったら読み込むだけにする
+            if(detection.Details.Count == 0 && detection.Detected is null)
+            {
+                var binaryResult = new TextFileLoadResult
+                (
+                    IsSuccess: true,
+                    Content: File.ReadAllText(filePath, MemopadDefaults.Encoding),
+                    Encoding: MemopadDefaults.Encoding,
+                    HasBOM: MemopadDefaults.HasBOM,
+                    LineEnding: MemopadDefaults.LineEnding,
+                    FilePath: filePath
+                );
+                return binaryResult;
+            }
+
+
             DetectionDetail encodingResult = detection.Detected;
+
+            // US-ASCIIはUTF-8とする。
+            if(detection.Detected.Encoding == Encoding.ASCII)
+            {
+                detection.Detected.Encoding = Encoding.UTF8;
+            }
 
             // 改行コードのチェック
             LineEnding lineEnding = LineEnding.Unknown;
@@ -69,33 +115,49 @@ public class TextFileService : ITextFileService
             // これにより、LFのみ、CRのみ、混在ファイルがすべて CRLF に統一される
             sb.Replace("\n", "\r\n");
 
-            var result = new TextFileLoadResult(
+            var successResult = new TextFileLoadResult(
                 IsSuccess: true,
                 Content: sb.ToString(),
                 Encoding: encodingResult.Encoding,
+                HasBOM: encodingResult.HasBOM,
                 LineEnding: lineEnding,
                 FilePath: filePath
                 );
-            return result;
+            return successResult;
         }
         catch
         {
-            var result = new TextFileLoadResult(
-                IsSuccess: false,
-                Content: string.Empty,
-                Encoding: Encoding.Default,
-                LineEnding: LineEnding.Unknown,
-                FilePath: filePath
-                );
-            return result;
+            return failedResult;
         }
 
     }
-    public TextFileSaveResult Save(string filepath, string text, Encoding encoding, LineEnding lineEnding)
+    public TextFileSaveResult Save(string filepath, string text, Encoding encoding, bool hasBom, LineEnding lineEnding)
     {
+        // BOM付き対応
+        Encoding encodingForSave;
+        // UTF-8 の場合は指定に従い再生成
+        if (encoding is UTF8Encoding)
+        {
+            encodingForSave = new UTF8Encoding(hasBom);
+        }
+        // UTF-16 (Unicode) の場合も同様の制御が必要
+        else if (encoding is UnicodeEncoding)
+        {
+            encodingForSave = new UnicodeEncoding(bigEndian: false, byteOrderMark: hasBom);
+        }
+        // UTF-32
+        else if (encoding is UTF32Encoding)
+        {
+            encodingForSave = new UTF32Encoding(bigEndian: false, byteOrderMark: hasBom);
+        }
+        else
+        {
+            encodingForSave = encoding; // Shift-JIS などBOMのないものはそのまま
+        }
+
         try
         {
-            using (var writer = new StreamWriter(filepath, false, encoding))
+            using (var writer = new StreamWriter(filepath, false, encodingForSave))
             {
                 var lineEndingString = GetStringFromLineEnding(lineEnding);
 
@@ -153,6 +215,7 @@ public record TextFileLoadResult(
     bool IsSuccess,
     string Content,
     Encoding Encoding,
+    bool HasBOM,
     LineEnding LineEnding,
     string FilePath
     );

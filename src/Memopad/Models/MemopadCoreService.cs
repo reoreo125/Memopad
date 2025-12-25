@@ -15,7 +15,8 @@ public interface IMemopadCoreService : IDisposable
     ReactiveProperty<string> Title { get; }
     ReactiveProperty<string> Text { get; }
 
-    ReactiveProperty<Encoding?> Encoding { get; }
+    ReactiveProperty<Encoding> Encoding { get; }
+    ReactiveProperty<bool> HasBom { get; }
     ReactiveProperty<LineEnding> LineEnding { get; }
     ReactiveProperty<bool> IsDirty { get; }
     ReactiveProperty<int> Row { get; }
@@ -56,7 +57,8 @@ public sealed class MemopadCoreService : IMemopadCoreService
     public ReactiveProperty<int> Row { get; set; } = new(1);
     public ReactiveProperty<int> Column { get; set; } = new(1);
     public ReactiveProperty<double> ZoomLevel { get; set; } = new(1.0);
-    public ReactiveProperty<Encoding?> Encoding { get; private set; } = new();
+    public ReactiveProperty<Encoding> Encoding { get; set; } = new();
+    public ReactiveProperty<bool> HasBom { get; set; } = new();
     public ReactiveProperty<LineEnding> LineEnding { get; private set; } = new();
     public ReactiveProperty<bool> IsWordWrap { get; set; } = new(false);
 
@@ -139,23 +141,27 @@ public sealed class MemopadCoreService : IMemopadCoreService
         PreviousText = string.Empty;
 
         Encoding.Value = MemopadDefaults.Encoding;
+        HasBom.Value = MemopadDefaults.HasBOM;
         LineEnding.Value = MemopadDefaults.LineEnding;
-        
         
         IsDirty.Value = false;
         Row.Value = 1;
         Column.Value = 1;
         ZoomLevel.Value = MemopadDefaults.ZoomLevel;
+
+        NofityAllChanges();
     }
     public void NofityAllChanges()
     {
         if (!CanNotification) return;
 
+        Title.ForceNotify();
         Text.ForceNotify();
         IsDirty.ForceNotify();
         Row.ForceNotify();
         Column.ForceNotify();
         Encoding.ForceNotify();
+        HasBom.ForceNotify();
         LineEnding.ForceNotify();
         ShowStatusBar.ForceNotify();
         IsDirty.ForceNotify();
@@ -177,6 +183,7 @@ public sealed class MemopadCoreService : IMemopadCoreService
         Initialize();
         Text.Value = result.Content;
         Encoding.Value = result.Encoding;
+        HasBom.Value = result.HasBOM;
         // LineEnding が不明な場合はデフォルト値を使う
         LineEnding.Value = (result.LineEnding is TextProcessing.LineEnding.Unknown) ? MemopadDefaults.LineEnding : result.LineEnding;
         FilePath.Value = result.FilePath;
@@ -194,7 +201,7 @@ public sealed class MemopadCoreService : IMemopadCoreService
         if (TextFileService is null) throw new Exception(nameof(TextFileService));
         if (FilePath is null) return;
 
-        var result = TextFileService.Save(filePath, Text.Value, Encoding.Value, LineEnding.Value);
+        var result = TextFileService.Save(filePath, Text.Value, Encoding.Value, HasBom.Value, LineEnding.Value);
 
         if (!result.IsSuccess)
         {
