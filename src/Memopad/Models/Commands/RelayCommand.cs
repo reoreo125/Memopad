@@ -1,6 +1,10 @@
+using System.Windows.Input;
+
 namespace Reoreo125.Memopad.Models.Commands;
 
-public class RelayCommand : CommandBase
+public interface IRelayCommand : ICommand { }
+
+public class RelayCommand : CommandBase, IRelayCommand
 {
     private readonly Action _execute;
     private readonly Func<bool>? _canExecute;

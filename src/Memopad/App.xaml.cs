@@ -32,22 +32,20 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<ITextFileService, TextFileService>();
         containerRegistry.RegisterSingleton<IHistoricalService, HistoricalService>();
 
-        // Commands
+        // Commands(全てTransientなのでリフレクション処理)
         var commandTypes = assembly.GetTypes()
                                    .Where(t => t.IsClass && !t.IsAbstract)
-                                   .Where(t => t.Namespace != null && t.Namespace.EndsWith("Models.Commands"));
+                                   .Where(t => t.Namespace != null && t.Namespace.EndsWith("Models.Commands") && t.Name.EndsWith("Command"));
         foreach (var type in commandTypes)
         {
-            // 命名規則「I + クラス名」に一致するインターフェースを探す
             var interfaceName = $"I{type.Name}";
-            var serviceInterface = type.GetInterfaces()
-                                       .FirstOrDefault(i => i.Name == interfaceName);
+            var serviceInterface = type.GetInterfaces().FirstOrDefault(i => i.Name == interfaceName);
 
-            if (serviceInterface != null)
-            {
-                containerRegistry.Register(serviceInterface, type);
-                Debug.WriteLine($"RegisteredCommands : {interfaceName} -> {type.Name}");
-            }
+            if (serviceInterface is null) throw new Exception();
+            
+            containerRegistry.Register(serviceInterface, type);
+            Debug.WriteLine($"Registered Commands : {interfaceName} -> {type.Name}");
+            
         }
 
         // ViewModels
