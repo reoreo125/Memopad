@@ -26,6 +26,8 @@ public class MemopadMenuViewModel : BindableBase
     public ISaveTextFileCommand? SaveTextFileCommand { get; set; }
     [Dependency]
     public ISaveAsTextFileCommand? SaveAsTextFileCommand { get; set; }
+    [Dependency]
+    public IOpenNewWindowCommand? OpenNewWindowCommand { get; set; }
 
     public BindableReactiveProperty<bool> ShowStatusBar { get; }
     public BindableReactiveProperty<bool> IsWordWrap { get; }

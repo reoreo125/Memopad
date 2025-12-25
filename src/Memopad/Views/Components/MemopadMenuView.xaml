@@ -14,7 +14,8 @@
                       InputGestureText="Ctrl+N"
                       Command="{Binding NewTextFileCommand}"/>
             <MenuItem Header="新しいウィンドウ(_W)"
-                      InputGestureText="Ctrl+Shift+N"/>
+                      InputGestureText="Ctrl+Shift+N"
+                      Command="{Binding OpenNewWindowCommand}"/>
             <MenuItem Header="開く(_O)..."
                       InputGestureText="Ctrl+O"
                       Command="{Binding OpenTextFileCommand}" />

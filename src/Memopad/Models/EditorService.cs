@@ -8,8 +8,6 @@ namespace Reoreo125.Memopad.Models;
 
 public interface IEditorService : IDisposable
 {
-    public ReactiveProperty<DateTime> InsertDateTime { get; }
-
     public EditorDocument Document { get; }
     public Settings Settings { get; }
 
@@ -18,15 +16,13 @@ public interface IEditorService : IDisposable
     public void LoadText(string filePath);
     public void SaveText();
     public void SaveText(string filePath);
+    void InsertText(string text);
 }
 
 public sealed class EditorService : IEditorService
 {
     public bool CanCheckDirty { get; set; } = true;
 
-
-    public ReactiveProperty<DateTime> InsertDateTime { get; } = new(DateTime.MinValue);
-    
     public EditorDocument Document { get; }
     public Settings Settings => MemopadSettingsService.Settings;
     private ISettingsService MemopadSettingsService { get; }
@@ -52,25 +48,6 @@ public sealed class EditorService : IEditorService
                 }
             })
             .AddTo(ref _disposableCollection);
-
-        // 日付挿入要求が来たらテキストに日付を挿入してキャレット位置を更新
-        InsertDateTime.Subscribe(value =>
-            {
-                if (value == DateTime.MinValue) return;
-
-                var now = DateTime.Now.ToString("H:mm yyyy/MM/dd");
-                var currentText = Document.Text.Value ?? ""; // 生成後は最新の Value が取れる
-                var start = Document.CaretIndex.Value;
-                var length = Document.SelectionLength.Value;
-
-                // 文字列挿入
-                var newText = currentText.Remove(start, length).Insert(start, now);
-
-                Document.Text.Value = newText;
-
-                Document.CaretIndex.Value = start + now.Length;
-            })
-            .AddTo(ref _disposableCollection);
     }
 
     private void EnableCheckDirty() => CanCheckDirty = true;
@@ -86,6 +63,8 @@ public sealed class EditorService : IEditorService
         Document.LineEnding.Value = Defaults.LineEnding;
         Document.IsDirty.Value = false;
 
+        Document.CaretIndex.Value = 0;
+        Document.SelectionLength.Value = 0;
         Document.Row.Value = 1;
         Document.Column.Value = 1;
 
@@ -123,7 +102,7 @@ public sealed class EditorService : IEditorService
         Document.Encoding.Value = result.Encoding;
         Document.HasBom.Value = result.HasBOM;
         // LineEnding が不明な場合はデフォルト値を使う
-        Document.LineEnding.Value = (result.LineEnding is TextProcessing.LineEnding.Unknown) ? Defaults.LineEnding : result.LineEnding;
+        Document.LineEnding.Value = (result.LineEnding is LineEnding.Unknown) ? Defaults.LineEnding : result.LineEnding;
         Document.FilePath.Value = result.FilePath;
 
         EnableCheckDirty();
@@ -150,6 +129,23 @@ public sealed class EditorService : IEditorService
 
         NofityAllChanges();
     }
+
+    public void InsertText(string text)
+    {
+        var currentText = Document.Text.Value ?? "";
+        var start = Document.CaretIndex.Value;
+        var length = Document.SelectionLength.Value;
+
+        // 文字列挿入
+        Document.Text.Value = currentText.Remove(start, length).Insert(start, text);
+
+        // カーソル位置を挿入した文字の直後に移動させる
+        Document.CaretIndex.Value = start + text.Length;
+
+        // 選択範囲は解除されるので0にする
+        Document.SelectionLength.Value = 0;
+    }
+
     public void Dispose()
     {
         _disposableCollection.Dispose();

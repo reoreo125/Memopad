@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using System.Windows.Input;
 using R3;
 
@@ -18,6 +19,7 @@ public class InsertDateTimeCommand : CommandBase, IInsertDateTimeCommand
     {
         if(EditorService is null) throw new Exception(nameof(EditorService));
 
-        EditorService.InsertDateTime.OnNext(DateTime.Now);
+        var now = DateTime.Now.ToString("H:mm yyyy/MM/dd");
+        EditorService.InsertText(now);
     }
 }
