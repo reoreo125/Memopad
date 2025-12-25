@@ -10,11 +10,11 @@ public interface IOpenTextFileCommand : ICommand { }
 public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
 {
     [Dependency]
-    public IMemopadCoreService? MemopadCoreService { get; set; }
+    public ICoreService? MemopadCoreService { get; set; }
     [Dependency]
     public ITextFileService? TextFileService { get; set; }
     [Dependency]
-    public IMemopadDialogService? MemopadDialogService { get; set; }
+    public IDialogService? MemopadDialogService { get; set; }
     //[Dependency]
     //public SaveTextFileCommand? SaveTextFileCommand { get; set; }
     public override bool CanExecute(object? parameter) => true;

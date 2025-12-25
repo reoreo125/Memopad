@@ -14,11 +14,11 @@ public interface ITextFileService
 
 public class TextFileService : ITextFileService
 {
-    public MemopadSettings LoadSettings()
+    public Settings LoadSettings()
     {
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
 
-        var settings = new MemopadSettings
+        var settings = new Settings
         {
 
         };
@@ -39,9 +39,9 @@ public class TextFileService : ITextFileService
             (
                 IsSuccess: true,
                 Content: string.Empty,
-                Encoding: MemopadDefaults.Encoding,
-                HasBOM: MemopadDefaults.HasBOM,
-                LineEnding: MemopadDefaults.LineEnding,
+                Encoding: Defaults.Encoding,
+                HasBOM: Defaults.HasBOM,
+                LineEnding: Defaults.LineEnding,
                 FilePath: filePath
             );
 
@@ -60,10 +60,10 @@ public class TextFileService : ITextFileService
                 var binaryResult = new TextFileLoadResult
                 (
                     IsSuccess: true,
-                    Content: File.ReadAllText(filePath, MemopadDefaults.Encoding),
-                    Encoding: MemopadDefaults.Encoding,
-                    HasBOM: MemopadDefaults.HasBOM,
-                    LineEnding: MemopadDefaults.LineEnding,
+                    Content: File.ReadAllText(filePath, Defaults.Encoding),
+                    Encoding: Defaults.Encoding,
+                    HasBOM: Defaults.HasBOM,
+                    LineEnding: Defaults.LineEnding,
                     FilePath: filePath
                 );
                 return binaryResult;

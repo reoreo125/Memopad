@@ -10,7 +10,7 @@ public interface IInsertDateTimeCommand : ICommand
 public class InsertDateTimeCommand : CommandBase, IInsertDateTimeCommand
 {
     [Dependency]
-    public IMemopadCoreService? MemopadCoreService { get; set; }
+    public ICoreService? MemopadCoreService { get; set; }
 
     public override bool CanExecute(object? parameter) => true;
 

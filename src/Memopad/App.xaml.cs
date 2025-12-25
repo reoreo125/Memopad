@@ -12,6 +12,9 @@ using Reoreo125.Memopad.ViewModels.Windows;
 using Reoreo125.Memopad.Views.Dialogs;
 using Reoreo125.Memopad.Views.Windows;
 
+using IDialogService = Reoreo125.Memopad.Models.IDialogService;
+using DialogService = Reoreo125.Memopad.Models.DialogService;
+
 namespace Reoreo125.Memopad;
 
 public partial class App : PrismApplication
@@ -28,10 +31,11 @@ public partial class App : PrismApplication
         var assembly = Assembly.GetExecutingAssembly();
 
         // Services
-        containerRegistry.RegisterSingleton<IMemopadCoreService, MemopadCoreService>();
+        containerRegistry.RegisterSingleton<ISettingsService, SettingsService>();
+        containerRegistry.RegisterSingleton<ICoreService, CoreService>();
         containerRegistry.RegisterSingleton<ITextFileService, TextFileService>();
         containerRegistry.RegisterSingleton<IHistoricalService, HistoricalService>();
-        containerRegistry.RegisterSingleton<IMemopadDialogService, MemopadDialogService>();
+        containerRegistry.RegisterSingleton<IDialogService, DialogService>();
 
         // Commands(全てTransientなのでリフレクション処理)
         var commandTypes = assembly.GetTypes()

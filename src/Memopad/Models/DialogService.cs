@@ -3,18 +3,21 @@ using Prism.Dialogs;
 using R3;
 using Reoreo125.Memopad.Views.Dialogs;
 
+using PrismDialogService = Prism.Dialogs.DialogService;
+using IPrismDialogService = Prism.Dialogs.IDialogService;
+
 namespace Reoreo125.Memopad.Models;
 
-public interface IMemopadDialogService
+public interface IDialogService
 {
     IDialogResult? ConfirmSave(string fileNameWithoutExtension);
     string? ShowOpenFile();
     string? ShowSaveFile();
 }
-public class MemopadDialogService : IMemopadDialogService
+public class DialogService : IDialogService
 {
     [Dependency]
-    public IDialogService? DialogService { get; set; }
+    public IPrismDialogService? PrismDialogService { get; set; }
 
 
     public IDialogResult? ConfirmSave(string fileNameWithoutExtension)
@@ -22,8 +25,7 @@ public class MemopadDialogService : IMemopadDialogService
         var parameters = new DialogParameters { { "message", $"{fileNameWithoutExtension} への変更内容を保存しますか？" } };
 
         IDialogResult? result = null;
-
-        DialogService.ShowDialog(
+        PrismDialogService.ShowDialog(
             nameof(SaveConfirmDialog),
             parameters,
             _result => result = _result);

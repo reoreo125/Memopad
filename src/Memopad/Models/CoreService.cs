@@ -6,61 +6,57 @@ using Reoreo125.Memopad.Models.TextProcessing;
 
 namespace Reoreo125.Memopad.Models;
 
-public interface IMemopadCoreService : IDisposable
+public interface ICoreService : IDisposable
 {
-    ReactiveProperty<string> FilePath { get; }
-    ReactiveProperty<string> FileName { get; }
-    ReactiveProperty<string> FileNameWithoutExtension { get; }
+    public ReactiveProperty<string> FilePath { get; }
+    public ReactiveProperty<string> FileName { get; }
+    public ReactiveProperty<string> FileNameWithoutExtension { get; }
 
-    ReactiveProperty<string> Title { get; }
-    ReactiveProperty<string> Text { get; }
+    public ReactiveProperty<string> Title { get; }
+    public ReactiveProperty<string> Text { get; }
 
-    ReactiveProperty<Encoding> Encoding { get; }
-    ReactiveProperty<bool> HasBom { get; }
-    ReactiveProperty<LineEnding> LineEnding { get; }
-    ReactiveProperty<bool> IsDirty { get; }
-    ReactiveProperty<int> Row { get; }
-    ReactiveProperty<int> Column { get; }
-    ReactiveProperty<double> ZoomLevel { get; }
-    ReactiveProperty<bool> ShowStatusBar { get; }
-    ReactiveProperty<bool> IsWordWrap { get; }
+    public ReactiveProperty<Encoding> Encoding { get; }
+    public ReactiveProperty<bool> HasBom { get; }
+    public ReactiveProperty<LineEnding> LineEnding { get; }
+    public ReactiveProperty<bool> IsDirty { get; }
+    public ReactiveProperty<int> Row { get; }
+    public ReactiveProperty<int> Column { get; }
 
-    ReactiveProperty<DateTime> InsertDateTime { get; }
+    public ReactiveProperty<DateTime> InsertDateTime { get; }
 
-    ReactiveProperty<int> CaretIndex { get; }
-    ReactiveProperty<int> SelectionLength { get; }
+    public ReactiveProperty<int> CaretIndex { get; }
+    public ReactiveProperty<int> SelectionLength { get; }
 
-    bool CanNotification { get; }
+    public bool CanNotification { get; }
 
-    void Initialize();
-    void NofityAllChanges();
-    void LoadText(string filePath);
-    void SaveText();
-    void SaveText(string filePath);
+    public Settings Settings { get; }
+
+    public void Initialize();
+    public void NofityAllChanges();
+    public void LoadText(string filePath);
+    public void SaveText();
+    public void SaveText(string filePath);
 }
 
-public sealed class MemopadCoreService : IMemopadCoreService
+public sealed class CoreService : ICoreService
 {
-    public ReactiveProperty<string> FilePath { get; private set; } = new();
-    public ReactiveProperty<string> FileName { get; private set; } = new();
-    public ReactiveProperty<string> FileNameWithoutExtension { get; private set; } = new();
+    public ReactiveProperty<string> FilePath { get; } = new();
+    public ReactiveProperty<string> FileName { get; } = new();
+    public ReactiveProperty<string> FileNameWithoutExtension { get; } = new();
 
-    public ReactiveProperty<string> Title { get; private set; } = new();
-    public ReactiveProperty<string> Text { get; private set; } = new();
+    public ReactiveProperty<string> Title { get; } = new();
+    public ReactiveProperty<string> Text { get; } = new();
     public string PreviousText { get; private set; } = string.Empty;
 
     public ReactiveProperty<bool> IsDirty { get; } = new ReactiveProperty<bool>(false);
     public bool CanNotification { get; set; } = true;
     public bool CanCheckDirty { get; set; } = true;
 
-    public ReactiveProperty<bool> ShowStatusBar { get; set; } = new(true);
-    public ReactiveProperty<int> Row { get; set; } = new(1);
-    public ReactiveProperty<int> Column { get; set; } = new(1);
-    public ReactiveProperty<double> ZoomLevel { get; set; } = new(1.0);
-    public ReactiveProperty<Encoding> Encoding { get; set; } = new();
-    public ReactiveProperty<bool> HasBom { get; set; } = new();
-    public ReactiveProperty<LineEnding> LineEnding { get; private set; } = new();
-    public ReactiveProperty<bool> IsWordWrap { get; set; } = new(false);
+    public ReactiveProperty<int> Row { get; } = new(1);
+    public ReactiveProperty<int> Column { get; } = new(1);
+    public ReactiveProperty<Encoding> Encoding { get; } = new();
+    public ReactiveProperty<bool> HasBom { get; } = new();
+    public ReactiveProperty<LineEnding> LineEnding { get; } = new();
 
     public ReactiveProperty<DateTime> InsertDateTime { get; } = new(DateTime.MinValue);
 
@@ -68,16 +64,23 @@ public sealed class MemopadCoreService : IMemopadCoreService
     public ReactiveProperty<int> SelectionLength { get; } = new(0);
 
     private DisposableBag _disposableCollection = new();
-    
-    [Dependency]
-    public ITextFileService? TextFileService { get; set; }
 
-    public MemopadCoreService()
+
+    
+
+    public Settings Settings => MemopadSettingsService.Settings;
+    private ISettingsService MemopadSettingsService { get; }
+    private ITextFileService? TextFileService { get; }
+
+    public CoreService(ISettingsService settingsService, ITextFileService textFileService)
     {
+        MemopadSettingsService = settingsService;
+        TextFileService = textFileService;
+
         Initialize();
 
         // タイトルを作るためのインナーメソッド
-        string CreateTitle() => $"{(IsDirty.Value ? "*" : "")}{FileNameWithoutExtension.Value} - {MemopadDefaults.ApplicationName}";
+        string CreateTitle() => $"{(IsDirty.Value ? "*" : "")}{FileNameWithoutExtension.Value} - {Defaults.ApplicationName}";
 
         // テキスト変更フラグが変化するたびにタイトルを更新
         IsDirty.Subscribe(_ =>
@@ -134,20 +137,19 @@ public sealed class MemopadCoreService : IMemopadCoreService
     public void Initialize()
     {
         FilePath.Value = string.Empty;
-        FileName.Value = MemopadDefaults.NewFileName + MemopadDefaults.FileExtension;
-        FileNameWithoutExtension.Value = MemopadDefaults.NewFileName;
+        FileName.Value = Defaults.NewFileName + Defaults.FileExtension;
+        FileNameWithoutExtension.Value = Defaults.NewFileName;
 
         Text.Value = string.Empty;
         PreviousText = string.Empty;
 
-        Encoding.Value = MemopadDefaults.Encoding;
-        HasBom.Value = MemopadDefaults.HasBOM;
-        LineEnding.Value = MemopadDefaults.LineEnding;
+        Encoding.Value = Defaults.Encoding;
+        HasBom.Value = Defaults.HasBOM;
+        LineEnding.Value = Defaults.LineEnding;
         
         IsDirty.Value = false;
         Row.Value = 1;
         Column.Value = 1;
-        ZoomLevel.Value = MemopadDefaults.ZoomLevel;
 
         NofityAllChanges();
     }
@@ -163,8 +165,9 @@ public sealed class MemopadCoreService : IMemopadCoreService
         Encoding.ForceNotify();
         HasBom.ForceNotify();
         LineEnding.ForceNotify();
-        ShowStatusBar.ForceNotify();
         IsDirty.ForceNotify();
+
+        Settings.ShowStatusBar.ForceNotify();
     }
     public void LoadText(string filePath)
     {
@@ -185,10 +188,10 @@ public sealed class MemopadCoreService : IMemopadCoreService
         Encoding.Value = result.Encoding;
         HasBom.Value = result.HasBOM;
         // LineEnding が不明な場合はデフォルト値を使う
-        LineEnding.Value = (result.LineEnding is TextProcessing.LineEnding.Unknown) ? MemopadDefaults.LineEnding : result.LineEnding;
+        LineEnding.Value = (result.LineEnding is TextProcessing.LineEnding.Unknown) ? Defaults.LineEnding : result.LineEnding;
         FilePath.Value = result.FilePath;
-        FileName.Value = string.IsNullOrEmpty(FilePath.Value) ? $"{MemopadDefaults.NewFileName}.txt" : Path.GetFileName(FilePath.Value);
-        FileNameWithoutExtension.Value = string.IsNullOrEmpty(FilePath.Value) ? MemopadDefaults.NewFileName : Path.GetFileNameWithoutExtension(FilePath.Value);
+        FileName.Value = string.IsNullOrEmpty(FilePath.Value) ? $"{Defaults.NewFileName}.txt" : Path.GetFileName(FilePath.Value);
+        FileNameWithoutExtension.Value = string.IsNullOrEmpty(FilePath.Value) ? Defaults.NewFileName : Path.GetFileNameWithoutExtension(FilePath.Value);
 
         EnableNotification();
         EnableCheckDirty();

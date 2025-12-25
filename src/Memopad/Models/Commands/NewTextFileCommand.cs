@@ -10,9 +10,9 @@ public interface INewTextFileCommand : ICommand { }
 public class NewTextFileCommand : CommandBase, INewTextFileCommand
 {
     [Dependency]
-    public IMemopadCoreService? MemopadCoreService { get; set; }
+    public ICoreService? MemopadCoreService { get; set; }
     [Dependency]
-    public IMemopadDialogService? MemopadDialogService { get; set; }
+    public IDialogService? MemopadDialogService { get; set; }
     [Dependency]
     public ISaveTextFileCommand? SaveTextFileCommand { get; set; }
 

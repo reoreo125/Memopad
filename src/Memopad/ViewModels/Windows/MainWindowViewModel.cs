@@ -16,12 +16,12 @@ public class MainWindowViewModel : BindableBase, IDisposable
     public BindableReactiveProperty<int> CaretIndex { get; }
     public BindableReactiveProperty<int> SelectionLength { get; }
 
-    protected IMemopadCoreService MemopadCoreService => _memopadCoreService;
-    private readonly IMemopadCoreService _memopadCoreService;
+    protected ICoreService MemopadCoreService => _memopadCoreService;
+    private readonly ICoreService _memopadCoreService;
     private DisposableBag _disposableCollection = new();
 
 
-    public MainWindowViewModel(IMemopadCoreService memopadCoreService)
+    public MainWindowViewModel(ICoreService memopadCoreService)
     {
         _memopadCoreService = memopadCoreService ?? throw new ArgumentNullException(nameof(memopadCoreService));
 
@@ -45,15 +45,15 @@ public class MainWindowViewModel : BindableBase, IDisposable
 
         Column = new BindableReactiveProperty<int>(1);
 
-        FontSize = MemopadCoreService.ZoomLevel
+        FontSize = MemopadCoreService.Settings.ZoomLevel
             .Where(_ => MemopadCoreService.CanNotification)
-            .Select(value => MemopadDefaults.FontSize * value)
-            .ToBindableReactiveProperty(MemopadDefaults.FontSize);
+            .Select(value => Defaults.FontSize * value)
+            .ToBindableReactiveProperty(Defaults.FontSize);
 
-        TextWrapping = MemopadCoreService.IsWordWrap
+        TextWrapping = MemopadCoreService.Settings.IsWordWrap
             .Where(_ => memopadCoreService.CanNotification)
             .Select(value => value ? System.Windows.TextWrapping.Wrap : System.Windows.TextWrapping.NoWrap)
-            .ToBindableReactiveProperty(MemopadDefaults.TextWrapping);
+            .ToBindableReactiveProperty(Defaults.TextWrapping);
 
         CaretIndex = MemopadCoreService.CaretIndex
             .Where(_ => MemopadCoreService.CanNotification)
@@ -68,7 +68,7 @@ public class MainWindowViewModel : BindableBase, IDisposable
         #region View -> ViewModel -> Model
         // TextBoxの内容変更 
         Text.Where(value => value is not null)
-            .Debounce(TimeSpan.FromMilliseconds(MemopadDefaults.TextBoxDebounce))
+            .Debounce(TimeSpan.FromMilliseconds(Defaults.TextBoxDebounce))
             .Subscribe(value => MemopadCoreService.Text.Value = value)
             .AddTo(ref _disposableCollection);
         // TextBoxからの行変更

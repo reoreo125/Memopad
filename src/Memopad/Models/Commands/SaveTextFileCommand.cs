@@ -9,9 +9,9 @@ public interface ISaveTextFileCommand : ICommand { }
 public class SaveTextFileCommand : CommandBase, ISaveTextFileCommand
 {
     [Dependency]
-    public IMemopadCoreService? MemopadCoreService { get; set; }
+    public ICoreService? MemopadCoreService { get; set; }
     [Dependency]
-    public IMemopadDialogService? MemopadDialogService { get; set; }
+    public IDialogService? MemopadDialogService { get; set; }
     [Dependency]
     public ISaveAsTextFileCommand? SaveAsTextFileCommand { get; set; }
 
