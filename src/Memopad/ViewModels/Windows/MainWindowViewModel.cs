@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using R3;
+using Reoreo125.Memopad.Models;
 using Reoreo125.Memopad.Models.Services;
 
 namespace Reoreo125.Memopad.ViewModels.Windows;
