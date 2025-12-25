@@ -26,36 +26,31 @@ public class MemopadStatusBarViewModel : BindableBase, IDisposable
         #region Model -> ViewModel -> View
 
         ShowStatusBar = EditorService.Settings.ShowStatusBar
-            .Where(_ => EditorService.CanNotification)
             .Select(value => value ? Visibility.Visible : Visibility.Collapsed)
             .ToBindableReactiveProperty(Visibility.Visible);
         PositionText = Observable.Merge
             (
-                EditorService.Row.Select(_ => string.Empty),
-                EditorService.Column.Select(_ => string.Empty)
+                EditorService.Document.Row.Select(_ => string.Empty),
+                EditorService.Document.Column.Select(_ => string.Empty)
             )
-            .Where(_ => EditorService.CanNotification)
-            .Select(_ => $"{EditorService.Row.Value}行、{EditorService.Column.Value}列")
+            .Select(_ => $"{EditorService.Document.Row.Value}行、{EditorService.Document.Column.Value}列")
             .ToBindableReactiveProperty(Defaults.PositionText);
         ZoomLevelText = EditorService.Settings.ZoomLevel
-            .Where(_ => EditorService.CanNotification)
             .Select(value => $"{(int)(value * 100)}%")
             .ToBindableReactiveProperty(Defaults.ZoomLevelText);
-        LineEndingText = EditorService.LineEnding
-            .Where(_ => EditorService.CanNotification)
+        LineEndingText = EditorService.Document.LineEnding
             .Select(value => CreateLineEndingText(value))
             .ToBindableReactiveProperty(CreateLineEndingText(Defaults.LineEnding));
         EncodingText = Observable.Merge
             (
-                EditorService.Encoding,
-                EditorService.HasBom.Select(_ => EditorService.Encoding.Value)
+                EditorService.Document.Encoding,
+                EditorService.Document.HasBom.Select(_ => EditorService.Document.Encoding.Value)
             )
-            .Where(_ => EditorService.CanNotification)
             .Select(encoding => encoding ?? Encoding.UTF8)
             .Select(encoding =>
             {
                 var encodingText = encoding.WebName.ToUpper();
-                var bomText = EditorService.HasBom.Value ? "(BOM 付き)" : string.Empty;
+                var bomText = EditorService.Document.HasBom.Value ? "(BOM 付き)" : string.Empty;
                 return $"{encodingText} {bomText}";
             })
             .ToBindableReactiveProperty(string.Empty);

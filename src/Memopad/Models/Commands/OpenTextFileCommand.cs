@@ -25,9 +25,9 @@ public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
         if(MemopadDialogService is null) throw new Exception(nameof(MemopadDialogService));
 
         var save = false;
-        if (EditorService.IsDirty.Value)
+        if (EditorService.Document.IsDirty.Value)
         {
-            IDialogResult?  result = MemopadDialogService.ConfirmSave(EditorService.FileNameWithoutExtension.Value);
+            IDialogResult?  result = MemopadDialogService.ConfirmSave(EditorService.Document.FileNameWithoutExtension.CurrentValue);
             if (result is null) return;
 
             if (result.Result is ButtonResult.Yes)
@@ -41,18 +41,18 @@ public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
             }
         }
 
-        if(save && string.IsNullOrEmpty(EditorService.FilePath.Value))
+        if(save && string.IsNullOrEmpty(EditorService.Document.FilePath.Value))
         {
             var saveFilePath = MemopadDialogService.ShowSaveFile();
             if (saveFilePath is null) return;
 
-            EditorService.FilePath.Value = saveFilePath;
+            EditorService.Document.FilePath.Value = saveFilePath;
         }
 
         string? openFilePath = MemopadDialogService.ShowOpenFile();
         if (openFilePath is null) return;
 
-        if (save) EditorService.SaveText(EditorService.FilePath.Value);
+        if (save) EditorService.SaveText(EditorService.Document.FilePath.Value);
         EditorService.LoadText(openFilePath);
     }
 }

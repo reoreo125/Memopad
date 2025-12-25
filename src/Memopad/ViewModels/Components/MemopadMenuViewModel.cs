@@ -39,10 +39,8 @@ public class MemopadMenuViewModel : BindableBase
 
         #region Model -> ViewModel -> View
         ShowStatusBar = EditorService.Settings.ShowStatusBar
-            .Where(_ => EditorService.CanNotification)
             .ToBindableReactiveProperty(true);
         IsWordWrap = EditorService.Settings.IsWordWrap
-            .Where(_ => EditorService.CanNotification)
             .ToBindableReactiveProperty(true);
         #endregion
     }

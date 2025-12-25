@@ -27,8 +27,8 @@ public class MainWindowViewModel : BindableBase, IDisposable
 
         #region Model -> ViewModel -> View
 
-        Title = EditorService.Title
-            .Where(_ => EditorService.CanNotification)
+        Title = EditorService.Document.Title
+            //.Where(_ => EditorService.CanNotification)
             .ToBindableReactiveProperty(string.Empty);
 
         CaretIndex = new BindableReactiveProperty<int>(0);
@@ -36,8 +36,7 @@ public class MainWindowViewModel : BindableBase, IDisposable
         SelectionLength = new BindableReactiveProperty<int>(0);
 
         Text = new BindableReactiveProperty<string>(string.Empty);
-        Text = EditorService.Text
-            .Where(_ => EditorService.CanNotification)
+        Text = EditorService.Document.Text
             .Where(value => Text!.Value != value) // 循環防止
             .ToBindableReactiveProperty(string.Empty);
 
@@ -46,21 +45,17 @@ public class MainWindowViewModel : BindableBase, IDisposable
         Column = new BindableReactiveProperty<int>(1);
 
         FontSize = EditorService.Settings.ZoomLevel
-            .Where(_ => EditorService.CanNotification)
             .Select(value => Defaults.FontSize * value)
             .ToBindableReactiveProperty(Defaults.FontSize);
 
         TextWrapping = EditorService.Settings.IsWordWrap
-            .Where(_ => EditorService.CanNotification)
             .Select(value => value ? System.Windows.TextWrapping.Wrap : System.Windows.TextWrapping.NoWrap)
             .ToBindableReactiveProperty(Defaults.TextWrapping);
 
-        CaretIndex = EditorService.CaretIndex
-            .Where(_ => EditorService.CanNotification)
+        CaretIndex = EditorService.Document.CaretIndex
             .ToBindableReactiveProperty(0);
 
-        SelectionLength = EditorService.SelectionLength
-            .Where(_ => EditorService.CanNotification)
+        SelectionLength = EditorService.Document.SelectionLength
             .ToBindableReactiveProperty(0);
 
         #endregion
@@ -69,19 +64,19 @@ public class MainWindowViewModel : BindableBase, IDisposable
         // TextBoxの内容変更 
         Text.Where(value => value is not null)
             .Debounce(TimeSpan.FromMilliseconds(Defaults.TextBoxDebounce))
-            .Subscribe(value => EditorService.Text.Value = value)
+            .Subscribe(value => EditorService.Document.Text.Value = value)
             .AddTo(ref _disposableCollection);
         // TextBoxからの行変更
         Row.Where(value => 0 < value)
-            .Subscribe(value => EditorService.Row.Value = value)
+            .Subscribe(value => EditorService.Document.Row.Value = value)
             .AddTo(ref _disposableCollection);
         // TextBoxからの列変更
         Column.Where(value => 0 < value)
-              .Subscribe(value => EditorService.Column.Value = value)
+              .Subscribe(value => EditorService.Document.Column.Value = value)
               .AddTo(ref _disposableCollection);
-        CaretIndex.Subscribe(value => EditorService.CaretIndex.Value = value)
+        CaretIndex.Subscribe(value => EditorService.Document.CaretIndex.Value = value)
             .AddTo(ref _disposableCollection);
-        SelectionLength.Subscribe(value => EditorService.SelectionLength.Value = value)
+        SelectionLength.Subscribe(value => EditorService.Document.SelectionLength.Value = value)
             .AddTo(ref _disposableCollection);
         #endregion
     }

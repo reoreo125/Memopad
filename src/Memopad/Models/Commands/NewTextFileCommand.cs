@@ -25,9 +25,9 @@ public class NewTextFileCommand : CommandBase, INewTextFileCommand
         if (SaveTextFileCommand is null) throw new Exception(nameof(SaveTextFileCommand));
 
         var save = false;
-        if (EditorService.IsDirty.Value)
+        if (EditorService.Document.IsDirty.Value)
         {
-            IDialogResult? result = DialogService.ConfirmSave(EditorService.FileNameWithoutExtension.Value);
+            IDialogResult? result = DialogService.ConfirmSave(EditorService.Document.FileNameWithoutExtension.CurrentValue);
             if (result is null) return;
 
             if (result.Result is ButtonResult.Yes)
@@ -41,15 +41,15 @@ public class NewTextFileCommand : CommandBase, INewTextFileCommand
             }
         }
 
-        if (save && string.IsNullOrEmpty(EditorService.FilePath.Value))
+        if (save && string.IsNullOrEmpty(EditorService.Document.FilePath.Value))
         {
             var saveFilePath = DialogService.ShowSaveFile();
             if (saveFilePath is null) return;
 
-            EditorService.FilePath.Value = saveFilePath;
+            EditorService.Document.FilePath.Value = saveFilePath;
         }
 
-        if (save) EditorService.SaveText(EditorService.FilePath.Value);
-        EditorService.Initialize();
+        if (save) EditorService.SaveText(EditorService.Document.FilePath.Value);
+        EditorService.Reset();
     }
 }

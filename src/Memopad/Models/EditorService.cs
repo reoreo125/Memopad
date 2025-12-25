@@ -1,0 +1,157 @@
+using System.IO;
+using System.Text;
+using System.Windows;
+using R3;
+using Reoreo125.Memopad.Models.TextProcessing;
+
+namespace Reoreo125.Memopad.Models;
+
+public interface IEditorService : IDisposable
+{
+    public ReactiveProperty<DateTime> InsertDateTime { get; }
+
+    public EditorDocument Document { get; }
+    public Settings Settings { get; }
+
+    public void Reset();
+    public void NofityAllChanges();
+    public void LoadText(string filePath);
+    public void SaveText();
+    public void SaveText(string filePath);
+}
+
+public sealed class EditorService : IEditorService
+{
+    public bool CanCheckDirty { get; set; } = true;
+
+
+    public ReactiveProperty<DateTime> InsertDateTime { get; } = new(DateTime.MinValue);
+    
+    public EditorDocument Document { get; }
+    public Settings Settings => MemopadSettingsService.Settings;
+    private ISettingsService MemopadSettingsService { get; }
+    private ITextFileService? TextFileService { get; }
+    private DisposableBag _disposableCollection = new();
+    public EditorService(ISettingsService settingsService, ITextFileService textFileService)
+    {
+        MemopadSettingsService = settingsService;
+        TextFileService = textFileService;
+
+        Document = new EditorDocument();
+
+        Reset();
+
+        // テキスト内容が変化したら変更フラグを立てる
+        Document.Text
+            .Pairwise()
+            .Subscribe(pair =>
+            {
+                if (CanCheckDirty && !Document.IsDirty.Value && pair.Previous != pair.Current)
+                {
+                    Document.IsDirty.Value = true;
+                }
+            })
+            .AddTo(ref _disposableCollection);
+
+        // 日付挿入要求が来たらテキストに日付を挿入してキャレット位置を更新
+        InsertDateTime.Subscribe(value =>
+            {
+                if (value == DateTime.MinValue) return;
+
+                var now = DateTime.Now.ToString("H:mm yyyy/MM/dd");
+                var currentText = Document.Text.Value ?? ""; // 生成後は最新の Value が取れる
+                var start = Document.CaretIndex.Value;
+                var length = Document.SelectionLength.Value;
+
+                // 文字列挿入
+                var newText = currentText.Remove(start, length).Insert(start, now);
+
+                Document.Text.Value = newText;
+
+                Document.CaretIndex.Value = start + now.Length;
+            })
+            .AddTo(ref _disposableCollection);
+    }
+
+    private void EnableCheckDirty() => CanCheckDirty = true;
+    private void DisableCheckDirty() => CanCheckDirty = false;
+
+    public void Reset()
+    {
+        Document.Text.Value = string.Empty;
+        Document.FilePath.Value = string.Empty;
+
+        Document.Encoding.Value = Defaults.Encoding;
+        Document.HasBom.Value = Defaults.HasBOM;
+        Document.LineEnding.Value = Defaults.LineEnding;
+        Document.IsDirty.Value = false;
+
+        Document.Row.Value = 1;
+        Document.Column.Value = 1;
+
+        NofityAllChanges();
+    }
+    public void NofityAllChanges()
+    {
+        Document.FilePath.ForceNotify();
+        Document.Text.ForceNotify();
+        Document.IsDirty.ForceNotify();
+        Document.Row.ForceNotify();
+        Document.Column.ForceNotify();
+        Document.Encoding.ForceNotify();
+        Document.HasBom.ForceNotify();
+        Document.LineEnding.ForceNotify();
+        Document.IsDirty.ForceNotify();
+
+        Settings.ShowStatusBar.ForceNotify();
+    }
+    public void LoadText(string filePath)
+    {
+        if (TextFileService is null) throw new Exception("TextFileService");
+        var result = TextFileService.Load(filePath);
+
+        if (!result.IsSuccess)
+        {
+            MessageBox.Show("ファイルの読み込みに失敗しました。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
+        DisableCheckDirty();
+
+        Reset();
+        Document.Text.Value = result.Content;
+        Document.Encoding.Value = result.Encoding;
+        Document.HasBom.Value = result.HasBOM;
+        // LineEnding が不明な場合はデフォルト値を使う
+        Document.LineEnding.Value = (result.LineEnding is TextProcessing.LineEnding.Unknown) ? Defaults.LineEnding : result.LineEnding;
+        Document.FilePath.Value = result.FilePath;
+
+        EnableCheckDirty();
+    }
+    public void SaveText() => SaveText(Document.FilePath.Value);
+    public void SaveText(string filePath)
+    {
+        if (TextFileService is null) throw new Exception(nameof(TextFileService));
+
+        var result = TextFileService.Save(filePath, Document.Text.Value, Document.Encoding.Value, Document.HasBom.Value, Document.LineEnding.Value);
+
+        if (!result.IsSuccess)
+        {
+            MessageBox.Show("ファイルの保存に失敗しました。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
+        DisableCheckDirty();
+
+        Document.FilePath.Value = result.FilePath;
+        Document.IsDirty.Value = false;
+
+        EnableCheckDirty();
+
+        NofityAllChanges();
+    }
+    public void Dispose()
+    {
+        _disposableCollection.Dispose();
+    }
+}

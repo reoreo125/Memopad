@@ -23,12 +23,12 @@ public class SaveTextFileCommand : CommandBase, ISaveTextFileCommand
         if (DialogService is null) throw new Exception(nameof(DialogService));
         if (SaveAsTextFileCommand is null) throw new Exception(nameof(SaveAsTextFileCommand));
 
-        if (string.IsNullOrEmpty(EditorService.FilePath.Value))
+        if (string.IsNullOrEmpty(EditorService.Document.FilePath.Value))
         {
             SaveAsTextFileCommand.Execute(null);
             return;
         }
 
-        EditorService.SaveText(EditorService.FilePath.Value);
+        EditorService.SaveText(EditorService.Document.FilePath.Value);
     }
 }
