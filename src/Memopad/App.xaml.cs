@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using R3;
 using Reoreo125.Memopad.Models;
@@ -24,22 +25,30 @@ public partial class App : PrismApplication
 
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
+        var assembly = Assembly.GetExecutingAssembly();
+
         // Services
         containerRegistry.RegisterSingleton<IMemopadCoreService, MemopadCoreService>();
         containerRegistry.RegisterSingleton<ITextFileService, TextFileService>();
         containerRegistry.RegisterSingleton<IHistoricalService, HistoricalService>();
 
         // Commands
-        containerRegistry.Register<IApplicationExitCommand, ApplicationExitCommand>();
-        containerRegistry.Register<ICloseAboutCommand, CloseAboutCommand>();
-        containerRegistry.Register<IInsertDateTimeCommand, InsertDateTimeCommand>();
-        containerRegistry.Register<INewTextFileCommand, NewTextFileCommand>();
-        containerRegistry.Register<IOpenAboutCommand, OpenAboutCommand>();
-        containerRegistry.Register<IOpenTextFileCommand, OpenTextFileCommand>();
-        containerRegistry.Register<ISaveAsTextFileCommand, SaveAsTextFileCommand>();
-        containerRegistry.Register<IToggleStatusBarCommand, ToggleStatusBarCommand>();
-        containerRegistry.Register<IToggleWordWrapCommand, ToggleWordWrapCommand>();
-        containerRegistry.Register<IZoomCommand, ZoomCommand>();
+        var commandTypes = assembly.GetTypes()
+                                   .Where(t => t.IsClass && !t.IsAbstract)
+                                   .Where(t => t.Namespace != null && t.Namespace.EndsWith("Models.Commands"));
+        foreach (var type in commandTypes)
+        {
+            // 命名規則「I + クラス名」に一致するインターフェースを探す
+            var interfaceName = $"I{type.Name}";
+            var serviceInterface = type.GetInterfaces()
+                                       .FirstOrDefault(i => i.Name == interfaceName);
+
+            if (serviceInterface != null)
+            {
+                containerRegistry.Register(serviceInterface, type);
+                Debug.WriteLine($"RegisteredCommands : {interfaceName} -> {type.Name}");
+            }
+        }
 
         // ViewModels
         containerRegistry.RegisterSingleton<MainWindowViewModel>();
