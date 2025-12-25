@@ -31,6 +31,7 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<IMemopadCoreService, MemopadCoreService>();
         containerRegistry.RegisterSingleton<ITextFileService, TextFileService>();
         containerRegistry.RegisterSingleton<IHistoricalService, HistoricalService>();
+        containerRegistry.RegisterSingleton<IMemopadDialogService, MemopadDialogService>();
 
         // Commands(全てTransientなのでリフレクション処理)
         var commandTypes = assembly.GetTypes()

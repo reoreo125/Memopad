@@ -132,6 +132,7 @@ public class TextFileService : ITextFileService
     }
     public bool Exists(string filePath) => File.Exists(filePath);
 
+
     public static LineEnding GetLineEndingFromString(string lineEnding) => lineEnding switch
     {
         "\r\n" => LineEnding.CRLF,

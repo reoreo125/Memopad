@@ -1,5 +1,8 @@
 using System.Windows;
 using System.Windows.Input;
+using R3;
+using Reoreo125.Memopad.Models.History;
+using Reoreo125.Memopad.Views.Dialogs;
 
 namespace Reoreo125.Memopad.Models.Commands;
 
@@ -8,6 +11,8 @@ public class NewTextFileCommand : CommandBase, INewTextFileCommand
 {
     [Dependency]
     public IMemopadCoreService? MemopadCoreService { get; set; }
+    [Dependency]
+    public IMemopadDialogService? MemopadDialogService { get; set; }
 
     public override bool CanExecute(object? parameter) => true;
 
@@ -15,17 +20,11 @@ public class NewTextFileCommand : CommandBase, INewTextFileCommand
     {
         if (MemopadCoreService is null) throw new Exception("MemopadCoreService");
 
-        if(MemopadCoreService.IsDirty.Value)
-        {
-            /*
-            var result = MessageBox.Show(
-                "新しいファイルを作成します。現在の内容は保存されません。",
-                "確認",
-                MessageBoxButton.OKCancel,
-                MessageBoxImage.Warning);
+        IDialogResult? result = null;
 
-            if (result != MessageBoxResult.OK) return;
-            */
+        if (MemopadCoreService.IsDirty.Value)
+        {
+
         }
         
 
