@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Windows.Controls;
 using R3;
 using Reoreo125.Memopad.Models.TextProcessing;
 

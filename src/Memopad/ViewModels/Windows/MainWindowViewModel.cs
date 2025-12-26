@@ -4,11 +4,15 @@ using System.Windows;
 using System.Windows.Controls;
 using R3;
 using Reoreo125.Memopad.Models;
+using Reoreo125.Memopad.Models.Commands;
 
 namespace Reoreo125.Memopad.ViewModels.Windows;
 
 public class MainWindowViewModel : BindableBase, IDisposable
 {
+    [Dependency]
+    public ICutCommand? CutCommand { get; set; }
+
     public BindableReactiveProperty<string> Title { get; }
     public BindableReactiveProperty<string> Text { get; }
     public BindableReactiveProperty<int> Row { get; }
@@ -19,7 +23,10 @@ public class MainWindowViewModel : BindableBase, IDisposable
     public BindableReactiveProperty<int> CaretIndex { get; }
     public BindableReactiveProperty<int> SelectionLength { get; }
 
-    protected IEditorService EditorService => _editorService;
+    // 新しいGuidをセットするとViewでCutが走る
+    public ReactiveProperty<Guid> CutTrigger { get; } = new(Guid.Empty);
+
+    public IEditorService EditorService => _editorService;
     private readonly IEditorService _editorService;
     private DisposableBag _disposableCollection = new();
 
@@ -59,7 +66,7 @@ public class MainWindowViewModel : BindableBase, IDisposable
             .ToBindableReactiveProperty(0);
 
         SelectionLength = EditorService.Document.SelectionLength
-            .ToBindableReactiveProperty(0);
+            .ToBindableReactiveProperty(0);          
 
         #endregion
 

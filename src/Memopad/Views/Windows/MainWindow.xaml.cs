@@ -1,19 +1,34 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using R3;
+using Reoreo125.Memopad.Models;
 using Reoreo125.Memopad.Models.Commands;
 using Reoreo125.Memopad.ViewModels.Windows;
 
 namespace Reoreo125.Memopad.Views.Windows;
 
-public partial class MainWindow : Window
+public partial class MainWindow : Window, IDisposable
 {
     [Dependency]
     public ZoomCommand? ZoomCommand { get; set; }
 
+    private DisposableBag _disposableCollection = new();
+
     public MainWindow()
     {
         InitializeComponent();
+
+        var vm = DataContext as MainWindowViewModel;
+        if (vm is null) throw new Exception(nameof(DataContext));
+
+        vm.EditorService.RequestCut
+            .Subscribe(_ =>
+            {
+                EditorBox.Cut();
+            })
+            .AddTo(ref _disposableCollection);
+
     }
     void OnSelectionChanged(object sender, RoutedEventArgs e)
     {
@@ -60,5 +75,10 @@ public partial class MainWindow : Window
             // イベントをここで完結させ、通常のスクロールを防ぐ
             e.Handled = true;
         }
+    }
+
+    public void Dispose()
+    {
+        _disposableCollection.Dispose();
     }
 }

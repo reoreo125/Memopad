@@ -28,6 +28,8 @@ public class MemopadMenuViewModel : BindableBase
     public ISaveAsTextFileCommand? SaveAsTextFileCommand { get; set; }
     [Dependency]
     public IOpenNewWindowCommand? OpenNewWindowCommand { get; set; }
+    [Dependency]
+    public ICutCommand? CutCommand { get; set; }
 
     public BindableReactiveProperty<bool> ShowStatusBar { get; }
     public BindableReactiveProperty<bool> IsWordWrap { get; }

@@ -16,11 +16,17 @@ public interface IEditorService : IDisposable
     public void LoadText(string filePath);
     public void SaveText();
     public void SaveText(string filePath);
-    void InsertText(string text);
+    public void InsertText(string text);
+
+    public Observable<Unit> RequestCut { get; }
+    public void Cut();
 }
 
 public sealed class EditorService : IEditorService
 {
+    private readonly Subject<Unit> _requestCutSubject = new Subject<Unit>();
+    public Observable<Unit> RequestCut => _requestCutSubject;
+
     public bool CanCheckDirty { get; set; } = true;
 
     public EditorDocument Document { get; }
@@ -145,6 +151,8 @@ public sealed class EditorService : IEditorService
         // 選択範囲は解除されるので0にする
         Document.SelectionLength.Value = 0;
     }
+
+    public void Cut() => _requestCutSubject.OnNext(Unit.Default);
 
     public void Dispose()
     {
