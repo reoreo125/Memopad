@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,6 +12,8 @@ public partial class MainWindow : Window, IDisposable
 {
     [Dependency]
     public ZoomCommand? ZoomCommand { get; set; }
+    [Dependency]
+    public ExitCommand? ExitCommand { get; set; }
 
     private DisposableBag _disposableCollection = new();
 
@@ -89,6 +92,21 @@ public partial class MainWindow : Window, IDisposable
             e.Handled = true;
         }
     }
+
+    private bool _isclosing = false;
+    private async void Window_Closing(object sender, CancelEventArgs e)
+    {
+        // 既定の動作をキャンセル
+        e.Cancel = true;
+
+        // 既に終了処理中なら何もしない（二重動作防止）
+        if (_isclosing) return;
+
+        _isclosing = true;
+        ExitCommand!.Execute(null);
+        _isclosing = false;
+    }
+    
 
     public void Dispose()
     {

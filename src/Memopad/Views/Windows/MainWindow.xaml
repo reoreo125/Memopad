@@ -14,7 +14,9 @@
         Width="900"
         Icon="/Resources/app.ico"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="CanResizeWithGrip">
+        ResizeMode="CanResizeWithGrip"
+        Closing="Window_Closing">
+    
     <DockPanel>
         <!-- Menu Component -->
         <comp:Menu DockPanel.Dock="Top" />
