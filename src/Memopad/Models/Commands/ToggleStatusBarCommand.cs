@@ -2,20 +2,18 @@ using System.Windows.Input;
 
 namespace Reoreo125.Memopad.Models.Commands;
 
-public interface IToggleStatusBarCommand : ICommand
-{
-}
+public interface IToggleStatusBarCommand : ICommand {}
 
 public class ToggleStatusBarCommand : CommandBase, IToggleStatusBarCommand
 {
     [Dependency]
-    public IEditorService? EditorService { get; set; }
+    public ISettingsService? SettingsService { get; set; }
     public override bool CanExecute(object? parameter) => true;
 
     public override void Execute(object? parameter)
     {
-        if (EditorService is null) throw new Exception(nameof(EditorService));
+        if (SettingsService is null) throw new Exception(nameof(SettingsService));
 
-        EditorService.Settings.ShowStatusBar.Value = !EditorService.Settings.ShowStatusBar.Value;
+        SettingsService.Settings.ShowStatusBar.Value = !SettingsService.Settings.ShowStatusBar.Value;
     }
 }

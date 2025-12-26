@@ -43,15 +43,18 @@ public class MenuViewModel : BindableBase
 
     protected IEditorService EditorService => _editorService;
     private readonly IEditorService _editorService;
+    protected ISettingsService SettingsService => _settingsService;
+    private readonly ISettingsService _settingsService;
 
-    public MenuViewModel(IEditorService editorService)
+    public MenuViewModel(IEditorService editorService, ISettingsService settingsService)
     {
         _editorService = editorService ?? throw new ArgumentNullException(nameof(EditorService));
+        _settingsService = settingsService ?? throw new ArgumentNullException(nameof(SettingsService));
 
         #region Model -> ViewModel -> View
-        ShowStatusBar = EditorService.Settings.ShowStatusBar
+        ShowStatusBar = SettingsService.Settings.ShowStatusBar
             .ToBindableReactiveProperty(true);
-        IsWordWrap = EditorService.Settings.IsWordWrap
+        IsWordWrap = SettingsService.Settings.IsWordWrap
             .ToBindableReactiveProperty(true);
         #endregion
     }

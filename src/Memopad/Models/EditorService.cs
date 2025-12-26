@@ -14,7 +14,6 @@ public interface IEditorService : IDisposable
     public Observable<string> RequestInsert { get; }
 
     public EditorDocument Document { get; }
-    public Settings Settings { get; }
 
     public void Reset();
     public void LoadText(string filePath);
@@ -41,19 +40,15 @@ public sealed class EditorService : IEditorService
     public Observable<string> RequestInsert => _requestInsertSubject;
 
     public EditorDocument Document { get; }
-    public Settings Settings => MemopadSettingsService.Settings;
 
-    private ISettingsService MemopadSettingsService { get; }
     private ITextFileService TextFileService { get; }
     private IHistoricalService HistoricalService { get; }
 
     private DisposableBag _disposableCollection = new();
 
-    public EditorService(ISettingsService settingsService,
-                         ITextFileService textFileService,
+    public EditorService(ITextFileService textFileService,
                          IHistoricalService historicalService)
     {
-        MemopadSettingsService = settingsService;
         TextFileService = textFileService;
         HistoricalService = historicalService;
 

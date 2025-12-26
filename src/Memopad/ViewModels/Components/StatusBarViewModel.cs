@@ -16,16 +16,20 @@ public class StatusBarViewModel : BindableBase, IDisposable
 
     protected IEditorService EditorService => _editorService;
     private readonly IEditorService _editorService;
+    protected ISettingsService SettingsService => _settingsService;
+    private readonly ISettingsService _settingsService;
+
 
     private DisposableBag _disposableCollection = new();
 
-    public StatusBarViewModel(IEditorService editorService)
+    public StatusBarViewModel(IEditorService editorService, ISettingsService settingsService)
     {
         _editorService = editorService ?? throw new ArgumentNullException(nameof(EditorService));
+        _settingsService = settingsService ?? throw new ArgumentNullException(nameof(SettingsService));
 
         #region Model -> ViewModel -> View
 
-        ShowStatusBar = EditorService.Settings.ShowStatusBar
+        ShowStatusBar = SettingsService.Settings.ShowStatusBar
             .Select(value => value ? Visibility.Visible : Visibility.Collapsed)
             .ToBindableReactiveProperty(Visibility.Visible);
         PositionText = Observable.Merge
@@ -35,7 +39,7 @@ public class StatusBarViewModel : BindableBase, IDisposable
             )
             .Select(_ => $"{EditorService.Document.Row.Value}行、{EditorService.Document.Column.Value}列")
             .ToBindableReactiveProperty(Defaults.PositionText);
-        ZoomLevelText = EditorService.Settings.ZoomLevel
+        ZoomLevelText = SettingsService.Settings.ZoomLevel
             .Select(value => $"{(int)(value * 100)}%")
             .ToBindableReactiveProperty(Defaults.ZoomLevelText);
         LineEndingText = EditorService.Document.LineEnding

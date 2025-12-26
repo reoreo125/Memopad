@@ -30,12 +30,16 @@ public class MainWindowViewModel : BindableBase, IDisposable
 
     public IEditorService EditorService => _editorService;
     private readonly IEditorService _editorService;
+    protected ISettingsService SettingsService => _settingsService;
+    private readonly ISettingsService _settingsService;
+
     private DisposableBag _disposableCollection = new();
 
 
-    public MainWindowViewModel(IEditorService editorService)
+    public MainWindowViewModel(IEditorService editorService, ISettingsService settingsService)
     {
         _editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
+        _settingsService = settingsService ?? throw new ArgumentNullException(nameof(SettingsService));
 
         #region Model -> ViewModel -> View
 
@@ -54,13 +58,13 @@ public class MainWindowViewModel : BindableBase, IDisposable
 
         Row = new BindableReactiveProperty<int>(1);
         Column = new BindableReactiveProperty<int>(1);
-        FontFamily = EditorService.Settings.FontFamilyName
+        FontFamily = SettingsService.Settings.FontFamilyName
             .ToBindableReactiveProperty(Defaults.FontFamilyName);
-        FontSize = EditorService.Settings.ZoomLevel
+        FontSize = SettingsService.Settings.ZoomLevel
             .Select(value => Defaults.FontSize * value)
             .ToBindableReactiveProperty(Defaults.FontSize);
 
-        TextWrapping = EditorService.Settings.IsWordWrap
+        TextWrapping = SettingsService.Settings.IsWordWrap
             .Select(value => value ? System.Windows.TextWrapping.Wrap : System.Windows.TextWrapping.NoWrap)
             .ToBindableReactiveProperty(Defaults.TextWrapping);
 
