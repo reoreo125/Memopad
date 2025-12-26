@@ -10,28 +10,21 @@ public class Settings
     public Observable<Unit> Changed { get; }
 
     [JsonProperty]
-    public ReactiveProperty<string> LastOpenedFolderPath { get; set; }
+    public ReactiveProperty<string> LastOpenedFolderPath { get; set; } = new(Defaults.LastOpenedFolderPath);
     [JsonProperty]
-    public ReactiveProperty<string> FontFamilyName { get; set; }
+    public ReactiveProperty<string> FontFamilyName { get; set; } = new(Defaults.FontFamilyName);
     [JsonProperty]
-    public ReactiveProperty<int> FontSize { get; set; }
+    public ReactiveProperty<int> FontSize { get; set; } = new(Defaults.FontSize);
     [JsonProperty]
-    public ReactiveProperty<bool> IsWordWrap { get; set; }
+    public ReactiveProperty<bool> IsWordWrap { get; set; } = new(Defaults.IsWrapping);
     [JsonProperty]
-    public ReactiveProperty<bool> ShowStatusBar { get; set; }
+    public ReactiveProperty<bool> ShowStatusBar { get; set; } = new(Defaults.ShowStatusBar);
     [JsonProperty]
-    public ReactiveProperty<double> ZoomLevel { get; set; }
+    public ReactiveProperty<double> ZoomLevel { get; set; } = new(Defaults.ZoomLevel);
 
     [JsonConstructor]
     public Settings()
     {
-        LastOpenedFolderPath    = new ReactiveProperty<string>(Defaults.LastOpenedFolderPath);
-        FontFamilyName          = new ReactiveProperty<string>(Defaults.FontFamilyName);
-        FontSize                = new ReactiveProperty<int>(Defaults.FontSize);
-        IsWordWrap              = new ReactiveProperty<bool>(Defaults.IsWrapping);
-        ShowStatusBar           = new ReactiveProperty<bool> (Defaults.ShowStatusBar);
-        ZoomLevel               = new ReactiveProperty<double> (Defaults.ZoomLevel);
-        
         Changed = Observable.Merge
             (
                 LastOpenedFolderPath.AsUnitObservable(),
