@@ -1,6 +1,4 @@
 using Microsoft.Win32;
-using Prism.Dialogs;
-using R3;
 using Reoreo125.Memopad.Views.Dialogs;
 
 using PrismDialogService = Prism.Dialogs.DialogService;

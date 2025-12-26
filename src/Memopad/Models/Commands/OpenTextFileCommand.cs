@@ -1,8 +1,5 @@
-using System.Windows;
 using System.Windows.Input;
-using Microsoft.Win32;
 using Reoreo125.Memopad.Models.TextProcessing;
-using Reoreo125.Memopad.Views.Dialogs;
 
 namespace Reoreo125.Memopad.Models.Commands;
 

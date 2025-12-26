@@ -1,8 +1,4 @@
-using System.Windows;
 using System.Windows.Input;
-using R3;
-using Reoreo125.Memopad.Models.History;
-using Reoreo125.Memopad.Views.Dialogs;
 
 namespace Reoreo125.Memopad.Models.Commands;
 

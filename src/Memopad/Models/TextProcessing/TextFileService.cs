@@ -1,6 +1,5 @@
 using System.IO;
 using System.Text;
-using R3;
 using UtfUnknown;
 
 namespace Reoreo125.Memopad.Models.TextProcessing;

@@ -1,4 +1,3 @@
-using System.Drawing;
 using R3;
 
 namespace Reoreo125.Memopad.Models;
@@ -17,12 +16,12 @@ public class Settings
 
     public Settings()
     {
-        LastOpenedFolderPath = new ReactiveProperty<string>(Defaults.LastOpenedFolderPath);
-        FontFamilyName = new ReactiveProperty<string>(Defaults.FontFamilyName);
-        FontSize = new ReactiveProperty<int>(Defaults.FontSize);
-        IsWordWrap = new ReactiveProperty<bool>(Defaults.IsWrapping);
-        ShowStatusBar = new ReactiveProperty<bool> (Defaults.ShowStatusBar);
-        ZoomLevel = new ReactiveProperty<double> (Defaults.ZoomLevel);
+        LastOpenedFolderPath    = new ReactiveProperty<string>(Defaults.LastOpenedFolderPath);
+        FontFamilyName          = new ReactiveProperty<string>(Defaults.FontFamilyName);
+        FontSize                = new ReactiveProperty<int>(Defaults.FontSize);
+        IsWordWrap              = new ReactiveProperty<bool>(Defaults.IsWrapping);
+        ShowStatusBar           = new ReactiveProperty<bool> (Defaults.ShowStatusBar);
+        ZoomLevel               = new ReactiveProperty<double> (Defaults.ZoomLevel);
 
         Changed = Observable.Merge
             (

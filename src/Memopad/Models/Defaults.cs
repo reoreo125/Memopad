@@ -1,4 +1,3 @@
-using System.Drawing;
 using System.Text;
 using System.Windows;
 using Reoreo125.Memopad.Models.TextProcessing;

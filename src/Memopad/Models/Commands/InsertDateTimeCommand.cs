@@ -1,6 +1,4 @@
-using System.Reflection.Metadata;
 using System.Windows.Input;
-using R3;
 
 namespace Reoreo125.Memopad.Models.Commands;
 

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Reoreo125.Memopad.ViewModels.Dialogs
 {
     public class SaveConfirmDialogViewModel : BindableBase, IDialogAware
