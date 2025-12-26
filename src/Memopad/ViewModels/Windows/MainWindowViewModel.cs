@@ -9,6 +9,9 @@ namespace Reoreo125.Memopad.ViewModels.Windows;
 public class MainWindowViewModel : BindableBase, IDisposable
 {
     [Dependency]
+    public INewTextFileCommand? NewTextFileCommand { get; set; }
+
+    [Dependency]
     public ICutCommand? CutCommand { get; set; }
     [Dependency]
     public ICopyCommand? CopyCommand { get; set; }

@@ -16,7 +16,9 @@
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResizeWithGrip"
         Closing="Window_Closing">
-    
+    <Window.InputBindings>
+        <KeyBinding Gesture="Ctrl+N" Command="{Binding NewTextFileCommand}" />
+    </Window.InputBindings>
     <DockPanel>
         <!-- Menu Component -->
         <comp:Menu DockPanel.Dock="Top" />

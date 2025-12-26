@@ -64,7 +64,6 @@ public class DialogService : IDialogService
     }
     public (bool?, PrintDialog) ShowPrint()
     {
-        // 印刷ダイアログのインスタンスを生成
         PrintDialog printDialog = new PrintDialog();
         return (printDialog.ShowDialog(), printDialog);
     }
