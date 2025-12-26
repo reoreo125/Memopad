@@ -4,7 +4,7 @@ using Reoreo125.Memopad.Models.Commands;
 
 namespace Reoreo125.Memopad.ViewModels.Components;
 
-public class MemopadMenuViewModel : BindableBase
+public class MenuViewModel : BindableBase
 {
     [Dependency]
     public IApplicationExitCommand? ApplicationExitCommand { get; set; }
@@ -44,7 +44,7 @@ public class MemopadMenuViewModel : BindableBase
     protected IEditorService EditorService => _editorService;
     private readonly IEditorService _editorService;
 
-    public MemopadMenuViewModel(IEditorService editorService)
+    public MenuViewModel(IEditorService editorService)
     {
         _editorService = editorService ?? throw new ArgumentNullException(nameof(EditorService));
 

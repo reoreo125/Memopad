@@ -6,7 +6,7 @@ using Reoreo125.Memopad.Models.TextProcessing;
 
 namespace Reoreo125.Memopad.ViewModels.Components;
 
-public class MemopadStatusBarViewModel : BindableBase, IDisposable
+public class StatusBarViewModel : BindableBase, IDisposable
 {
     public BindableReactiveProperty<Visibility> ShowStatusBar { get; }
     public BindableReactiveProperty<string> PositionText { get; }
@@ -19,7 +19,7 @@ public class MemopadStatusBarViewModel : BindableBase, IDisposable
 
     private DisposableBag _disposableCollection = new();
 
-    public MemopadStatusBarViewModel(IEditorService editorService)
+    public StatusBarViewModel(IEditorService editorService)
     {
         _editorService = editorService ?? throw new ArgumentNullException(nameof(EditorService));
 
