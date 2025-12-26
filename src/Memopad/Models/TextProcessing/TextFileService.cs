@@ -9,7 +9,6 @@ public interface ITextFileService
 {
     TextFileLoadResult Load(string filePath);
     TextFileSaveResult Save(string filepath, string text, Encoding encoding, bool hasBom, LineEnding lineEnding);
-    bool Exists(string filePath);
 }
 
 public class TextFileService : ITextFileService
@@ -26,16 +25,28 @@ public class TextFileService : ITextFileService
     }
     public TextFileLoadResult Load(string filePath)
     {
+        var info = new FileInfo(filePath);
+
         var failedResult = new TextFileLoadResult
-            (
-                IsSuccess: false,
-                Content: string.Empty,
-                Encoding: Encoding.Default,
-                HasBOM: false,
-                LineEnding: LineEnding.Unknown,
-                FilePath: filePath
-            );
-        var emptyResult = new TextFileLoadResult
+        (
+            IsSuccess: false,
+            Content: string.Empty,
+            Encoding: Encoding.Default,
+            HasBOM: false,
+            LineEnding: LineEnding.Unknown,
+            FilePath: filePath
+        );
+
+        // ファイルが存在しない
+        if (!info.Exists)
+        {
+            return failedResult;
+        }
+
+        // ファイルが空
+        if (info.Length == 0)
+        {
+            var emptyResult = new TextFileLoadResult
             (
                 IsSuccess: true,
                 Content: string.Empty,
@@ -44,80 +55,43 @@ public class TextFileService : ITextFileService
                 LineEnding: Defaults.LineEnding,
                 FilePath: filePath
             );
+            return emptyResult;
+        }
 
-        var info = new FileInfo(filePath);
-        if (!info.Exists) return failedResult;
-        if (info.Length == 0) return emptyResult;
+        // ファイルのエンコーディングを検出
+        var detection = CharsetDetector.DetectFromFile(filePath);
+        DetectionDetail encodingResult = detection.Detected;
+
+        // バイナリっぽかったら読み込むだけにする
+        if (detection.Details.Count == 0 && detection.Detected is null)
+        {
+            var binaryResult = new TextFileLoadResult
+            (
+                IsSuccess: true,
+                Content: File.ReadAllText(filePath, Defaults.Encoding),
+                Encoding: Defaults.Encoding,
+                HasBOM: Defaults.HasBOM,
+                LineEnding: Defaults.LineEnding,
+                FilePath: filePath
+            );
+            return binaryResult;
+        }
+
+        // US-ASCIIはUTF-8とする。
+        if (detection.Detected.Encoding == Encoding.ASCII)
+        {
+            detection.Detected.Encoding = Encoding.UTF8;
+        }
 
         try
         {
-            // ファイルのエンコーディングを検出
-            var detection = CharsetDetector.DetectFromFile(filePath);
-
-            // バイナリっぽかったら読み込むだけにする
-            if(detection.Details.Count == 0 && detection.Detected is null)
-            {
-                var binaryResult = new TextFileLoadResult
-                (
-                    IsSuccess: true,
-                    Content: File.ReadAllText(filePath, Defaults.Encoding),
-                    Encoding: Defaults.Encoding,
-                    HasBOM: Defaults.HasBOM,
-                    LineEnding: Defaults.LineEnding,
-                    FilePath: filePath
-                );
-                return binaryResult;
-            }
-
-
-            DetectionDetail encodingResult = detection.Detected;
-
-            // US-ASCIIはUTF-8とする。
-            if(detection.Detected.Encoding == Encoding.ASCII)
-            {
-                detection.Detected.Encoding = Encoding.UTF8;
-            }
-
-            // 改行コードのチェック
-            LineEnding lineEnding = LineEnding.Unknown;
-            using (var reader = new StreamReader(filePath, encodingResult.Encoding))
-            {
-                int c;
-                while ((c = reader.Read()) != -1)
-                {
-                    if (c == '\r')
-                    {
-                        if (reader.Peek() == '\n')
-                        {
-                            lineEnding = LineEnding.CRLF; // CRLF (Windows)
-                            break;
-                        }
-                        lineEnding = LineEnding.CR; // CR (古いMac)
-                        break;
-                    }
-                    if (c == '\n')
-                    {
-                        lineEnding = LineEnding.LF; // LF (Unix/Linux/macOS)
-                        break;
-                    }
-                }
-            }
-
-            var fileContent = File.ReadAllText(filePath, encodingResult.Encoding);
-
-            // 内部用に改行コードを CRLF に統一する処理
-            var sb = new StringBuilder();
-            sb.Append(fileContent);
-            // 混在している可能性も考慮し、一旦すべて \n (LF) に統一
-            sb.Replace("\r\n", "\n");
-            sb.Replace("\r", "\n");
-            // すべての \n を \r\n (CRLF) に変換
-            // これにより、LFのみ、CRのみ、混在ファイルがすべて CRLF に統一される
-            sb.Replace("\n", "\r\n");
+            var lineEnding = DetectLineEnding(filePath, encodingResult.Encoding);
+            var text = File.ReadAllText(filePath, encodingResult.Encoding);
+            var normalized = NormalizeLineEndingsToCRLF(text);
 
             var successResult = new TextFileLoadResult(
                 IsSuccess: true,
-                Content: sb.ToString(),
+                Content: normalized,
                 Encoding: encodingResult.Encoding,
                 HasBOM: encodingResult.HasBOM,
                 LineEnding: lineEnding,
@@ -130,6 +104,48 @@ public class TextFileService : ITextFileService
             return failedResult;
         }
 
+    }
+    private static LineEnding DetectLineEnding(string filePath, Encoding encoding)
+    {
+        // 改行コードの検出
+        LineEnding lineEnding = LineEnding.Unknown;
+        using (var reader = new StreamReader(filePath, encoding))
+        {
+            int c;
+            while ((c = reader.Read()) != -1)
+            {
+                if (c == '\r')
+                {
+                    if (reader.Peek() == '\n')
+                    {
+                        lineEnding = LineEnding.CRLF; // CRLF (Windows)
+                        break;
+                    }
+                    lineEnding = LineEnding.CR; // CR (古いMac)
+                    break;
+                }
+                if (c == '\n')
+                {
+                    lineEnding = LineEnding.LF; // LF (Unix/Linux/macOS)
+                    break;
+                }
+            }
+        }
+        return lineEnding;
+    }
+    private static string NormalizeLineEndingsToCRLF(string text)
+    {
+        // 内部用に改行コードを CRLF に統一する処理
+        var sb = new StringBuilder();
+        sb.Append(text);
+        // 混在している可能性も考慮し、一旦すべて \n (LF) に統一
+        sb.Replace("\r\n", "\n");
+        sb.Replace("\r", "\n");
+        // すべての \n を \r\n (CRLF) に変換
+        // これにより、LFのみ、CRのみ、混在ファイルがすべて CRLF に統一される
+        sb.Replace("\n", "\r\n");
+
+        return sb.ToString();
     }
     public TextFileSaveResult Save(string filepath, string text, Encoding encoding, bool hasBom, LineEnding lineEnding)
     {
@@ -192,8 +208,6 @@ public class TextFileService : ITextFileService
                 );
         }
     }
-    public bool Exists(string filePath) => File.Exists(filePath);
-
 
     public static LineEnding GetLineEndingFromString(string lineEnding) => lineEnding switch
     {
@@ -210,23 +224,4 @@ public class TextFileService : ITextFileService
         _ => string.Empty
     };
 
-}
-public record TextFileLoadResult(
-    bool IsSuccess,
-    string Content,
-    Encoding Encoding,
-    bool HasBOM,
-    LineEnding LineEnding,
-    string FilePath
-    );
-public record TextFileSaveResult(
-    bool IsSuccess,
-    string FilePath
-    );
-public enum LineEnding
-{
-    Unknown,
-    CRLF, // Windows (\r\n)
-    LF,   // Unix/macOS (\n)
-    CR    // Old Mac (\r)
 }
