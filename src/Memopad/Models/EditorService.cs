@@ -1,4 +1,6 @@
+using System.Reflection.Metadata;
 using System.Windows;
+using System.Windows.Threading;
 using R3;
 using Reoreo125.Memopad.Models.History;
 using Reoreo125.Memopad.Models.TextProcessing;
@@ -12,6 +14,8 @@ public interface IEditorService : IDisposable
     public Observable<Unit> RequestPaste { get; }
     public Observable<Unit> RequestDelete { get; }
     public Observable<string> RequestInsert { get; }
+    public Observable<string> RequestLoadText { get; }
+    public Observable<Unit> RequestReset { get; }
 
     public EditorDocument Document { get; }
 
@@ -38,38 +42,24 @@ public sealed class EditorService : IEditorService
     public Observable<Unit> RequestDelete => _requestDeleteSubject;
     private readonly Subject<string> _requestInsertSubject = new();
     public Observable<string> RequestInsert => _requestInsertSubject;
+    private readonly Subject<string> _requestLoadTextSubject = new();
+    public Observable<string> RequestLoadText => _requestLoadTextSubject;
+    private readonly Subject<Unit> _requestResetSubject = new();
+    public Observable<Unit> RequestReset => _requestResetSubject;
 
     public EditorDocument Document { get; }
 
     private ITextFileService TextFileService { get; }
-    private IHistoricalService HistoricalService { get; }
 
     private DisposableBag _disposableCollection = new();
 
-    public EditorService(ITextFileService textFileService,
-                         IHistoricalService historicalService)
+    public EditorService(ITextFileService textFileService)
     {
         TextFileService = textFileService;
-        HistoricalService = historicalService;
 
         Document = new EditorDocument();
     }
 
-    public void Reset()
-    {
-        Document.Text.Value = string.Empty;
-        Document.FilePath.Value = string.Empty;
-
-        Document.Encoding.Value = Defaults.Encoding;
-        Document.HasBom.Value = Defaults.HasBOM;
-        Document.LineEnding.Value = Defaults.LineEnding;
-        Document.IsDirty.Value = false;
-
-        Document.CaretIndex.Value = 0;
-        Document.SelectionLength.Value = 0;
-        Document.Row.Value = 1;
-        Document.Column.Value = 1;
-    }
     public void LoadText(string filePath)
     {
         if (TextFileService is null) throw new Exception("TextFileService");
@@ -83,13 +73,13 @@ public sealed class EditorService : IEditorService
 
         Reset();
         Document.FilePath.Value = result.FilePath;
-        Document.Text.Value = result.Content;
+        Document.BaseText.Value = result.Content;
         Document.Encoding.Value = result.Encoding;
         Document.HasBom.Value = result.HasBOM;
         // LineEnding が不明な場合はデフォルト値を使う
         Document.LineEnding.Value = (result.LineEnding is LineEnding.Unknown) ? Defaults.LineEnding : result.LineEnding;
-        
-        Document.IsDirty.Value = false;
+
+        _requestLoadTextSubject.OnNext(result.Content);
     }
     public void SaveText() => SaveText(Document.FilePath.Value);
     public void SaveText(string filePath)
@@ -105,9 +95,25 @@ public sealed class EditorService : IEditorService
         }
 
         Document.FilePath.Value = result.FilePath;
-        Document.IsDirty.Value = false;
+        Document.BaseText.Value = Document.Text.Value;
     }
+    public void Reset()
+    {
+        Document.Text.Value = string.Empty;
+        Document.BaseText.Value = string.Empty;
+        Document.FilePath.Value = string.Empty;
 
+        Document.Encoding.Value = Defaults.Encoding;
+        Document.HasBom.Value = Defaults.HasBOM;
+        Document.LineEnding.Value = Defaults.LineEnding;
+
+        Document.CaretIndex.Value = 0;
+        Document.SelectionLength.Value = 0;
+        Document.Row.Value = 1;
+        Document.Column.Value = 1;
+
+        _requestResetSubject.OnNext(Unit.Default);
+    }
     public void Cut()
     {
         _requestCutSubject.OnNext(Unit.Default);
@@ -128,6 +134,7 @@ public sealed class EditorService : IEditorService
     {
         _requestInsertSubject.OnNext(text);
     }
+
     public void Dispose()
     {
         _disposableCollection.Dispose();

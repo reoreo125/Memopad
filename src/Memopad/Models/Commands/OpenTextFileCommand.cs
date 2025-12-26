@@ -22,7 +22,7 @@ public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
         if(MemopadDialogService is null) throw new Exception(nameof(MemopadDialogService));
 
         var save = false;
-        if (EditorService.Document.IsDirty.Value)
+        if (EditorService.Document.IsDirty.CurrentValue)
         {
             IDialogResult?  result = MemopadDialogService.ConfirmSave(EditorService.Document.FileNameWithoutExtension.CurrentValue);
             if (result is null) return;

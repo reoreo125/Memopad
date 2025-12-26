@@ -45,7 +45,41 @@ public partial class MainWindow : Window, IDisposable
                 EditorBox.SelectionStart += value.Length;
             })
             .AddTo(ref _disposableCollection);
+        vm.EditorService.RequestLoadText.Subscribe(value =>
+            {
+                EditorBox.IsUndoEnabled = false;
+                EditorBox.IsUndoEnabled = true;
+
+                EditorBox.Text = value;
+
+                EditorBox.CaretIndex = 0;
+            })
+            .AddTo(ref _disposableCollection);
+        vm.EditorService.RequestReset.Subscribe(_ =>
+            {
+                EditorBox.IsUndoEnabled = false;
+                EditorBox.IsUndoEnabled = true;
+
+                EditorBox.Text = string.Empty;
+
+                EditorBox.ScrollToHome();
+                EditorBox.CaretIndex = 0;
+                EditorBox.Focus();
+            })
+            .AddTo (ref _disposableCollection);
     }
+
+    private void EditorBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (DataContext is MainWindowViewModel vm)
+        {
+            var doc = vm.EditorService.Document;
+
+            doc.CanUndo.Value = EditorBox.CanUndo;
+            doc.CanRedo.Value = EditorBox.CanRedo;
+        }
+    }
+
     void OnSelectionChanged(object sender, RoutedEventArgs e)
     {
         if (sender is TextBox textBox)
@@ -112,4 +146,6 @@ public partial class MainWindow : Window, IDisposable
     {
         _disposableCollection.Dispose();
     }
+
+
 }

@@ -28,7 +28,7 @@
 
         <!-- Content Area -->
         <Grid>
-            <TextBox Name="EditorBox" 
+            <TextBox Name="EditorBox"
                      AcceptsReturn="True"
                      AcceptsTab="True"
                      FontFamily="{Binding FontFamily.Value}"
@@ -37,8 +37,9 @@
                      TextWrapping="{Binding TextWrapping.Value}"
                      VerticalScrollBarVisibility="Visible"
                      HorizontalScrollBarVisibility="Visible"
-                     IsUndoEnabled="False"
+                     IsUndoEnabled="true"
                      Text="{Binding Text.Value, UpdateSourceTrigger=PropertyChanged}"
+                     TextChanged="EditorBox_TextChanged"
                      SelectionChanged="OnSelectionChanged"
                      PreviewMouseWheel="TextBox_PreviewMouseWheel"
                      vm:TextBoxBehavior.ObserveSelection="True"

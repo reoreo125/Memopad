@@ -1,4 +1,5 @@
 using System.IO;
+using System.Reflection.Metadata;
 using System.Text;
 using R3;
 using Reoreo125.Memopad.Models.TextProcessing;
@@ -9,21 +10,22 @@ public class EditorDocument : IDisposable
 {
     // --- 根幹データ (Primary State) ---
     public ReactiveProperty<string> Text { get; } = new(string.Empty);
+    public ReactiveProperty<string> BaseText { get; } = new(string.Empty);
     public ReactiveProperty<string> FilePath { get; } = new(string.Empty);
 
     public ReactiveProperty<Encoding> Encoding { get; } = new(Defaults.Encoding);
     public ReactiveProperty<bool> HasBom { get; } = new(Defaults.HasBOM);
     public ReactiveProperty<LineEnding> LineEnding { get; } = new(Defaults.LineEnding);
 
-    public ReactiveProperty<bool> IsDirty { get; } = new (false);
-
     // --- 表示用データ (Derived State) ---
     public ReadOnlyReactiveProperty<string> FileName { get; }
     public ReadOnlyReactiveProperty<string> FileNameWithoutExtension { get; }
     public ReadOnlyReactiveProperty<string> Title { get; }
-
+    public ReadOnlyReactiveProperty<bool> IsDirty { get; }
 
     // --- コンテキスト (Editor State) ---
+    public ReactiveProperty<bool> CanUndo { get; } = new(false);
+    public ReactiveProperty<bool> CanRedo { get; } = new(false);
     public ReactiveProperty<int> CaretIndex { get; } = new(0);
     public ReactiveProperty<int> SelectionLength { get; } = new(0);
     public ReactiveProperty<int> Row { get; } = new(1);
@@ -33,8 +35,11 @@ public class EditorDocument : IDisposable
 
     public EditorDocument()
     {
+        IsDirty = Text.CombineLatest(BaseText, (current, baseText) => current != baseText)
+              .ToReadOnlyReactiveProperty(false);
+
         // タイトルを作るためのインナーメソッド
-        string CreateTitle() => $"{(IsDirty.Value ? "*" : "")}{FileNameWithoutExtension!.CurrentValue} - {Defaults.ApplicationName}";
+        string CreateTitle() => $"{(IsDirty!.CurrentValue ? "*" : "")}{FileNameWithoutExtension!.CurrentValue} - {Defaults.ApplicationName}";
 
         // Derived State の組み立て
         FileName = FilePath.Select(path => string.IsNullOrEmpty(path) ? $"{Defaults.NewFileName}{Defaults.FileExtension}" : Path.GetFileName(path))
@@ -42,21 +47,10 @@ public class EditorDocument : IDisposable
         FileNameWithoutExtension = FilePath.Select(path => string.IsNullOrEmpty(path) ? $"{Defaults.NewFileName}" : Path.GetFileNameWithoutExtension(path))
                                            .ToReadOnlyReactiveProperty($"{Defaults.NewFileName}");
         Title = Observable.Merge(FileNameWithoutExtension!.AsUnitObservable(),
-                                 IsDirty.AsUnitObservable())
+                                 IsDirty!.AsUnitObservable())
                           .Select(_ => CreateTitle())
                           .ToReadOnlyReactiveProperty(CreateTitle());
 
-
-        // テキスト内容が変化したら変更フラグを立てる
-        Text.Pairwise()
-            .Subscribe(pair =>
-            {
-                if (!IsDirty.Value && pair.Previous != pair.Current)
-                {
-                    IsDirty.Value = true;
-                }
-            })
-            .AddTo(ref _disposableCollection);
     }
 
     public void Dispose()

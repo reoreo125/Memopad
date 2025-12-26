@@ -23,7 +23,7 @@ public class ExitCommand : CommandBase, IExitCommand
         if (SaveAsTextFileCommand is null) throw new Exception(nameof(SaveAsTextFileCommand));
 
         var save = false;
-        if (EditorService.Document.IsDirty.Value)
+        if (EditorService.Document.IsDirty.CurrentValue)
         {
             IDialogResult? result = DialogService.ConfirmSave(EditorService.Document.FileNameWithoutExtension.CurrentValue);
             if (result is null) return;

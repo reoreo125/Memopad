@@ -54,11 +54,13 @@ public class MainWindowViewModel : BindableBase, IDisposable
 
         SelectionLength = new BindableReactiveProperty<int>(0);
 
+        
         Text = new BindableReactiveProperty<string>(string.Empty);
+        /*
         Text = EditorService.Document.Text
             .Where(value => Text!.Value != value) // 循環防止
             .ToBindableReactiveProperty(string.Empty);
-
+        */
         Row = new BindableReactiveProperty<int>(1);
         Column = new BindableReactiveProperty<int>(1);
         FontFamily = SettingsService.Settings.FontFamilyName
@@ -80,7 +82,7 @@ public class MainWindowViewModel : BindableBase, IDisposable
         #endregion
 
         #region View -> ViewModel -> Model
-        // TextBoxの内容変更 
+        // TextBoxの内容変更
         Text.Where(value => value is not null)
             .Debounce(TimeSpan.FromMilliseconds(Defaults.TextBoxDebounce))
             .Subscribe(value => EditorService.Document.Text.Value = value)
