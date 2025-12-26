@@ -53,10 +53,7 @@ public partial class App : PrismApplication
         }
 
         // ViewModels
-        containerRegistry.RegisterSingleton<MainWindowViewModel>();
-        containerRegistry.Register<AboutWindowViewModel>();
-        containerRegistry.RegisterSingleton<MenuViewModel>();
-        containerRegistry.RegisterSingleton<StatusBarViewModel>();
+        // containerRegistry.RegisterSingleton<MainWindowViewModel>();
 
         // Dialogs
         containerRegistry.RegisterDialog<SaveConfirmDialog, SaveConfirmDialogViewModel>();

@@ -11,7 +11,7 @@ public class OpenAboutCommand : CommandBase, IOpenAboutCommand
 
     public override void Execute(object? parameter)
     {
-        var aboutWindow = new AboutWindowView
+        var aboutWindow = new AboutWindow
         {
             Owner = Application.Current.MainWindow
         };

@@ -17,10 +17,10 @@
         ResizeMode="CanResizeWithGrip">
     <DockPanel>
         <!-- Menu Component -->
-        <comp:MenuView DockPanel.Dock="Top" />
+        <comp:Menu DockPanel.Dock="Top" />
 
         <!-- Status Bar Component -->
-        <comp:StatusBarView DockPanel.Dock="Bottom" />
+        <comp:StatusBar DockPanel.Dock="Bottom" />
 
         <!-- Content Area -->
         <Grid>
