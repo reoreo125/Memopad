@@ -36,7 +36,8 @@ public class MenuViewModel : BindableBase
     public IPasteCommand? PasteCommand { get; set; }
     [Dependency]
     public IDeleteCommand? DeleteCommand { get; set; }
-
+    [Dependency]
+    public IOpenPrintCommand? OpenPrintCommand { get; set; }
 
     public BindableReactiveProperty<bool> ShowStatusBar { get; }
     public BindableReactiveProperty<bool> IsWordWrap { get; }

@@ -1,8 +1,8 @@
+using System.Windows.Controls;
 using Microsoft.Win32;
 using Reoreo125.Memopad.Views.Dialogs;
-
-using PrismDialogService = Prism.Dialogs.DialogService;
 using IPrismDialogService = Prism.Dialogs.IDialogService;
+using PrismDialogService = Prism.Dialogs.DialogService;
 namespace Reoreo125.Memopad.Models;
 
 public interface IDialogService
@@ -10,6 +10,7 @@ public interface IDialogService
     IDialogResult? ConfirmSave(string fileNameWithoutExtension);
     string? ShowOpenFile();
     string? ShowSaveFile();
+    (bool?, PrintDialog) ShowPrint();
 }
 public class DialogService : IDialogService
 {
@@ -60,5 +61,11 @@ public class DialogService : IDialogService
         if (result is false) return null;
 
         return saveFileDialog.FileName;
+    }
+    public (bool?, PrintDialog) ShowPrint()
+    {
+        // 印刷ダイアログのインスタンスを生成
+        PrintDialog printDialog = new PrintDialog();
+        return (printDialog.ShowDialog(), printDialog);
     }
 }

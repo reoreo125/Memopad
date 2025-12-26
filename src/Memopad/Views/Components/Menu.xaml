@@ -28,7 +28,8 @@
             <Separator />
             <MenuItem Header="ページ設定(_U)..." />
             <MenuItem Header="印刷(_P)..."
-                      InputGestureText="Ctrl+P" />
+                      InputGestureText="Ctrl+P"
+                      Command="{Binding OpenPrintCommand}"/>
             <Separator />
             <MenuItem Header="終了(_X)"
                       InputGestureText="Alt+F4"
