@@ -12,6 +12,8 @@ public class MainWindowViewModel : BindableBase, IDisposable
 {
     [Dependency]
     public ICutCommand? CutCommand { get; set; }
+    [Dependency]
+    public ICopyCommand? CopyCommand { get; set; }
 
     public BindableReactiveProperty<string> Title { get; }
     public BindableReactiveProperty<string> Text { get; }

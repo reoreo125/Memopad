@@ -23,10 +23,10 @@ public partial class MainWindow : Window, IDisposable
         if (vm is null) throw new Exception(nameof(DataContext));
 
         vm.EditorService.RequestCut
-            .Subscribe(_ =>
-            {
-                EditorBox.Cut();
-            })
+            .Subscribe(_ => EditorBox.Cut())
+            .AddTo(ref _disposableCollection);
+        vm.EditorService.RequestCopy
+            .Subscribe(_ => EditorBox.Copy())
             .AddTo(ref _disposableCollection);
 
     }

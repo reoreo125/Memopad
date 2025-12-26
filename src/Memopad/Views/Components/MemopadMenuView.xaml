@@ -44,7 +44,8 @@
                       InputGestureText="Ctrl+X"
                       Command="{Binding CutCommand}"/>
             <MenuItem Header="コピー(_C)"
-                      InputGestureText="Ctrl+C" />
+                      InputGestureText="Ctrl+C"
+                      Command="{Binding CopyCommand}"/>
             <MenuItem Header="貼り付け(_P)"
                       InputGestureText="Ctrl+V" />
             <MenuItem Header="削除(_L)"

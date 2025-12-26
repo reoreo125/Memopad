@@ -2,9 +2,9 @@ using System.Windows.Input;
 
 namespace Reoreo125.Memopad.Models.Commands;
 
-public interface ICutCommand : ICommand {}
+public interface ICopyCommand : ICommand {}
 
-public class CutCommand : CommandBase, ICutCommand
+public class CopyCommand : CommandBase, ICopyCommand
 {
     [Dependency]
     public IEditorService? EditorService { get; set; }
@@ -17,6 +17,6 @@ public class CutCommand : CommandBase, ICutCommand
 
         if (!CanExecute(null)) return;
         
-        EditorService.Cut();
+        EditorService.Copy();
     }
 }

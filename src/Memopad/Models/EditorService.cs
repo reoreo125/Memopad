@@ -20,13 +20,17 @@ public interface IEditorService : IDisposable
     public void InsertText(string text);
 
     public Observable<Unit> RequestCut { get; }
+    public Observable<Unit> RequestCopy { get; }
     public void Cut();
+    public void Copy();
 }
 
 public sealed class EditorService : IEditorService
 {
     private readonly Subject<Unit> _requestCutSubject = new Subject<Unit>();
     public Observable<Unit> RequestCut => _requestCutSubject;
+    private readonly Subject<Unit> _requestCopySubject = new Subject<Unit>();
+    public Observable<Unit> RequestCopy => _requestCopySubject;
 
     public bool CanCheckDirty { get; set; } = true;
 
@@ -161,11 +165,12 @@ public sealed class EditorService : IEditorService
 
     public void Cut()
     {
-
-
         _requestCutSubject.OnNext(Unit.Default);
     }
-
+    public void Copy()
+    {
+        _requestCopySubject.OnNext(Unit.Default);
+    }
     public void Dispose()
     {
         _disposableCollection.Dispose();

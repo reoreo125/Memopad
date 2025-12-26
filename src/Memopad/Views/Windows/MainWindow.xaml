@@ -42,6 +42,7 @@
                      vm:TextBoxBehavior.BindableSelectionLength="{Binding SelectionLength.Value}">
                 <TextBox.InputBindings>
                     <KeyBinding Gesture="Ctrl+X" Command="{Binding CutCommand}"/>
+                    <KeyBinding Gesture="Ctrl+C" Command="{Binding CopyCommand}"/>
                 </TextBox.InputBindings>
             </TextBox>
         </Grid>
