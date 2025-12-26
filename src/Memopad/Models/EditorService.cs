@@ -9,21 +9,19 @@ namespace Reoreo125.Memopad.Models;
 
 public interface IEditorService : IDisposable
 {
-    public EditorDocument Document { get; }
-    public Settings Settings { get; }
-
-    public void Reset();
-    public void NofityAllChanges();
-    public void LoadText(string filePath);
-    public void SaveText();
-    public void SaveText(string filePath);
-
     public Observable<Unit> RequestCut { get; }
     public Observable<Unit> RequestCopy { get; }
     public Observable<Unit> RequestPaste { get; }
     public Observable<Unit> RequestDelete { get; }
     public Observable<string> RequestInsert { get; }
 
+    public EditorDocument Document { get; }
+    public Settings Settings { get; }
+
+    public void Reset();
+    public void LoadText(string filePath);
+    public void SaveText();
+    public void SaveText(string filePath);
     public void Cut();
     public void Copy();
     public void Paste();
@@ -46,9 +44,10 @@ public sealed class EditorService : IEditorService
 
     public EditorDocument Document { get; }
     public Settings Settings => MemopadSettingsService.Settings;
+
     private ISettingsService MemopadSettingsService { get; }
-    private ITextFileService? TextFileService { get; }
-    private IHistoricalService? HistoricalService { get; }
+    private ITextFileService TextFileService { get; }
+    private IHistoricalService HistoricalService { get; }
 
     private DisposableBag _disposableCollection = new();
 
@@ -61,8 +60,6 @@ public sealed class EditorService : IEditorService
         HistoricalService = historicalService;
 
         Document = new EditorDocument();
-
-        Reset();
     }
 
     public void Reset()
@@ -79,22 +76,6 @@ public sealed class EditorService : IEditorService
         Document.SelectionLength.Value = 0;
         Document.Row.Value = 1;
         Document.Column.Value = 1;
-
-        NofityAllChanges();
-    }
-    public void NofityAllChanges()
-    {
-        Document.FilePath.ForceNotify();
-        Document.Text.ForceNotify();
-        Document.IsDirty.ForceNotify();
-        Document.Row.ForceNotify();
-        Document.Column.ForceNotify();
-        Document.Encoding.ForceNotify();
-        Document.HasBom.ForceNotify();
-        Document.LineEnding.ForceNotify();
-        Document.IsDirty.ForceNotify();
-
-        Settings.ShowStatusBar.ForceNotify();
     }
     public void LoadText(string filePath)
     {
@@ -132,8 +113,6 @@ public sealed class EditorService : IEditorService
 
         Document.FilePath.Value = result.FilePath;
         Document.IsDirty.Value = false;
-
-        NofityAllChanges();
     }
 
     public void Cut()
@@ -154,20 +133,6 @@ public sealed class EditorService : IEditorService
     }
     public void Insert(string text)
     {
-        /*
-        var currentText = Document.Text.Value ?? "";
-        var start = Document.CaretIndex.Value;
-        var length = Document.SelectionLength.Value;
-
-        // 文字列挿入
-        Document.Text.Value = currentText.Remove(start, length).Insert(start, text);
-
-        // カーソル位置を挿入した文字の直後に移動させる
-        Document.CaretIndex.Value = start + text.Length;
-
-        // 選択範囲は解除されるので0にする
-        Document.SelectionLength.Value = 0;
-        */
         _requestInsertSubject.OnNext(text);
     }
     public void Dispose()
