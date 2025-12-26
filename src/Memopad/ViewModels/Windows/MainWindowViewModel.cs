@@ -28,9 +28,6 @@ public class MainWindowViewModel : BindableBase, IDisposable
     public BindableReactiveProperty<int> CaretIndex { get; }
     public BindableReactiveProperty<int> SelectionLength { get; }
 
-    // 新しいGuidをセットするとViewでCutが走る
-    public ReactiveProperty<Guid> CutTrigger { get; } = new(Guid.Empty);
-
     public IEditorService EditorService => _editorService;
     private readonly IEditorService _editorService;
     protected ISettingsService SettingsService => _settingsService;
@@ -49,18 +46,9 @@ public class MainWindowViewModel : BindableBase, IDisposable
         Title = EditorService.Document.Title
             //.Where(_ => EditorService.CanNotification)
             .ToBindableReactiveProperty(string.Empty);
-
         CaretIndex = new BindableReactiveProperty<int>(0);
-
         SelectionLength = new BindableReactiveProperty<int>(0);
-
-        
         Text = new BindableReactiveProperty<string>(string.Empty);
-        /*
-        Text = EditorService.Document.Text
-            .Where(value => Text!.Value != value) // 循環防止
-            .ToBindableReactiveProperty(string.Empty);
-        */
         Row = new BindableReactiveProperty<int>(1);
         Column = new BindableReactiveProperty<int>(1);
         FontFamily = SettingsService.Settings.FontFamilyName
