@@ -7,7 +7,7 @@ namespace Reoreo125.Memopad.ViewModels.Components;
 public class MenuViewModel : BindableBase
 {
     [Dependency]
-    public IApplicationExitCommand? ApplicationExitCommand { get; set; }
+    public IExitCommand? ApplicationExitCommand { get; set; }
     [Dependency]
     public INewTextFileCommand? NewTextFileCommand { get; set; }
     [Dependency]
