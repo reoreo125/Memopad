@@ -11,12 +11,14 @@ public class CutCommand : CommandBase, ICutCommand
     [Dependency]
     public IEditorService? EditorService { get; set; }
 
-    public override bool CanExecute(object? parameter) => true;
+    public override bool CanExecute(object? parameter) => EditorService?.Document.SelectionLength.Value > 0;
 
     public override void Execute(object? parameter)
     {
         if (EditorService is null) throw new Exception(nameof(EditorService));
 
+        if (!CanExecute(null)) return;
+        
         EditorService.Cut();
     }
 }

@@ -2,6 +2,7 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using R3;
+using Reoreo125.Memopad.Models.History;
 using Reoreo125.Memopad.Models.TextProcessing;
 
 namespace Reoreo125.Memopad.Models;
@@ -33,11 +34,17 @@ public sealed class EditorService : IEditorService
     public Settings Settings => MemopadSettingsService.Settings;
     private ISettingsService MemopadSettingsService { get; }
     private ITextFileService? TextFileService { get; }
+    private IHistoricalService? HistoricalService { get; }
+
     private DisposableBag _disposableCollection = new();
-    public EditorService(ISettingsService settingsService, ITextFileService textFileService)
+
+    public EditorService(ISettingsService settingsService,
+                         ITextFileService textFileService,
+                         IHistoricalService historicalService)
     {
         MemopadSettingsService = settingsService;
         TextFileService = textFileService;
+        HistoricalService = historicalService;
 
         Document = new EditorDocument();
 
@@ -152,7 +159,12 @@ public sealed class EditorService : IEditorService
         Document.SelectionLength.Value = 0;
     }
 
-    public void Cut() => _requestCutSubject.OnNext(Unit.Default);
+    public void Cut()
+    {
+
+
+        _requestCutSubject.OnNext(Unit.Default);
+    }
 
     public void Dispose()
     {
