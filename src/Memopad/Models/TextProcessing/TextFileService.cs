@@ -12,16 +12,6 @@ public interface ITextFileService
 
 public class TextFileService : ITextFileService
 {
-    public Settings LoadSettings()
-    {
-        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-
-        var settings = new Settings
-        {
-
-        };
-        return null;
-    }
     public TextFileLoadResult Load(string filePath)
     {
         var info = new FileInfo(filePath);

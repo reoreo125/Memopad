@@ -1,8 +1,5 @@
-using System.Reflection.Metadata;
 using System.Windows;
-using System.Windows.Threading;
 using R3;
-using Reoreo125.Memopad.Models.History;
 using Reoreo125.Memopad.Models.TextProcessing;
 
 namespace Reoreo125.Memopad.Models;
@@ -107,19 +104,7 @@ public sealed class EditorService : IEditorService
     }
     public void Reset()
     {
-        Document.Text.Value = string.Empty;
-        Document.BaseText.Value = string.Empty;
-        Document.FilePath.Value = string.Empty;
-
-        Document.Encoding.Value = Defaults.Encoding;
-        Document.HasBom.Value = Defaults.HasBOM;
-        Document.LineEnding.Value = Defaults.LineEnding;
-
-        Document.CaretIndex.Value = 0;
-        Document.SelectionLength.Value = 0;
-        Document.Row.Value = 1;
-        Document.Column.Value = 1;
-
+        Document.Reset();
         _requestResetSubject.OnNext(Unit.Default);
     }
     public void Cut()

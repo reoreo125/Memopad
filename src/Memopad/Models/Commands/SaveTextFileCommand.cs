@@ -26,6 +26,6 @@ public class SaveTextFileCommand : CommandBase, ISaveTextFileCommand
             return;
         }
 
-        EditorService.SaveText(EditorService.Document.FilePath.Value);
+        EditorService.SaveText();
     }
 }

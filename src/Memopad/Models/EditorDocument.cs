@@ -1,5 +1,4 @@
 using System.IO;
-using System.Reflection.Metadata;
 using System.Text;
 using R3;
 using Reoreo125.Memopad.Models.TextProcessing;
@@ -50,9 +49,24 @@ public class EditorDocument : IDisposable
                                  IsDirty!.AsUnitObservable())
                           .Select(_ => CreateTitle())
                           .ToReadOnlyReactiveProperty(CreateTitle());
-
     }
+    public void Reset()
+    {
+        Text.Value = string.Empty;
+        BaseText.Value = string.Empty;
+        FilePath.Value = string.Empty;
 
+        Encoding.Value = Defaults.Encoding;
+        HasBom.Value = Defaults.HasBOM;
+        LineEnding.Value = Defaults.LineEnding;
+
+        CanUndo.Value = false;
+        CanRedo.Value = false;
+        CaretIndex.Value = 0;
+        SelectionLength.Value = 0;
+        Row.Value = 1;
+        Column.Value = 1;
+    }
     public void Dispose()
     {
         _disposableCollection.Dispose();

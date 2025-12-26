@@ -3,11 +3,8 @@ using System.Reflection;
 using System.Windows;
 using R3;
 using Reoreo125.Memopad.Models;
-using Reoreo125.Memopad.Models.History;
 using Reoreo125.Memopad.Models.TextProcessing;
-using Reoreo125.Memopad.ViewModels.Components;
 using Reoreo125.Memopad.ViewModels.Dialogs;
-using Reoreo125.Memopad.ViewModels.Windows;
 using Reoreo125.Memopad.Views.Dialogs;
 using Reoreo125.Memopad.Views.Windows;
 
@@ -33,7 +30,6 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<ISettingsService, SettingsService>();
         containerRegistry.RegisterSingleton<IEditorService, EditorService>();
         containerRegistry.RegisterSingleton<ITextFileService, TextFileService>();
-        containerRegistry.RegisterSingleton<IHistoricalService, HistoricalService>();
         containerRegistry.RegisterSingleton<IDialogService, DialogService>();
 
         // Commands(全てTransientなのでリフレクション処理)
