@@ -34,8 +34,8 @@ public class StatusBarViewModel : BindableBase, IDisposable
             .ToBindableReactiveProperty(Visibility.Visible);
         PositionText = Observable.Merge
             (
-                EditorService.Document.Row.Select(_ => string.Empty),
-                EditorService.Document.Column.Select(_ => string.Empty)
+                EditorService.Document.Row.AsUnitObservable(),
+                EditorService.Document.Column.AsUnitObservable()
             )
             .Select(_ => $"{EditorService.Document.Row.Value}行、{EditorService.Document.Column.Value}列")
             .ToBindableReactiveProperty(Defaults.PositionText);
@@ -47,13 +47,12 @@ public class StatusBarViewModel : BindableBase, IDisposable
             .ToBindableReactiveProperty(CreateLineEndingText(Defaults.LineEnding));
         EncodingText = Observable.Merge
             (
-                EditorService.Document.Encoding,
-                EditorService.Document.HasBom.Select(_ => EditorService.Document.Encoding.Value)
+                EditorService.Document.Encoding.AsUnitObservable(),
+                EditorService.Document.HasBom.AsUnitObservable()
             )
-            .Select(encoding => encoding ?? Encoding.UTF8)
-            .Select(encoding =>
+            .Select(_ =>
             {
-                var encodingText = encoding.WebName.ToUpper();
+                var encodingText = EditorService.Document.Encoding.Value.WebName.ToUpper();
                 var bomText = EditorService.Document.HasBom.Value ? "(BOM 付き)" : string.Empty;
                 return $"{encodingText} {bomText}";
             })
@@ -67,7 +66,7 @@ public class StatusBarViewModel : BindableBase, IDisposable
         {
             LineEnding.CRLF => "Windows (CRLF)",
             LineEnding.LF => "Linux (LF)",
-            LineEnding.CR => "MacOS (CR)",
+            LineEnding.CR => "Macintosh (CR)",
             _ => "Unknown"
         };
     }
