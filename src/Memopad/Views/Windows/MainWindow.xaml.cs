@@ -5,6 +5,7 @@ using R3;
 using Reoreo125.Memopad.Models;
 using Reoreo125.Memopad.Models.Commands;
 using Reoreo125.Memopad.ViewModels.Windows;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Reoreo125.Memopad.Views.Windows;
 
@@ -30,6 +31,18 @@ public partial class MainWindow : Window, IDisposable
             .AddTo(ref _disposableCollection);
         vm.EditorService.RequestPaste
             .Subscribe(_ => EditorBox.Paste())
+            .AddTo(ref _disposableCollection);
+        vm.EditorService.RequestDelete
+            .Subscribe(_ => EditorBox.SelectedText = "")
+            .AddTo(ref _disposableCollection);
+        vm.EditorService.RequestInsert
+            .Subscribe(value =>
+            {
+                EditorBox.SelectedText = value;
+
+                EditorBox.SelectionLength = 0;
+                EditorBox.SelectionStart += value.Length;
+            })
             .AddTo(ref _disposableCollection);
     }
     void OnSelectionChanged(object sender, RoutedEventArgs e)

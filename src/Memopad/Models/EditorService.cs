@@ -17,24 +17,33 @@ public interface IEditorService : IDisposable
     public void LoadText(string filePath);
     public void SaveText();
     public void SaveText(string filePath);
-    public void InsertText(string text);
 
     public Observable<Unit> RequestCut { get; }
     public Observable<Unit> RequestCopy { get; }
     public Observable<Unit> RequestPaste { get; }
+    public Observable<Unit> RequestDelete { get; }
+    public Observable<string> RequestInsert { get; }
+
     public void Cut();
     public void Copy();
     public void Paste();
+    public void Delete();
+    public void Insert(string text);
 }
 
 public sealed class EditorService : IEditorService
 {
-    private readonly Subject<Unit> _requestCutSubject = new Subject<Unit>();
+    private readonly Subject<Unit> _requestCutSubject = new();
     public Observable<Unit> RequestCut => _requestCutSubject;
-    private readonly Subject<Unit> _requestCopySubject = new Subject<Unit>();
+    private readonly Subject<Unit> _requestCopySubject = new ();
     public Observable<Unit> RequestCopy => _requestCopySubject;
-    private readonly Subject<Unit> _requestPasteSubject = new Subject<Unit>();
+    private readonly Subject<Unit> _requestPasteSubject = new ();
     public Observable<Unit> RequestPaste => _requestPasteSubject;
+    private readonly Subject<Unit> _requestDeleteSubject = new ();
+    public Observable<Unit> RequestDelete => _requestDeleteSubject;
+    private readonly Subject<string> _requestInsertSubject = new();
+    public Observable<string> RequestInsert => _requestInsertSubject;
+
 
     public bool CanCheckDirty { get; set; } = true;
 
@@ -151,8 +160,25 @@ public sealed class EditorService : IEditorService
         NofityAllChanges();
     }
 
-    public void InsertText(string text)
+    public void Cut()
     {
+        _requestCutSubject.OnNext(Unit.Default);
+    }
+    public void Copy()
+    {
+        _requestCopySubject.OnNext(Unit.Default);
+    }
+    public void Paste()
+    {
+        _requestPasteSubject.OnNext(Unit.Default);
+    }
+    public void Delete()
+    {
+        _requestDeleteSubject.OnNext(Unit.Default);
+    }
+    public void Insert(string text)
+    {
+        /*
         var currentText = Document.Text.Value ?? "";
         var start = Document.CaretIndex.Value;
         var length = Document.SelectionLength.Value;
@@ -165,19 +191,8 @@ public sealed class EditorService : IEditorService
 
         // 選択範囲は解除されるので0にする
         Document.SelectionLength.Value = 0;
-    }
-
-    public void Cut()
-    {
-        _requestCutSubject.OnNext(Unit.Default);
-    }
-    public void Copy()
-    {
-        _requestCopySubject.OnNext(Unit.Default);
-    }
-    public void Paste()
-    {
-        _requestPasteSubject.OnNext(Unit.Default);
+        */
+        _requestInsertSubject.OnNext(text);
     }
     public void Dispose()
     {

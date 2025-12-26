@@ -20,6 +20,6 @@ public class InsertDateTimeCommand : CommandBase, IInsertDateTimeCommand
         if(EditorService is null) throw new Exception(nameof(EditorService));
 
         var now = DateTime.Now.ToString("H:mm yyyy/MM/dd");
-        EditorService.InsertText(now);
+        EditorService.Insert(now);
     }
 }

@@ -45,6 +45,5 @@ public class EditorDocument
                                  IsDirty.AsUnitObservable())
                           .Select(_ => CreateTitle())
                           .ToReadOnlyReactiveProperty(CreateTitle());
-
     }
 }
