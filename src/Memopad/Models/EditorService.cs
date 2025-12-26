@@ -44,9 +44,6 @@ public sealed class EditorService : IEditorService
     private readonly Subject<string> _requestInsertSubject = new();
     public Observable<string> RequestInsert => _requestInsertSubject;
 
-
-    public bool CanCheckDirty { get; set; } = true;
-
     public EditorDocument Document { get; }
     public Settings Settings => MemopadSettingsService.Settings;
     private ISettingsService MemopadSettingsService { get; }
@@ -66,22 +63,7 @@ public sealed class EditorService : IEditorService
         Document = new EditorDocument();
 
         Reset();
-
-        // テキスト内容が変化したら変更フラグを立てる
-        Document.Text
-            .Pairwise()
-            .Subscribe(pair =>
-            {
-                if (CanCheckDirty && !Document.IsDirty.Value && pair.Previous != pair.Current)
-                {
-                    Document.IsDirty.Value = true;
-                }
-            })
-            .AddTo(ref _disposableCollection);
     }
-
-    private void EnableCheckDirty() => CanCheckDirty = true;
-    private void DisableCheckDirty() => CanCheckDirty = false;
 
     public void Reset()
     {
@@ -125,17 +107,15 @@ public sealed class EditorService : IEditorService
             return;
         }
 
-        DisableCheckDirty();
-
         Reset();
+        Document.FilePath.Value = result.FilePath;
         Document.Text.Value = result.Content;
         Document.Encoding.Value = result.Encoding;
         Document.HasBom.Value = result.HasBOM;
         // LineEnding が不明な場合はデフォルト値を使う
         Document.LineEnding.Value = (result.LineEnding is LineEnding.Unknown) ? Defaults.LineEnding : result.LineEnding;
-        Document.FilePath.Value = result.FilePath;
-
-        EnableCheckDirty();
+        
+        Document.IsDirty.Value = false;
     }
     public void SaveText() => SaveText(Document.FilePath.Value);
     public void SaveText(string filePath)
@@ -150,12 +130,8 @@ public sealed class EditorService : IEditorService
             return;
         }
 
-        DisableCheckDirty();
-
         Document.FilePath.Value = result.FilePath;
         Document.IsDirty.Value = false;
-
-        EnableCheckDirty();
 
         NofityAllChanges();
     }

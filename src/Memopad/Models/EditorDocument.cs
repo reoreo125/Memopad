@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Windows.Controls;
 using R3;
@@ -7,7 +8,7 @@ using Reoreo125.Memopad.Models.TextProcessing;
 
 namespace Reoreo125.Memopad.Models;
 
-public class EditorDocument
+public class EditorDocument : IDisposable
 {
     // --- 根幹データ (Primary State) ---
     public ReactiveProperty<string> Text { get; } = new(string.Empty);
@@ -31,6 +32,8 @@ public class EditorDocument
     public ReactiveProperty<int> Row { get; } = new(1);
     public ReactiveProperty<int> Column { get; } = new(1);
 
+    private DisposableBag _disposableCollection = new();
+
     public EditorDocument()
     {
         // タイトルを作るためのインナーメソッド
@@ -45,5 +48,22 @@ public class EditorDocument
                                  IsDirty.AsUnitObservable())
                           .Select(_ => CreateTitle())
                           .ToReadOnlyReactiveProperty(CreateTitle());
+
+
+        // テキスト内容が変化したら変更フラグを立てる
+        Text.Pairwise()
+            .Subscribe(pair =>
+            {
+                if (!IsDirty.Value && pair.Previous != pair.Current)
+                {
+                    IsDirty.Value = true;
+                }
+            })
+            .AddTo(ref _disposableCollection);
+    }
+
+    public void Dispose()
+    {
+        _disposableCollection.Dispose();
     }
 }
