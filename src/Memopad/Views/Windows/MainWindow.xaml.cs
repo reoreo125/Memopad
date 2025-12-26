@@ -28,7 +28,9 @@ public partial class MainWindow : Window, IDisposable
         vm.EditorService.RequestCopy
             .Subscribe(_ => EditorBox.Copy())
             .AddTo(ref _disposableCollection);
-
+        vm.EditorService.RequestPaste
+            .Subscribe(_ => EditorBox.Paste())
+            .AddTo(ref _disposableCollection);
     }
     void OnSelectionChanged(object sender, RoutedEventArgs e)
     {

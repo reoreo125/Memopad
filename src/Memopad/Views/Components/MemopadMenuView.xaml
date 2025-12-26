@@ -47,7 +47,8 @@
                       InputGestureText="Ctrl+C"
                       Command="{Binding CopyCommand}"/>
             <MenuItem Header="貼り付け(_P)"
-                      InputGestureText="Ctrl+V" />
+                      InputGestureText="Ctrl+V"
+                      Command="{Binding PasteCommand}"/>
             <MenuItem Header="削除(_L)"
                       InputGestureText="Del" />
             <Separator />

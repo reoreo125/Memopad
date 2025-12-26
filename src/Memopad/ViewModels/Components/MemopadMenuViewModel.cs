@@ -32,6 +32,8 @@ public class MemopadMenuViewModel : BindableBase
     public ICutCommand? CutCommand { get; set; }
     [Dependency]
     public ICopyCommand? CopyCommand { get; set; }
+    [Dependency]
+    public IPasteCommand? PasteCommand { get; set; }
 
     public BindableReactiveProperty<bool> ShowStatusBar { get; }
     public BindableReactiveProperty<bool> IsWordWrap { get; }
