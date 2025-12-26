@@ -37,9 +37,11 @@
         </MenuItem>
         <MenuItem Header="編集(_E)">
             <MenuItem Header="元に戻す(_U)"
-                      InputGestureText="Ctrl+Z" />
+                      InputGestureText="Ctrl+Z"
+                      Command="{Binding UndoCommand}"/>
             <MenuItem Header="やり直す(_R)"
-                      InputGestureText="Ctrl+Y" />
+                      InputGestureText="Ctrl+Y"
+                      Command="{Binding RedoCommand}"/>
             <Separator />
             <MenuItem Header="切り取り(_T)"
                       InputGestureText="Ctrl+X"

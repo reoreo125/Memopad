@@ -9,13 +9,15 @@ namespace Reoreo125.Memopad.Models;
 
 public interface IEditorService : IDisposable
 {
+    public Observable<Unit> RequestReset { get; }
+    public Observable<string> RequestLoadText { get; }
     public Observable<Unit> RequestCut { get; }
     public Observable<Unit> RequestCopy { get; }
     public Observable<Unit> RequestPaste { get; }
     public Observable<Unit> RequestDelete { get; }
     public Observable<string> RequestInsert { get; }
-    public Observable<string> RequestLoadText { get; }
-    public Observable<Unit> RequestReset { get; }
+    public Observable<Unit> RequestUndo { get; }
+    public Observable<Unit> RequestRedo { get; }
 
     public EditorDocument Document { get; }
 
@@ -28,6 +30,8 @@ public interface IEditorService : IDisposable
     public void Paste();
     public void Delete();
     public void Insert(string text);
+    public void Undo();
+    public void Redo();
 }
 
 public sealed class EditorService : IEditorService
@@ -46,6 +50,10 @@ public sealed class EditorService : IEditorService
     public Observable<string> RequestLoadText => _requestLoadTextSubject;
     private readonly Subject<Unit> _requestResetSubject = new();
     public Observable<Unit> RequestReset => _requestResetSubject;
+    private readonly Subject<Unit> _requestUndoSubject = new();
+    public Observable<Unit> RequestUndo => _requestUndoSubject;
+    private readonly Subject<Unit> _requestRedoSubject = new();
+    public Observable<Unit> RequestRedo => _requestRedoSubject;
 
     public EditorDocument Document { get; }
 
@@ -134,6 +142,16 @@ public sealed class EditorService : IEditorService
     {
         _requestInsertSubject.OnNext(text);
     }
+    public void Undo()
+    {
+        _requestUndoSubject.OnNext(Unit.Default);
+    }
+    public void Redo()
+    {
+        _requestRedoSubject.OnNext(Unit.Default);
+    }
+
+
 
     public void Dispose()
     {

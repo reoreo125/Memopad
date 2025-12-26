@@ -67,6 +67,12 @@ public partial class MainWindow : Window, IDisposable
                 EditorBox.Focus();
             })
             .AddTo (ref _disposableCollection);
+        vm.EditorService.RequestUndo
+            .Subscribe(_ => EditorBox.Undo())
+            .AddTo(ref _disposableCollection);
+        vm.EditorService.RequestRedo
+            .Subscribe(_ => EditorBox.Redo())
+            .AddTo(ref _disposableCollection);
     }
 
     private void EditorBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -80,7 +86,7 @@ public partial class MainWindow : Window, IDisposable
         }
     }
 
-    void OnSelectionChanged(object sender, RoutedEventArgs e)
+    void EditorBox_SelectionChanged(object sender, RoutedEventArgs e)
     {
         if (sender is TextBox textBox)
         {
@@ -104,7 +110,7 @@ public partial class MainWindow : Window, IDisposable
             }
         }
     }
-    void TextBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    void EditorBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
     {
         // Ctrlキーが押されているかチェック
         if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -128,7 +134,7 @@ public partial class MainWindow : Window, IDisposable
     }
 
     private bool _isclosing = false;
-    private async void Window_Closing(object sender, CancelEventArgs e)
+    private async void MainWindow_Closing(object sender, CancelEventArgs e)
     {
         // 既定の動作をキャンセル
         e.Cancel = true;
