@@ -2,7 +2,7 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
 {
     public class FindDialogViewModel : BindableBase, IDialogAware
     {
-        public string? Title { get; set; }
+        public string? Title => "検索";
 
         public DialogCloseListener RequestClose { get; }
 
@@ -13,7 +13,7 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
-            Title = parameters.GetValue<string>("title");
+
         }
         public bool CanCloseDialog() => true;
         public void OnDialogClosed() { }

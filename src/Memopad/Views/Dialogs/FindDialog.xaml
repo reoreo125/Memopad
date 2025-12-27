@@ -15,9 +15,33 @@
         </Style>
     </prism:Dialog.WindowStyle>
     <DockPanel>
-        <Grid Margin="10">
-            <TextBlock Text="{Binding Message}" Margin="0,0,0,20" FontSize="14"/>
-        </Grid>
+        <StackPanel DockPanel.Dock="Right" Margin="10" Orientation="Vertical">
+            <Button Content="次を検索" Width="84" Height="24" Margin="0 0 0 10" />
+            <Button Content="キャンセル" Width="84" Height="24"/>
+        </StackPanel>
+        <DockPanel Margin="10">
+            <DockPanel DockPanel.Dock="Top">
+                <Label DockPanel.Dock="Left" Content="検索する文字列(_N):" Margin="-4 0 20 0"/>
+                <TextBox Width="240"
+                         Height="20"
+                         Padding="2"
+                         VerticalContentAlignment="Center" FontSize="11"/>
+            </DockPanel>
+            <DockPanel>
+                <Grid DockPanel.Dock="Right" VerticalAlignment="Center">
+                    <GroupBox Header="検索する方向" Padding="0 10 10 10">
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Content="上へ(_U)" Margin="0 0 20 0"/>
+                            <RadioButton Content="下へ(_D)"/>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+                <DockPanel LastChildFill="False" Height="90">
+                    <CheckBox Content="折り返しあり(_R)" DockPanel.Dock="Bottom" />
+                    <CheckBox Content="大文字と小文字を区別する(_C)" DockPanel.Dock="Bottom" Margin="0 0 0 8" />
+                </DockPanel>
+            </DockPanel>
+        </DockPanel>
     </DockPanel>
 
 </UserControl>

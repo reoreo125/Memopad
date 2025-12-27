@@ -69,15 +69,10 @@ public class DialogService : IDialogService
     }
     public IDialogResult? ShowFind()
     {
-        var parameters = new DialogParameters
-        {
-            { "title", "検索" },
-        };
-
         IDialogResult? result = null;
         PrismDialogService.Show(
             nameof(FindDialog),
-            parameters,
+            new DialogParameters(),
             _result => result = _result);
 
         return result;
