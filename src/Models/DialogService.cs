@@ -99,7 +99,7 @@ public class DialogService : IDialogService
     public IDialogResult? ShowAbout()
     {
         IDialogResult? result = null;
-        PrismDialogService.Show(
+        PrismDialogService.ShowDialog(
             nameof(AboutDialog),
             new DialogParameters(),
             _result => result = _result);
