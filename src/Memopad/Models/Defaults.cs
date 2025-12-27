@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using System.Windows;
 using Reoreo125.Memopad.Models.TextProcessing;
@@ -6,7 +7,7 @@ namespace Reoreo125.Memopad.Models;
 
 public record Defaults
 {
-    public static string ApplicationName => "Memopad";
+    public static string ApplicationName => Assembly.GetExecutingAssembly().GetName().Name!;
     public static string NewFileName => "無題";
     public static string FileExtension => ".txt";
     public static LineEnding LineEnding => LineEnding.CRLF;
@@ -27,4 +28,7 @@ public record Defaults
     public static string LastOpenedFolderPath => Environment.GetFolderPath(Environment.SpecialFolder.Personal);
     public static int SettingsSaveInterval => 5000;
     public static bool ShowStatusBar => true;
+    public static bool MatchCase => false;
+    public static bool WrapAround => false;
+    public static int SearchTextMaxLength => 128;
 }

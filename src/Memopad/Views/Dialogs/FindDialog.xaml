@@ -4,9 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Reoreo125.Memopad.Views.Dialogs"
+             xmlns:converters="clr-namespace:Reoreo125.Memopad.Views.Converters"
              xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+    </UserControl.Resources>
     <prism:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="ResizeMode" Value="NoResize"/>
@@ -16,8 +20,15 @@
     </prism:Dialog.WindowStyle>
     <DockPanel>
         <StackPanel DockPanel.Dock="Right" Margin="10" Orientation="Vertical">
-            <Button Content="次を検索" Width="84" Height="24" Margin="0 0 0 10" />
-            <Button Content="キャンセル" Width="84" Height="24"/>
+            <Button Content="次を検索"
+                    Width="84"
+                    Height="24"
+                    Margin="0 0 0 10"
+                    Command="{Binding FindCommand}"/>
+            <Button Content="キャンセル"
+                    Width="84"
+                    Height="24"
+                    Command="{Binding CancelCommand}"/>
         </StackPanel>
         <DockPanel Margin="10">
             <DockPanel DockPanel.Dock="Top">
@@ -25,20 +36,33 @@
                 <TextBox Width="240"
                          Height="20"
                          Padding="2"
-                         VerticalContentAlignment="Center" FontSize="11"/>
+                         VerticalContentAlignment="Center"
+                         FontSize="11"
+                         MaxLength="{Binding SearchTextMaxLength}"
+                         Text="{Binding SearchText.Value, UpdateSourceTrigger=PropertyChanged}"/>
             </DockPanel>
             <DockPanel>
                 <Grid DockPanel.Dock="Right" VerticalAlignment="Center">
                     <GroupBox Header="検索する方向" Padding="0 10 10 10">
                         <StackPanel Orientation="Horizontal">
-                            <RadioButton Content="上へ(_U)" Margin="0 0 20 0"/>
-                            <RadioButton Content="下へ(_D)"/>
+                            <RadioButton Margin="0 0 20 0"
+                                         Content="上へ(_U)" 
+                                         GroupName="Direction"
+                                         IsChecked="{Binding IsSearchUp.Value, Mode=TwoWay}"/>
+                            <RadioButton Content="下へ(_D)"
+                                         GroupName="Direction"
+                                         IsChecked="{Binding IsSearchUp.Value, Mode=TwoWay, Converter={StaticResource InverseBoolConverter}}"/>
                         </StackPanel>
                     </GroupBox>
                 </Grid>
                 <DockPanel LastChildFill="False" Height="90">
-                    <CheckBox Content="折り返しあり(_R)" DockPanel.Dock="Bottom" />
-                    <CheckBox Content="大文字と小文字を区別する(_C)" DockPanel.Dock="Bottom" Margin="0 0 0 8" />
+                    <CheckBox DockPanel.Dock="Bottom"
+                              Content="折り返しあり(_R)"
+                              IsChecked="{Binding WrapAround.Value}"/>
+                    <CheckBox DockPanel.Dock="Bottom"
+                              Margin="0 0 0 8"
+                              Content="大文字と小文字を区別する(_C)"
+                              IsChecked="{Binding MatchCase.Value}"/>
                 </DockPanel>
             </DockPanel>
         </DockPanel>

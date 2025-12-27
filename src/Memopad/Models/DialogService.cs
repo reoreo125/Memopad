@@ -12,6 +12,7 @@ public interface IDialogService
     string? ShowSaveFile();
     (bool?, PrintDialog) ShowPrint();
     IDialogResult? ShowFind();
+    IDialogResult? ShowNotFound(string searchText);
 }
 public class DialogService : IDialogService
 {
@@ -73,6 +74,22 @@ public class DialogService : IDialogService
         PrismDialogService.Show(
             nameof(FindDialog),
             new DialogParameters(),
+            _result => result = _result);
+
+        return result;
+    }
+    public IDialogResult? ShowNotFound(string searchText)
+    {
+        var parameters = new DialogParameters
+        {
+            { "title", "Memopad" },
+            { "message", $"\"{searchText}\" が見つかりません。" }
+        };
+
+        IDialogResult? result = null;
+        PrismDialogService.ShowDialog(
+            nameof(NotFoundDialog),
+            parameters,
             _result => result = _result);
 
         return result;

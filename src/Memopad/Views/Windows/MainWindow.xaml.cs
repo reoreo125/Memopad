@@ -78,6 +78,7 @@ public partial class MainWindow : Window, IDisposable
             {
                 var(foundIndex, length) = selection;
                 EditorBox.Select(foundIndex, length);
+                EditorBox.Focus();
             })
             .AddTo(ref _disposableCollection);
     }

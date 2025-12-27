@@ -31,7 +31,7 @@ public interface IEditorService : IDisposable
     public void Insert(string text);
     public void Undo();
     public void Redo();
-    public bool Find(string target, bool matchCase, bool wrapAround, bool searchUp);
+    public bool Find(bool searchUp);
 }
 
 public sealed class EditorService : IEditorService
@@ -56,6 +56,7 @@ public sealed class EditorService : IEditorService
     public Observable<Unit> RequestRedo => _requestRedoSubject;
     private readonly Subject<(int , int)> _requestSelectSubject = new();
     public Observable<(int, int)> RequestSelect => _requestSelectSubject;
+
     public EditorDocument Document { get; }
 
     private ITextFileService TextFileService { get; }
@@ -141,34 +142,62 @@ public sealed class EditorService : IEditorService
     {
         _requestRedoSubject.OnNext(Unit.Default);
     }
-    public bool Find(string target, bool matchCase, bool wrapAround, bool searchUp)
+    public bool Find(bool searchUp)
     {
-        var doc = Document;
-        var text = doc.Text.Value;
-        var options = matchCase ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+        var doc = Document; // DocumentがReactivePropertyの場合
+        var text = doc.Text.Value ?? "";
+        var target = doc.SearchText.Value;
 
-        int startIndex = searchUp ? doc.CaretIndex.Value : doc.CaretIndex.Value + doc.SelectionLength.Value;
+        if (string.IsNullOrEmpty(target)) return false;
+
+        var wrapAround = doc.WrapAround.Value;
+        var options = doc.MatchCase.Value ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+
+        // 現在のカーソル位置を取得
+        int caret = doc.CaretIndex.Value;
+        int selLen = doc.SelectionLength.Value;
+
         int foundIndex = -1;
 
         if (searchUp)
         {
-            // 上方向に検索
-            foundIndex = text.LastIndexOf(target, startIndex, options);
-            if (foundIndex == -1 && wrapAround) // 折り返し
-                foundIndex = text.LastIndexOf(target, text.Length, options);
+            // --- 上方向に検索 ---
+            int startIndex = caret - 1;
+
+            // startIndex が -1 になる（先頭で上を押した）場合は、通常の検索では見つからない
+            if (startIndex >= 0)
+            {
+                foundIndex = text.LastIndexOf(target, startIndex, options);
+            }
+
+            // 見つからず、かつ折り返しが有効なら、文末から再検索
+            if (foundIndex == -1 && wrapAround)
+            {
+                // 文末（text.Length - 1）から開始
+                // 文字列が空でなければ、末尾から全体を上向きに探す
+                if (text.Length > 0)
+                {
+                    foundIndex = text.LastIndexOf(target, text.Length - 1, options);
+                }
+            }
         }
         else
         {
-            // 下方向に検索
+            // --- 下方向に検索 ---
+            // 下方向は現在の選択範囲の「後ろ」から開始
+            int startIndex = Math.Min(text.Length, caret + selLen);
+
             foundIndex = text.IndexOf(target, startIndex, options);
-            if (foundIndex == -1 && wrapAround) // 折り返し
+
+            if (foundIndex == -1 && wrapAround)
+            {
                 foundIndex = text.IndexOf(target, 0, options);
+            }
         }
 
         if (foundIndex != -1)
         {
-            // 見つかったらViewへ「選択せよ」と合図を送る
-            _requestSelectSubject.OnNext( (foundIndex, target.Length) );
+            _requestSelectSubject.OnNext((foundIndex, target.Length));
             return true;
         }
         return false;
