@@ -71,7 +71,8 @@
                       InputGestureText="ctrl+G" />
             <Separator />
             <MenuItem Header="すべて選択(_A)"
-                      InputGestureText="Ctrl+A" />
+                      InputGestureText="Ctrl+A"
+                      Command="{Binding SelectAllCommand}"/>
             <MenuItem Header="日付と時刻(_D)"
                       InputGestureText="F5"
                       Command="{Binding InsertDateTimeCommand}"/>

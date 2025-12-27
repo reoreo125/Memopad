@@ -17,6 +17,8 @@ public interface IEditorService : IDisposable
     public Observable<Unit> RequestUndo { get; }
     public Observable<Unit> RequestRedo { get; }
     public Observable<(int foundIndex, int length)> RequestSelect { get; }
+    public Observable<Unit> RequestSelectAll { get; }
+
 
     public EditorDocument Document { get; }
 
@@ -32,6 +34,7 @@ public interface IEditorService : IDisposable
     public void Undo();
     public void Redo();
     public bool Find(bool searchUp);
+    public void SelectAll();
 }
 
 public sealed class EditorService : IEditorService
@@ -56,6 +59,8 @@ public sealed class EditorService : IEditorService
     public Observable<Unit> RequestRedo => _requestRedoSubject;
     private readonly Subject<(int , int)> _requestSelectSubject = new();
     public Observable<(int, int)> RequestSelect => _requestSelectSubject;
+    private readonly Subject<Unit> _requestSelectAllSubject = new();
+    public Observable<Unit> RequestSelectAll => _requestSelectAllSubject;
 
     public EditorDocument Document { get; }
 
@@ -202,7 +207,10 @@ public sealed class EditorService : IEditorService
         }
         return false;
     }
-
+    public void SelectAll()
+    {
+        _requestSelectAllSubject.OnNext(Unit.Default);
+    }
 
     public void Dispose()
     {

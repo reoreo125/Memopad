@@ -81,6 +81,9 @@ public partial class MainWindow : Window, IDisposable
                 EditorBox.Focus();
             })
             .AddTo(ref _disposableCollection);
+        vm.EditorService.RequestSelectAll
+            .Subscribe(_ => EditorBox.SelectAll())
+            .AddTo(ref _disposableCollection);
     }
 
     private void EditorBox_TextChanged(object sender, TextChangedEventArgs e)
