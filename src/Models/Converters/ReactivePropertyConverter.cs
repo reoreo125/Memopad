@@ -21,8 +21,17 @@ public class ReactivePropertyConverter : JsonConverter
     public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         var valueType = objectType.GetGenericArguments()[0];
-        var value = serializer.Deserialize(reader, valueType);
+        var newValue = serializer.Deserialize(reader, valueType);
 
-        return Activator.CreateInstance(objectType, value)!;
+        if (existingValue != null)
+        {
+            // 新しいインスタンスを作らず、既存のReactiveProperty.Valueを更新する
+            var prop = existingValue.GetType().GetProperty("Value");
+            prop?.SetValue(existingValue, newValue);
+            return existingValue;
+        }
+
+        // 既存のインスタンスがない場合のみ新規作成（通常はここを通らない設定にする）
+        return Activator.CreateInstance(objectType, newValue)!;
     }
 }

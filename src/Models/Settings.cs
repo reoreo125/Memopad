@@ -10,29 +10,29 @@ public class Settings
     public Observable<Unit> Changed { get; }
 
     [JsonProperty]
-    public ReactiveProperty<string> LastOpenedFolderPath { get; set; } = new(Defaults.LastOpenedFolderPath);
+    public ReactiveProperty<string> LastOpenedFolderPath { get; } = new(Defaults.LastOpenedFolderPath);
     [JsonProperty]
-    public ReactiveProperty<string> FontFamilyName { get; set; } = new(Defaults.FontFamilyName);
+    public ReactiveProperty<string> FontFamilyName { get; } = new(Defaults.FontFamilyName);
     [JsonProperty]
-    public ReactiveProperty<int> FontSize { get; set; } = new(Defaults.FontSize);
+    public ReactiveProperty<int> FontSize { get; } = new(Defaults.FontSize);
     [JsonProperty]
-    public ReactiveProperty<bool> IsWordWrap { get; set; } = new(Defaults.IsWrapping);
+    public ReactiveProperty<bool> IsWordWrap { get; } = new(Defaults.IsWrapping);
     [JsonProperty]
-    public ReactiveProperty<bool> ShowStatusBar { get; set; } = new(Defaults.ShowStatusBar);
+    public ReactiveProperty<bool> ShowStatusBar { get; } = new(Defaults.ShowStatusBar);
     [JsonProperty]
-    public ReactiveProperty<double> ZoomLevel { get; set; } = new(Defaults.ZoomLevel);
+    public ReactiveProperty<double> ZoomLevel { get; } = new(Defaults.ZoomLevel);
 
     [JsonConstructor]
     public Settings()
     {
         Changed = Observable.Merge
             (
-                LastOpenedFolderPath.AsUnitObservable(),
-                FontFamilyName.AsUnitObservable(),
-                FontSize.AsUnitObservable(),
-                IsWordWrap.AsUnitObservable(),
-                ShowStatusBar.AsUnitObservable(),
-                ZoomLevel.AsUnitObservable()
+                LastOpenedFolderPath.Skip(1).AsUnitObservable(),
+                FontFamilyName.Skip(1).AsUnitObservable(),
+                FontSize.Skip(1).AsUnitObservable(),
+                IsWordWrap.Skip(1).AsUnitObservable(),
+                ShowStatusBar.Skip(1).AsUnitObservable(),
+                ZoomLevel.Skip(1).AsUnitObservable()
             );
     }
 }

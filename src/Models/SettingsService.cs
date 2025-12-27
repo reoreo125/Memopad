@@ -40,10 +40,13 @@ public class SettingsService : ISettingsService, IDisposable
                 string json = File.ReadAllText(_settingsPath);
 
                 var jsonSettings = new JsonSerializerSettings();
+                jsonSettings.ObjectCreationHandling = ObjectCreationHandling.Reuse;
                 jsonSettings.Converters.Add(new ReactivePropertyConverter());
-                
-                var loaded = JsonConvert.DeserializeObject<Settings>(json, jsonSettings);
-                if (loaded != null) return loaded;
+
+                var settings = new Settings();
+                JsonConvert.PopulateObject(json, settings, jsonSettings);
+
+                return settings;
             }
         }
         catch (Exception ex)
