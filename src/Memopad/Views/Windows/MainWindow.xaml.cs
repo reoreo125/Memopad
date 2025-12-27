@@ -73,6 +73,13 @@ public partial class MainWindow : Window, IDisposable
         vm.EditorService.RequestRedo
             .Subscribe(_ => EditorBox.Redo())
             .AddTo(ref _disposableCollection);
+        vm.EditorService.RequestSelect
+            .Subscribe(selection  =>
+            {
+                var(foundIndex, length) = selection;
+                EditorBox.Select(foundIndex, length);
+            })
+            .AddTo(ref _disposableCollection);
     }
 
     private void EditorBox_TextChanged(object sender, TextChangedEventArgs e)

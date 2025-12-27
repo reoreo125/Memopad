@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Documents;
 using R3;
 using Reoreo125.Memopad.Models.TextProcessing;
 
@@ -15,6 +16,7 @@ public interface IEditorService : IDisposable
     public Observable<string> RequestInsert { get; }
     public Observable<Unit> RequestUndo { get; }
     public Observable<Unit> RequestRedo { get; }
+    public Observable<(int foundIndex, int length)> RequestSelect { get; }
 
     public EditorDocument Document { get; }
 
@@ -29,6 +31,7 @@ public interface IEditorService : IDisposable
     public void Insert(string text);
     public void Undo();
     public void Redo();
+    public bool Find(string target, bool matchCase, bool wrapAround, bool searchUp);
 }
 
 public sealed class EditorService : IEditorService
@@ -51,7 +54,8 @@ public sealed class EditorService : IEditorService
     public Observable<Unit> RequestUndo => _requestUndoSubject;
     private readonly Subject<Unit> _requestRedoSubject = new();
     public Observable<Unit> RequestRedo => _requestRedoSubject;
-
+    private readonly Subject<(int , int)> _requestSelectSubject = new();
+    public Observable<(int, int)> RequestSelect => _requestSelectSubject;
     public EditorDocument Document { get; }
 
     private ITextFileService TextFileService { get; }
@@ -137,7 +141,38 @@ public sealed class EditorService : IEditorService
     {
         _requestRedoSubject.OnNext(Unit.Default);
     }
+    public bool Find(string target, bool matchCase, bool wrapAround, bool searchUp)
+    {
+        var doc = Document;
+        var text = doc.Text.Value;
+        var options = matchCase ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
+        int startIndex = searchUp ? doc.CaretIndex.Value : doc.CaretIndex.Value + doc.SelectionLength.Value;
+        int foundIndex = -1;
+
+        if (searchUp)
+        {
+            // 上方向に検索
+            foundIndex = text.LastIndexOf(target, startIndex, options);
+            if (foundIndex == -1 && wrapAround) // 折り返し
+                foundIndex = text.LastIndexOf(target, text.Length, options);
+        }
+        else
+        {
+            // 下方向に検索
+            foundIndex = text.IndexOf(target, startIndex, options);
+            if (foundIndex == -1 && wrapAround) // 折り返し
+                foundIndex = text.IndexOf(target, 0, options);
+        }
+
+        if (foundIndex != -1)
+        {
+            // 見つかったらViewへ「選択せよ」と合図を送る
+            _requestSelectSubject.OnNext( (foundIndex, target.Length) );
+            return true;
+        }
+        return false;
+    }
 
 
     public void Dispose()
