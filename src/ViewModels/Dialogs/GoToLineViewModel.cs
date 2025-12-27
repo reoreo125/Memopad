@@ -1,3 +1,4 @@
+using R3;
 using Reoreo125.Memopad.Models;
 using Reoreo125.Memopad.Models.Commands;
 
@@ -10,7 +11,17 @@ public class GoToLineViewModel : BindableBase, IDialogAware
 
     public DelegateCommand CancelCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
 
-    public void OnDialogOpened(IDialogParameters parameters){}
+    public BindableReactiveProperty<int> LineIndex { get; }
+
+    public GoToLineViewModel()
+    {
+        LineIndex = new();
+    }
+
+    public void OnDialogOpened(IDialogParameters parameters)
+    {
+        LineIndex.Value = parameters.GetValue<int>("lineIndex");
+    }
     public bool CanCloseDialog() => true;
     public void OnDialogClosed() { }
 }
