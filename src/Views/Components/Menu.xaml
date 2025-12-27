@@ -60,12 +60,14 @@
                       InputGestureText="Ctrl+F"
                       Command="{Binding OpenFindCommand}"/>
             <MenuItem Header="次を検索(_N)"
-                      InputGestureText="F3" />
+                      InputGestureText="F3"
+                      Command="{Binding FindNextCommand}"/>
             <MenuItem Header="前を検索(_V)"
-                      InputGestureText="Shift+F3" />
-            <MenuItem Header="置換(_R)"
+                      InputGestureText="Shift+F3"
+                      Command="{Binding FindPrevCommand}"/>
+            <MenuItem Header="置換(_R)..."
                       InputGestureText="ctrl+H" />
-            <MenuItem Header="行へ移動(_G)"
+            <MenuItem Header="行へ移動(_G)..."
                       InputGestureText="ctrl+G" />
             <Separator />
             <MenuItem Header="すべて選択(_A)"

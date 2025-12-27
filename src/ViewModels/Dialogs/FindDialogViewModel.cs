@@ -31,6 +31,9 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
         public BindableReactiveProperty<bool> WrapAround { get; }
         public BindableReactiveProperty<bool> IsSearchUp { get; }
         public BindableReactiveProperty<int> SearchTextMaxLength { get; }
+
+        public BindableReactiveProperty<bool> FindNextButton_IsEnabled { get; }
+
         public IEditorService EditorService => _editorService;
         private readonly IEditorService _editorService;
         protected ISettingsService SettingsService => _settingsService;
@@ -53,6 +56,10 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
                 .ToBindableReactiveProperty(Defaults.WrapAround);
             IsSearchUp = new(false);
             SearchTextMaxLength = new(Defaults.SearchTextMaxLength);
+            FindNextButton_IsEnabled = EditorService.Document.SearchText
+                .Select(value => !string.IsNullOrEmpty(value))
+                .ToBindableReactiveProperty(false);
+
             #endregion
 
             #region View -> ViewModel -> Model

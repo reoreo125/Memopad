@@ -24,6 +24,7 @@
                     Width="84"
                     Height="24"
                     Margin="0 0 0 10"
+                    IsEnabled="{Binding FindNextButton_IsEnabled.Value}"
                     Command="{Binding FindCommand}"/>
             <Button Content="キャンセル"
                     Width="84"

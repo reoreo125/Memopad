@@ -15,7 +15,7 @@ public class FindPrevCommand : CommandBase, IFindPrevCommand
     [Dependency]
     public IEditorService? EditorService { get; set; }
 
-    public override bool CanExecute(object? parameter) => !string.IsNullOrWhiteSpace(EditorService!.Document.SearchText.Value);
+    public override bool CanExecute(object? parameter) => !string.IsNullOrEmpty(EditorService!.Document.SearchText.Value);
 
     public override void Execute(object? parameter)
     {

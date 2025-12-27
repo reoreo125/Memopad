@@ -44,6 +44,10 @@ public class MenuViewModel : BindableBase
     public IRedoCommand? RedoCommand { get; set; }
     [Dependency]
     public IOpenFindCommand? OpenFindCommand { get; set; }
+    [Dependency]
+    public IFindNextCommand? FindNextCommand { get; set; }
+    [Dependency]
+    public IFindPrevCommand? FindPrevCommand { get; set; }
 
     public BindableReactiveProperty<bool> ShowStatusBar { get; }
     public BindableReactiveProperty<bool> IsWordWrap { get; }
