@@ -8,6 +8,8 @@ namespace Reoreo125.Memopad.Models;
 public record Defaults
 {
     public static string ApplicationName => Assembly.GetExecutingAssembly().GetName().Name!;
+    public static Version Version => Assembly.GetEntryAssembly()?.GetName().Version!;
+    public static string VersionText => $"Version {Version.ToString(3)}";
     public static string NewFileName => "無題";
     public static string FileExtension => ".txt";
     public static LineEnding LineEnding => LineEnding.CRLF;

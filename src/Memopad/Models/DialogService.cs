@@ -1,18 +1,20 @@
 using System.Windows.Controls;
 using Microsoft.Win32;
 using Reoreo125.Memopad.Views.Dialogs;
+using Reoreo125.Memopad.Views.Windows;
 using IPrismDialogService = Prism.Dialogs.IDialogService;
 using PrismDialogService = Prism.Dialogs.DialogService;
 namespace Reoreo125.Memopad.Models;
 
 public interface IDialogService
 {
-    IDialogResult? ConfirmSave(string fileNameWithoutExtension);
-    string? ShowOpenFile();
-    string? ShowSaveFile();
-    (bool?, PrintDialog) ShowPrint();
-    IDialogResult? ShowFind();
-    IDialogResult? ShowNotFound(string searchText);
+    public IDialogResult? ConfirmSave(string fileNameWithoutExtension);
+    public string? ShowOpenFile();
+    public string? ShowSaveFile();
+    public  (bool?, PrintDialog) ShowPrint();
+    public IDialogResult? ShowFind();
+    public IDialogResult? ShowNotFound(string searchText);
+    public IDialogResult? ShowAbout();
 }
 public class DialogService : IDialogService
 {
@@ -90,6 +92,16 @@ public class DialogService : IDialogService
         PrismDialogService.ShowDialog(
             nameof(NotFoundDialog),
             parameters,
+            _result => result = _result);
+
+        return result;
+    }
+    public IDialogResult? ShowAbout()
+    {
+        IDialogResult? result = null;
+        PrismDialogService.Show(
+            nameof(AboutDialog),
+            new DialogParameters(),
             _result => result = _result);
 
         return result;

@@ -10,6 +10,7 @@ using Reoreo125.Memopad.Views.Windows;
 
 using IDialogService = Reoreo125.Memopad.Models.IDialogService;
 using DialogService = Reoreo125.Memopad.Models.DialogService;
+using Reoreo125.Memopad.ViewModels.Windows;
 
 namespace Reoreo125.Memopad;
 
@@ -55,6 +56,7 @@ public partial class App : PrismApplication
         containerRegistry.RegisterDialog<SaveConfirmDialog, SaveConfirmDialogViewModel>();
         containerRegistry.RegisterDialog<FindDialog, FindDialogViewModel>();
         containerRegistry.RegisterDialog<NotFoundDialog, NotFoundDialogViewModel>();
+        containerRegistry.RegisterDialog<AboutDialog, AboutDialogViewModel>();
     }
 
     protected override Window CreateShell() => Container.Resolve<MainWindow>();
