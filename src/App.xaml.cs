@@ -58,6 +58,7 @@ public partial class App : PrismApplication
         containerRegistry.RegisterDialog<NotFoundDialog, NotFoundDialogViewModel>();
         containerRegistry.RegisterDialog<AboutDialog, AboutDialogViewModel>();
         containerRegistry.RegisterDialog<GoToLineDialog, GoToLineViewModel>();
+        containerRegistry.RegisterDialog<LineOutOfBoundsDialog, LineOutOfBoundsDialogViewModel>();
     }
 
     protected override Window CreateShell() => Container.Resolve<MainWindow>();

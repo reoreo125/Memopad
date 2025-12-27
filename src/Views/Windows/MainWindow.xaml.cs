@@ -87,12 +87,23 @@ public partial class MainWindow : Window, IDisposable
         vm.EditorService.RequestGoToLine
             .Subscribe(args =>
             {
-                int charIndex = EditorBox.GetCharacterIndexFromLineIndex(args.LineIndex);
+                // ユーザーが「1」と入力したら index は 「0」になる
+                int targetIndex = args.LineIndex - 1;
+
+                // 範囲チェック (0 未満、または 最大行数-1 より大きい場合は無効)
+                if (targetIndex < 0 || targetIndex >= EditorBox.LineCount)
+                {
+                    args.IsSuccess = false;
+                    return;
+                }
+
+                // 指定した行の先頭文字位置を取得
+                int charIndex = EditorBox.GetCharacterIndexFromLineIndex(targetIndex);
 
                 if (charIndex != -1)
                 {
                     EditorBox.CaretIndex = charIndex;
-                    EditorBox.ScrollToLine(args.LineIndex);
+                    EditorBox.ScrollToLine(targetIndex);
                     EditorBox.Focus();
 
                     args.IsSuccess = true;

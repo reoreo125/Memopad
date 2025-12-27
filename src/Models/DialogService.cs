@@ -16,6 +16,7 @@ public interface IDialogService
     public IDialogResult? ShowNotFound(string searchText);
     public IDialogResult? ShowAbout();
     public IDialogResult? ShowGoToLine(int currentLineIndex);
+    public IDialogResult? ShowLineOutOfBounds();
 }
 public class DialogService : IDialogService
 {
@@ -117,6 +118,16 @@ public class DialogService : IDialogService
         PrismDialogService.ShowDialog(
             nameof(GoToLineDialog),
             parameters,
+            _result => result = _result);
+
+        return result;
+    }
+    public IDialogResult? ShowLineOutOfBounds()
+    {
+        IDialogResult? result = null;
+        PrismDialogService.ShowDialog(
+            nameof(LineOutOfBoundsDialog),
+            new DialogParameters(),
             _result => result = _result);
 
         return result;
