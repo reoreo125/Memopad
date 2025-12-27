@@ -11,12 +11,12 @@ public interface IDialogService
     string? ShowOpenFile();
     string? ShowSaveFile();
     (bool?, PrintDialog) ShowPrint();
+    IDialogResult? ShowFind();
 }
 public class DialogService : IDialogService
 {
     [Dependency]
     public IPrismDialogService? PrismDialogService { get; set; }
-
 
     public IDialogResult? ConfirmSave(string fileNameWithoutExtension)
     {
@@ -66,5 +66,20 @@ public class DialogService : IDialogService
     {
         PrintDialog printDialog = new PrintDialog();
         return (printDialog.ShowDialog(), printDialog);
+    }
+    public IDialogResult? ShowFind()
+    {
+        var parameters = new DialogParameters
+        {
+            { "title", "検索" },
+        };
+
+        IDialogResult? result = null;
+        PrismDialogService.Show(
+            nameof(FindDialog),
+            parameters,
+            _result => result = _result);
+
+        return result;
     }
 }

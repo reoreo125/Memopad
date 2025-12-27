@@ -79,6 +79,8 @@ public sealed class EditorService : IEditorService
         Reset();
         Document.FilePath.Value = result.FilePath;
         Document.BaseText.Value = result.Content;
+        // RequestLoadTextSubjectでも更新されるが、タイトルのIsDirty(*)がちらつくのでここで既に入れておく。
+        Document.Text.Value = result.Content;
         Document.Encoding.Value = result.Encoding;
         Document.HasBom.Value = result.HasBOM;
         // LineEnding が不明な場合はデフォルト値を使う

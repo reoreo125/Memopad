@@ -57,7 +57,8 @@
                       Command="{Binding DeleteCommand}"/>
             <Separator />
             <MenuItem Header="検索(_F)..."
-                      InputGestureText="Ctrl+F" />
+                      InputGestureText="Ctrl+F"
+                      Command="{Binding OpenFindCommand}"/>
             <MenuItem Header="次を検索(_N)"
                       InputGestureText="F3" />
             <MenuItem Header="前を検索(_V)"

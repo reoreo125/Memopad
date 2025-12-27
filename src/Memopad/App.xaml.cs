@@ -53,6 +53,7 @@ public partial class App : PrismApplication
 
         // Dialogs
         containerRegistry.RegisterDialog<SaveConfirmDialog, SaveConfirmDialogViewModel>();
+        containerRegistry.RegisterDialog<FindDialog, FindDialogViewModel>();
     }
 
     protected override Window CreateShell() => Container.Resolve<MainWindow>();
