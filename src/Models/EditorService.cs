@@ -18,6 +18,7 @@ public interface IEditorService : IDisposable
     public Observable<Unit> RequestRedo { get; }
     public Observable<(int foundIndex, int length)> RequestSelect { get; }
     public Observable<Unit> RequestSelectAll { get; }
+    public Observable<GoToLineEventArgs> RequestGoToLine { get; }
 
 
     public EditorDocument Document { get; }
@@ -35,6 +36,7 @@ public interface IEditorService : IDisposable
     public void Redo();
     public bool Find(bool searchUp);
     public void SelectAll();
+    public bool GoToLine(int lineIndex);
 }
 
 public sealed class EditorService : IEditorService
@@ -61,6 +63,8 @@ public sealed class EditorService : IEditorService
     public Observable<(int, int)> RequestSelect => _requestSelectSubject;
     private readonly Subject<Unit> _requestSelectAllSubject = new();
     public Observable<Unit> RequestSelectAll => _requestSelectAllSubject;
+    private readonly Subject<GoToLineEventArgs> _requestGoToLineSubject = new();
+    public Observable<GoToLineEventArgs> RequestGoToLine => _requestGoToLineSubject;
 
     public EditorDocument Document { get; }
 
@@ -211,9 +215,27 @@ public sealed class EditorService : IEditorService
     {
         _requestSelectAllSubject.OnNext(Unit.Default);
     }
+    public bool GoToLine(int lineIndex)
+    {
+        GoToLineEventArgs args = new GoToLineEventArgs(lineIndex, false);
+        _requestGoToLineSubject.OnNext(args);
+
+        return args.IsSuccess;
+    }
 
     public void Dispose()
     {
         _disposableCollection.Dispose();
+    }
+}
+public class GoToLineEventArgs
+{
+    public int LineIndex { get; set; }
+    public bool IsSuccess { get; set; }
+
+    public GoToLineEventArgs(int lineIndex, bool isSuccess)
+    {
+        LineIndex = lineIndex;
+        IsSuccess = isSuccess;
     }
 }

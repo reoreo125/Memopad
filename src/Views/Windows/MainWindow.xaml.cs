@@ -84,6 +84,21 @@ public partial class MainWindow : Window, IDisposable
         vm.EditorService.RequestSelectAll
             .Subscribe(_ => EditorBox.SelectAll())
             .AddTo(ref _disposableCollection);
+        vm.EditorService.RequestGoToLine
+            .Subscribe(args =>
+            {
+                int charIndex = EditorBox.GetCharacterIndexFromLineIndex(args.LineIndex);
+
+                if (charIndex != -1)
+                {
+                    EditorBox.CaretIndex = charIndex;
+                    EditorBox.ScrollToLine(args.LineIndex);
+                    EditorBox.Focus();
+
+                    args.IsSuccess = true;
+                }
+            })
+            .AddTo(ref _disposableCollection);
     }
 
     private void EditorBox_TextChanged(object sender, TextChangedEventArgs e)

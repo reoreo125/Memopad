@@ -50,6 +50,8 @@ public class MenuViewModel : BindableBase
     public IFindPrevCommand? FindPrevCommand { get; set; }
     [Dependency]
     public ISelectAllCommand? SelectAllCommand { get; set; }
+    [Dependency]
+    public IOpenGoToLineCommand? OpenGoToLineCommand { get; set; }
 
     public BindableReactiveProperty<bool> ShowStatusBar { get; }
     public BindableReactiveProperty<bool> IsWordWrap { get; }

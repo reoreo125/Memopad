@@ -15,6 +15,7 @@ public interface IDialogService
     public IDialogResult? ShowFind();
     public IDialogResult? ShowNotFound(string searchText);
     public IDialogResult? ShowAbout();
+    public IDialogResult? ShowGoToLine();
 }
 public class DialogService : IDialogService
 {
@@ -101,6 +102,16 @@ public class DialogService : IDialogService
         IDialogResult? result = null;
         PrismDialogService.ShowDialog(
             nameof(AboutDialog),
+            new DialogParameters(),
+            _result => result = _result);
+
+        return result;
+    }
+    public IDialogResult? ShowGoToLine()
+    {
+        IDialogResult? result = null;
+        PrismDialogService.ShowDialog(
+            nameof(GoToLineDialog),
             new DialogParameters(),
             _result => result = _result);
 

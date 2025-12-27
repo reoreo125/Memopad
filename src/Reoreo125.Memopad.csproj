@@ -30,6 +30,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Views\Dialogs\GoToLineDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\Dialogs\FindDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

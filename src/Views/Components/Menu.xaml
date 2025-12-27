@@ -68,7 +68,8 @@
             <MenuItem Header="置換(_R)..."
                       InputGestureText="ctrl+H" />
             <MenuItem Header="行へ移動(_G)..."
-                      InputGestureText="ctrl+G" />
+                      InputGestureText="ctrl+G"
+                      Command="{Binding OpenGoToLineCommand}"/>
             <Separator />
             <MenuItem Header="すべて選択(_A)"
                       InputGestureText="Ctrl+A"
