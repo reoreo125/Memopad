@@ -1,5 +1,6 @@
 using System.Windows.Controls;
 using Microsoft.Win32;
+using Prism.Dialogs;
 using Reoreo125.Memopad.Views.Dialogs;
 using Reoreo125.Memopad.Views.Windows;
 using IPrismDialogService = Prism.Dialogs.IDialogService;
@@ -17,6 +18,7 @@ public interface IDialogService
     public IDialogResult? ShowAbout();
     public IDialogResult? ShowGoToLine(int currentLineIndex);
     public IDialogResult? ShowLineOutOfBounds();
+    public IDialogResult? ShowReplace();
 }
 public class DialogService : IDialogService
 {
@@ -72,16 +74,7 @@ public class DialogService : IDialogService
         PrintDialog printDialog = new PrintDialog();
         return (printDialog.ShowDialog(), printDialog);
     }
-    public IDialogResult? ShowFind()
-    {
-        IDialogResult? result = null;
-        PrismDialogService.Show(
-            nameof(FindDialog),
-            new DialogParameters(),
-            _result => result = _result);
 
-        return result;
-    }
     public IDialogResult? ShowNotFound(string searchText)
     {
         var parameters = new DialogParameters
@@ -94,16 +87,6 @@ public class DialogService : IDialogService
         PrismDialogService.ShowDialog(
             nameof(NotFoundDialog),
             parameters,
-            _result => result = _result);
-
-        return result;
-    }
-    public IDialogResult? ShowAbout()
-    {
-        IDialogResult? result = null;
-        PrismDialogService.ShowDialog(
-            nameof(AboutDialog),
-            new DialogParameters(),
             _result => result = _result);
 
         return result;
@@ -122,11 +105,32 @@ public class DialogService : IDialogService
 
         return result;
     }
-    public IDialogResult? ShowLineOutOfBounds()
+
+    // ShowWithoutParameters
+    public IDialogResult? ShowFind() => ShowWithoutParameters(typeof(FindDialog));
+
+    // ShowDialogWithoutParameters
+    public IDialogResult? ShowLineOutOfBounds() => ShowDialogWithoutParameters(typeof(LineOutOfBoundsDialog));
+    public IDialogResult? ShowReplace() => ShowWithoutParameters(typeof(ReplaceDialog));
+    public IDialogResult? ShowAbout() => ShowDialogWithoutParameters(typeof(AboutDialog));
+
+
+
+    private IDialogResult? ShowDialogWithoutParameters(Type dialogType)
     {
         IDialogResult? result = null;
         PrismDialogService.ShowDialog(
-            nameof(LineOutOfBoundsDialog),
+            dialogType.Name,
+            new DialogParameters(),
+            _result => result = _result);
+
+        return result;
+    }
+    private IDialogResult? ShowWithoutParameters(Type dialogType)
+    {
+        IDialogResult? result = null;
+        PrismDialogService.Show(
+            dialogType.Name,
             new DialogParameters(),
             _result => result = _result);
 

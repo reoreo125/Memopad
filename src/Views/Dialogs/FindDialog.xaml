@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Reoreo125.Memopad.Views.Dialogs"
+             xmlns:models="clr-namespace:Reoreo125.Memopad.Models"
              xmlns:converters="clr-namespace:Reoreo125.Memopad.Views.Converters"
              xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d"
@@ -39,7 +40,7 @@
                          Padding="2"
                          VerticalContentAlignment="Center"
                          FontSize="11"
-                         MaxLength="{Binding SearchTextMaxLength}"
+                         MaxLength="{x:Static models:Defaults.SearchTextMaxLength}"
                          Text="{Binding SearchText.Value, UpdateSourceTrigger=PropertyChanged}"/>
             </DockPanel>
             <DockPanel>

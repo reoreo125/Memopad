@@ -31,6 +31,7 @@ public class EditorDocument : IDisposable
     public ReactiveProperty<int> Column { get; } = new(1);
 
     public ReactiveProperty<string> SearchText { get; } = new(string.Empty);
+    public ReactiveProperty<string> ReplaceText { get; } = new(string.Empty);
     public ReactiveProperty<bool> MatchCase { get; } = new(Defaults.MatchCase);
     public ReactiveProperty<bool> WrapAround { get; } = new(Defaults.WrapAround);
 
@@ -73,6 +74,7 @@ public class EditorDocument : IDisposable
         Column.Value = 1;
 
         SearchText.Value = string.Empty;
+        ReplaceText.Value = string.Empty;
         MatchCase.Value = Defaults.MatchCase;
         WrapAround.Value = Defaults.WrapAround;
     }

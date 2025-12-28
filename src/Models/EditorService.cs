@@ -19,7 +19,7 @@ public interface IEditorService : IDisposable
     public Observable<(int foundIndex, int length)> RequestSelect { get; }
     public Observable<Unit> RequestSelectAll { get; }
     public Observable<GoToLineEventArgs> RequestGoToLine { get; }
-
+    public Observable<ReplaceNextEventArgs> RequestReplaceNext { get; }
 
     public EditorDocument Document { get; }
 
@@ -37,6 +37,7 @@ public interface IEditorService : IDisposable
     public bool Find(bool searchUp);
     public void SelectAll();
     public bool GoToLine(int lineIndex);
+    public bool ReplaceNext();
 }
 
 public sealed class EditorService : IEditorService
@@ -65,6 +66,8 @@ public sealed class EditorService : IEditorService
     public Observable<Unit> RequestSelectAll => _requestSelectAllSubject;
     private readonly Subject<GoToLineEventArgs> _requestGoToLineSubject = new();
     public Observable<GoToLineEventArgs> RequestGoToLine => _requestGoToLineSubject;
+    private readonly Subject<ReplaceNextEventArgs> _requestReplaceNextSubject = new();
+    public Observable<ReplaceNextEventArgs> RequestReplaceNext => _requestReplaceNextSubject;
 
     public EditorDocument Document { get; }
 
@@ -217,12 +220,22 @@ public sealed class EditorService : IEditorService
     }
     public bool GoToLine(int lineIndex)
     {
-        GoToLineEventArgs args = new GoToLineEventArgs(lineIndex, false);
+        GoToLineEventArgs args = new GoToLineEventArgs(lineIndex);
         _requestGoToLineSubject.OnNext(args);
 
         return args.IsSuccess;
     }
+    public bool ReplaceNext()
+    {
+        ReplaceNextEventArgs args = new(
+            Document.SearchText.Value,
+            Document.ReplaceText.Value,
+            Document.MatchCase.Value,
+            Document.WrapAround.Value);
+        _requestReplaceNextSubject.OnNext(args);
 
+        return args.IsSuccess;
+    }
     public void Dispose()
     {
         _disposableCollection.Dispose();
@@ -230,12 +243,27 @@ public sealed class EditorService : IEditorService
 }
 public class GoToLineEventArgs
 {
-    public int LineIndex { get; set; }
-    public bool IsSuccess { get; set; }
+    public int LineIndex { get; }
+    public bool IsSuccess { get; set; } = false;
 
-    public GoToLineEventArgs(int lineIndex, bool isSuccess)
+    public GoToLineEventArgs(int lineIndex)
     {
         LineIndex = lineIndex;
-        IsSuccess = isSuccess;
+    }
+}
+public class ReplaceNextEventArgs
+{
+    public string SearchText { get; }
+    public string ReplaceText { get; }
+    public bool MatchCase { get; set; }
+    public bool WrapAround { get; set; }
+    public bool IsSuccess { get; set; } = false;
+
+    public ReplaceNextEventArgs(string searchText, string replaceText, bool matchCase, bool wrapAround)
+    {
+        SearchText = searchText;
+        ReplaceText = replaceText;
+        MatchCase = matchCase;
+        WrapAround = wrapAround;
     }
 }

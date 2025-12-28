@@ -33,4 +33,5 @@ public record Defaults
     public static bool MatchCase => false;
     public static bool WrapAround => false;
     public static int SearchTextMaxLength => 128;
+    public static int ReplaceTextMaxLength => 128;
 }

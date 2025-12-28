@@ -52,6 +52,8 @@ public class MenuViewModel : BindableBase
     public ISelectAllCommand? SelectAllCommand { get; set; }
     [Dependency]
     public IOpenGoToLineCommand? OpenGoToLineCommand { get; set; }
+    [Dependency]
+    public IOpenReplaceCommand? OpenReplaceCommand { get; set; }
 
     public BindableReactiveProperty<bool> ShowStatusBar { get; }
     public BindableReactiveProperty<bool> IsWordWrap { get; }

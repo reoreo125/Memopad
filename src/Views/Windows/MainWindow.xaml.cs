@@ -110,6 +110,42 @@ public partial class MainWindow : Window, IDisposable
                 }
             })
             .AddTo(ref _disposableCollection);
+        vm.EditorService.RequestReplaceNext
+            .Subscribe(args =>
+            {
+                string text = EditorBox.Text;
+
+                int startIndex = EditorBox.CaretIndex;
+
+                StringComparison comparison = args.MatchCase
+                    ? StringComparison.CurrentCulture
+                    : StringComparison.CurrentCultureIgnoreCase;
+
+                int foundIndex = text.IndexOf(args.SearchText, startIndex, comparison);
+
+                if (foundIndex == -1 && args.WrapAround)
+                {
+                    foundIndex = text.IndexOf(args.SearchText, 0, comparison);
+                }
+
+                if (foundIndex != -1)
+                {
+                    EditorBox.Select(foundIndex, args.SearchText.Length);
+                    EditorBox.SelectedText = args.ReplaceText;
+
+                    int targetLineIndex = EditorBox.GetLineIndexFromCharacterIndex(foundIndex);
+                    EditorBox.ScrollToLine(targetLineIndex);
+                    EditorBox.CaretIndex = foundIndex + args.ReplaceText.Length;
+                    EditorBox.Focus();
+
+                    args.IsSuccess = true;
+                }
+                else
+                {
+                    args.IsSuccess = false;
+                }
+            })
+            .AddTo(ref _disposableCollection);
     }
 
     private void EditorBox_TextChanged(object sender, TextChangedEventArgs e)
