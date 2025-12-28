@@ -26,6 +26,7 @@ public class EditorDocument : IDisposable
     public ReactiveProperty<bool> CanUndo { get; } = new(false);
     public ReactiveProperty<bool> CanRedo { get; } = new(false);
     public ReactiveProperty<int> CaretIndex { get; } = new(0);
+    public ReactiveProperty<string> SelectedText { get; } = new(string.Empty);
     public ReactiveProperty<int> SelectionLength { get; } = new(0);
     public ReactiveProperty<int> Row { get; } = new(1);
     public ReactiveProperty<int> Column { get; } = new(1);
@@ -69,6 +70,7 @@ public class EditorDocument : IDisposable
         CanUndo.Value = false;
         CanRedo.Value = false;
         CaretIndex.Value = 0;
+        SelectedText.Value = string.Empty;
         SelectionLength.Value = 0;
         Row.Value = 1;
         Column.Value = 1;

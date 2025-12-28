@@ -280,8 +280,12 @@ public partial class MainWindow : Window, IDisposable
 
             if (DataContext is MainWindowViewModel vm)
             {
-                vm.Row.Value = line;
-                vm.Column.Value = column;
+                vm.EditorService.Document.Row.Value = line;
+                vm.EditorService.Document.Column.Value = column;
+
+                vm.EditorService.Document.CaretIndex.Value = textBox.CaretIndex;
+                vm.EditorService.Document.SelectedText.Value = textBox.SelectedText;
+                vm.EditorService.Document.SelectionLength.Value = textBox.SelectionLength;
             }
         }
     }

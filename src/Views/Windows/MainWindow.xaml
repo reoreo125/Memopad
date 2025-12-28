@@ -41,10 +41,7 @@
                      Text="{Binding Text.Value, UpdateSourceTrigger=PropertyChanged}"
                      TextChanged="EditorBox_TextChanged"
                      SelectionChanged="EditorBox_SelectionChanged"
-                     PreviewMouseWheel="EditorBox_PreviewMouseWheel"
-                     vm:TextBoxBehavior.ObserveSelection="True"
-                     vm:TextBoxBehavior.BindableCaretIndex="{Binding CaretIndex.Value}"
-                     vm:TextBoxBehavior.BindableSelectionLength="{Binding SelectionLength.Value}">
+                     PreviewMouseWheel="EditorBox_PreviewMouseWheel">
                 <TextBox.InputBindings>
                     <KeyBinding Gesture="Ctrl+X" Command="{Binding CutCommand}"/>
                     <KeyBinding Gesture="Ctrl+C" Command="{Binding CopyCommand}"/>

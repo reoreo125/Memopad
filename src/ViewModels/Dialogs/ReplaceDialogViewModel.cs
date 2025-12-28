@@ -53,6 +53,7 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
                 .ToBindableReactiveProperty(Defaults.MatchCase);
             WrapAround = EditorService.Document.WrapAround
                 .ToBindableReactiveProperty(Defaults.WrapAround);
+
             FindNextButton_IsEnabled = EditorService.Document.SearchText
                 .Select(value => !string.IsNullOrEmpty(value))
                 .ToBindableReactiveProperty(false);
@@ -82,7 +83,7 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
         }
         public void OnDialogOpened(IDialogParameters parameters)
         {
-
+            SearchText.Value = EditorService.Document.SelectedText.Value;
         }
         public bool CanCloseDialog() => true;
         public void OnDialogClosed() { }

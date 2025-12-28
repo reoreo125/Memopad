@@ -74,7 +74,7 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
         }
         public void OnDialogOpened(IDialogParameters parameters)
         {
-
+            SearchText.Value = EditorService.Document.SelectedText.Value;
         }
         public bool CanCloseDialog() => true;
         public void OnDialogClosed() { }
