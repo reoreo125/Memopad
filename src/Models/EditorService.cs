@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 using R3;
 using Reoreo125.Memopad.Models.TextProcessing;
@@ -79,12 +80,14 @@ public sealed class EditorService : IEditorService
     public EditorDocument Document { get; }
 
     private ITextFileService TextFileService { get; }
+    private ISettingsService SettingsService { get; }
 
     private DisposableBag _disposableCollection = new();
 
-    public EditorService(ITextFileService textFileService)
+    public EditorService(ITextFileService textFileService, ISettingsService settingsService)
     {
         TextFileService = textFileService;
+        SettingsService = settingsService;
 
         Document = new EditorDocument();
     }
@@ -111,6 +114,9 @@ public sealed class EditorService : IEditorService
         Document.LineEnding.Value = (result.LineEnding is LineEnding.Unknown) ? Defaults.LineEnding : result.LineEnding;
 
         _requestLoadTextSubject.OnNext(result.Content);
+
+        // 成功したら前回開いたフォルダを記憶しておく
+        SettingsService.Settings.LastOpenedFolderPath.Value = Path.GetDirectoryName(result.FilePath)!;
     }
     public void SaveText() => SaveText(Document.FilePath.Value);
     public void SaveText(string filePath)

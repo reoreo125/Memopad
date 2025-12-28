@@ -12,14 +12,17 @@ public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
     public ITextFileService? TextFileService { get; set; }
     [Dependency]
     public IDialogService? MemopadDialogService { get; set; }
+    [Dependency]
+    public ISettingsService SettingsService { get; set; }
     //[Dependency]
     //public SaveTextFileCommand? SaveTextFileCommand { get; set; }
     public override bool CanExecute(object? parameter) => true;
 
     public override void Execute(object? parameter)
     {
-        if(EditorService is null) throw new Exception(nameof(EditorService));
-        if(MemopadDialogService is null) throw new Exception(nameof(MemopadDialogService));
+        if (EditorService is null) throw new Exception(nameof(EditorService));
+        if (MemopadDialogService is null) throw new Exception(nameof(MemopadDialogService));
+        if (SettingsService is null) throw new Exception(nameof(SettingsService));
 
         var save = false;
         if (EditorService.Document.IsDirty.CurrentValue)
@@ -46,7 +49,8 @@ public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
             EditorService.Document.FilePath.Value = saveFilePath;
         }
 
-        string? openFilePath = MemopadDialogService.ShowOpenFile();
+        var lastOpenedFolderPath = SettingsService.Settings.LastOpenedFolderPath.Value;
+        string? openFilePath = MemopadDialogService.ShowOpenFile(lastOpenedFolderPath);
         if (openFilePath is null) return;
 
         if (save) EditorService.SaveText(EditorService.Document.FilePath.Value);

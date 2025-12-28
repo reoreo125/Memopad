@@ -9,7 +9,7 @@ namespace Reoreo125.Memopad.Models;
 public interface IDialogService
 {
     public IDialogResult? ConfirmSave(string fileNameWithoutExtension);
-    public string? ShowOpenFile();
+    public string? ShowOpenFile(string folderPath);
     public string? ShowSaveFile();
     public  (bool?, PrintDialog) ShowPrint();
     public IDialogResult? ShowFind();
@@ -40,13 +40,15 @@ public class DialogService : IDialogService
 
         return result;
     }
-    public string? ShowOpenFile()
+    public string? ShowOpenFile(string folderPath)
     {
+        if (string.IsNullOrEmpty(folderPath)) folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
         var openFileDialog = new OpenFileDialog
         {
             Title = "ファイルを開く",
             Filter = "テキストファイル (*.txt)|*.txt|すべてのファイル (*.*)|*.*",
-            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            InitialDirectory = folderPath
         };
 
         var result = openFileDialog.ShowDialog();
