@@ -16,6 +16,7 @@ public interface IEditorService : IDisposable
     public Observable<string> RequestInsert { get; }
     public Observable<Unit> RequestUndo { get; }
     public Observable<Unit> RequestRedo { get; }
+    public Observable<FindEventArgs> RequestFind { get; }
     public Observable<(int foundIndex, int length)> RequestSelect { get; }
     public Observable<Unit> RequestSelectAll { get; }
     public Observable<GoToLineEventArgs> RequestGoToLine { get; }
@@ -35,7 +36,8 @@ public interface IEditorService : IDisposable
     public void Insert(string text);
     public void Undo();
     public void Redo();
-    public bool Find(bool searchUp);
+    public bool FindNext();
+    public bool FindPrev();
     public void SelectAll();
     public bool GoToLine(int lineIndex);
     public bool ReplaceNext();
@@ -62,6 +64,8 @@ public sealed class EditorService : IEditorService
     public Observable<Unit> RequestUndo => _requestUndoSubject;
     private readonly Subject<Unit> _requestRedoSubject = new();
     public Observable<Unit> RequestRedo => _requestRedoSubject;
+    private readonly Subject<FindEventArgs> _requestFindSubject = new();
+    public Observable<FindEventArgs> RequestFind => _requestFindSubject;
     private readonly Subject<(int , int)> _requestSelectSubject = new();
     public Observable<(int, int)> RequestSelect => _requestSelectSubject;
     private readonly Subject<Unit> _requestSelectAllSubject = new();
@@ -158,65 +162,27 @@ public sealed class EditorService : IEditorService
     {
         _requestRedoSubject.OnNext(Unit.Default);
     }
-    public bool Find(bool searchUp)
+    public bool FindNext()
     {
-        var doc = Document; // DocumentがReactivePropertyの場合
-        var text = doc.Text.Value ?? "";
-        var target = doc.SearchText.Value;
+        FindEventArgs args = new(
+            Document.SearchText.Value,
+            false,
+            Document.MatchCase.Value,
+            Document.WrapAround.Value);
+        _requestFindSubject.OnNext(args);
 
-        if (string.IsNullOrEmpty(target)) return false;
+        return args.IsSuccess;
+    }
+    public bool FindPrev()
+    {
+        FindEventArgs args = new(
+            Document.SearchText.Value,
+            true,
+            Document.MatchCase.Value,
+            Document.WrapAround.Value);
+        _requestFindSubject.OnNext(args);
 
-        var wrapAround = doc.WrapAround.Value;
-        var options = doc.MatchCase.Value ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-
-        // 現在のカーソル位置を取得
-        int caret = doc.CaretIndex.Value;
-        int selLen = doc.SelectionLength.Value;
-
-        int foundIndex = -1;
-
-        if (searchUp)
-        {
-            // --- 上方向に検索 ---
-            int startIndex = caret - 1;
-
-            // startIndex が -1 になる（先頭で上を押した）場合は、通常の検索では見つからない
-            if (startIndex >= 0)
-            {
-                foundIndex = text.LastIndexOf(target, startIndex, options);
-            }
-
-            // 見つからず、かつ折り返しが有効なら、文末から再検索
-            if (foundIndex == -1 && wrapAround)
-            {
-                // 文末（text.Length - 1）から開始
-                // 文字列が空でなければ、末尾から全体を上向きに探す
-                if (text.Length > 0)
-                {
-                    foundIndex = text.LastIndexOf(target, text.Length - 1, options);
-                }
-            }
-        }
-        else
-        {
-            // --- 下方向に検索 ---
-            // 下方向は現在の選択範囲の「後ろ」から開始
-            int startIndex = Math.Min(text.Length, caret + selLen);
-
-            foundIndex = text.IndexOf(target, startIndex, options);
-
-            if (foundIndex == -1 && wrapAround)
-            {
-                foundIndex = text.IndexOf(target, 0, options);
-            }
-        }
-
-        if (foundIndex != -1)
-        {
-            _requestSelectSubject.OnNext((foundIndex, target.Length));
-            return true;
-        }
-        return false;
+        return args.IsSuccess;
     }
     public void SelectAll()
     {
@@ -255,43 +221,20 @@ public sealed class EditorService : IEditorService
         _disposableCollection.Dispose();
     }
 }
-public class GoToLineEventArgs
-{
-    public int LineIndex { get; }
-    public bool IsSuccess { get; set; } = false;
 
-    public GoToLineEventArgs(int lineIndex)
-    {
-        LineIndex = lineIndex;
-    }
+public record GoToLineEventArgs(int LineIndex)
+{
+    public bool IsSuccess { get; set; }
 }
-public class ReplaceNextEventArgs
+public record ReplaceNextEventArgs(string SearchText, string ReplaceText, bool MatchCase, bool WrapAround)
 {
-    public string SearchText { get; }
-    public string ReplaceText { get; }
-    public bool MatchCase { get; }
-    public bool WrapAround { get; }
-    public bool IsSuccess { get; set; } = false;
-
-    public ReplaceNextEventArgs(string searchText, string replaceText, bool matchCase, bool wrapAround)
-    {
-        SearchText = searchText;
-        ReplaceText = replaceText;
-        MatchCase = matchCase;
-        WrapAround = wrapAround;
-    }
+    public bool IsSuccess { get; set; }
 }
-public class ReplaceAllEventArgs
+public record ReplaceAllEventArgs(string SearchText, string ReplaceText, bool MatchCase)
 {
-    public string SearchText { get; }
-    public string ReplaceText { get; }
-    public bool MatchCase { get; }
-    public bool IsSuccess { get; set; } = false;
-
-    public ReplaceAllEventArgs(string searchText, string replaceText, bool matchCase)
-    {
-        SearchText = searchText;
-        ReplaceText = replaceText;
-        MatchCase = matchCase;
-    }
+    public bool IsSuccess { get; set; }
+}
+public record FindEventArgs(string SearchText, bool SearchUp, bool MatchCase, bool WrapAround)
+{
+    public bool IsSuccess { get; set; }
 }

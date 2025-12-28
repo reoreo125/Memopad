@@ -73,6 +73,66 @@ public partial class MainWindow : Window, IDisposable
         vm.EditorService.RequestRedo
             .Subscribe(_ => EditorBox.Redo())
             .AddTo(ref _disposableCollection);
+        vm.EditorService.RequestFind
+            .Subscribe(args =>
+            {
+                if (string.IsNullOrEmpty(args.SearchText))
+                {
+                    args.IsSuccess = false;
+                    return;
+                }
+
+                string text = EditorBox.Text;
+                StringComparison options = args.MatchCase
+                    ? StringComparison.CurrentCulture
+                    : StringComparison.CurrentCultureIgnoreCase;
+
+                int caret = EditorBox.CaretIndex;
+                int selLen = EditorBox.SelectionLength;
+                int foundIndex = -1;
+
+                if (args.SearchUp)
+                {
+                    int startIndex = caret - 1;
+
+                    if (startIndex >= 0)
+                    {
+                        foundIndex = text.LastIndexOf(args.SearchText, startIndex, options);
+                    }
+
+                    if (foundIndex == -1 && args.WrapAround && text.Length > 0)
+                    {
+                        foundIndex = text.LastIndexOf(args.SearchText, text.Length - 1, options);
+                    }
+                }
+                else
+                {
+                    int startIndex = Math.Min(text.Length, caret + selLen);
+
+                    foundIndex = text.IndexOf(args.SearchText, startIndex, options);
+
+                    if (foundIndex == -1 && args.WrapAround)
+                    {
+                        foundIndex = text.IndexOf(args.SearchText, 0, options);
+                    }
+                }
+
+                if (foundIndex != -1)
+                {
+                    EditorBox.Select(foundIndex, args.SearchText.Length);
+
+                    int lineIndex = EditorBox.GetLineIndexFromCharacterIndex(foundIndex);
+                    EditorBox.ScrollToLine(lineIndex);
+
+                    EditorBox.Focus();
+                    args.IsSuccess = true;
+                }
+                else
+                {
+                    args.IsSuccess = false;
+                }
+            })
+            .AddTo(ref _disposableCollection);
         vm.EditorService.RequestSelect
             .Subscribe(selection  =>
             {

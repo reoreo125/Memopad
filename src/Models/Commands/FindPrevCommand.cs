@@ -22,7 +22,7 @@ public class FindPrevCommand : CommandBase, IFindPrevCommand
         if (DialogService is null) throw new Exception(nameof(DialogService));
         if (EditorService is null) throw new Exception(nameof(EditorService));
 
-        var result = EditorService.Find(true);
+        var result = EditorService.FindPrev();
 
         if(result is false)
         {

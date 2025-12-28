@@ -22,7 +22,7 @@ public class FindNextCommand : CommandBase, IFindNextCommand
         if (DialogService is null) throw new Exception(nameof(DialogService));
         if (EditorService is null) throw new Exception(nameof(EditorService));
 
-        var result = EditorService.Find(false);
+        var result = EditorService.FindNext();
 
         if(result is false)
         {
