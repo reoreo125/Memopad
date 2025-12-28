@@ -1,8 +1,11 @@
+using System.Printing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Reoreo125.Memopad.Models.TextProcessing;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Reoreo125.Memopad.Models.Commands;
 
@@ -27,24 +30,35 @@ public class OpenPrintCommand : CommandBase, IOpenPrintCommand
 
         (bool? result, PrintDialog dialog) = DialogService.ShowPrint();
 
-        if(result is true)
+        if (result is true)
         {
             FlowDocument doc = new FlowDocument();
-            doc.PagePadding = new Thickness(50);
+
+            double mmToDpi = 96.0 / 25.4;
+            doc.PagePadding = new Thickness(
+                SettingsService.Settings.Page.MarginLeft.Value * mmToDpi,
+                SettingsService.Settings.Page.MarginTop.Value * mmToDpi,
+                SettingsService.Settings.Page.MarginRight.Value * mmToDpi,
+                SettingsService.Settings.Page.MarginBottom.Value * mmToDpi
+            );
+
+            doc.PageWidth = dialog.PrintTicket.PageMediaSize.Width ?? 816;
+            doc.PageHeight = dialog.PrintTicket.PageMediaSize.Height ?? 1056;
             doc.ColumnGap = 0;
-            doc.ColumnWidth = dialog.PrintableAreaWidth;
+            doc.ColumnWidth = doc.PageWidth - doc.PagePadding.Left - doc.PagePadding.Right;
 
-            var paragraph = new Paragraph();
-            var run = new Run(EditorService.Document.Text.Value);
-            paragraph.Inlines.Add(run);
-
+            var paragraph = new Paragraph(new Run(EditorService.Document.Text.Value));
             paragraph.FontFamily = new FontFamily(SettingsService.Settings.FontFamilyName.Value);
             paragraph.FontSize = SettingsService.Settings.FontSize.Value;
-
             doc.Blocks.Add(paragraph);
 
-            IDocumentPaginatorSource idpSource = doc;
-            dialog.PrintDocument(idpSource.DocumentPaginator, "Memopad");
+            var wrapper = new Paginator(
+                ((IDocumentPaginatorSource)doc).DocumentPaginator,
+                SettingsService.Settings.Page,
+                EditorService.Document.FilePath.Value
+            );
+
+            dialog.PrintDocument(wrapper, "Memopad");
         }
     }
 }

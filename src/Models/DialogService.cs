@@ -1,5 +1,7 @@
+using System.Printing;
 using System.Windows.Controls;
 using Microsoft.Win32;
+using Prism.Dialogs;
 using Reoreo125.Memopad.Views.Dialogs;
 using Reoreo125.Memopad.Views.Windows;
 using IPrismDialogService = Prism.Dialogs.IDialogService;
@@ -24,6 +26,8 @@ public class DialogService : IDialogService
 {
     [Dependency]
     public IPrismDialogService? PrismDialogService { get; set; }
+    [Dependency]
+    public ISettingsService SettingsService { get; set;  }
 
     public IDialogResult? ConfirmSave(string fileNameWithoutExtension)
     {
@@ -73,7 +77,16 @@ public class DialogService : IDialogService
     }
     public (bool?, PrintDialog) ShowPrint()
     {
+        if (SettingsService is null) throw new Exception(nameof(SettingsService));
+
         PrintDialog printDialog = new PrintDialog();
+
+        PrintTicket ticket = printDialog.PrintQueue.DefaultPrintTicket;
+        ticket.PageOrientation = SettingsService.Settings.Page.Orientation.Value;
+        ticket.PageMediaSize = new PageMediaSize(SettingsService.Settings.Page.PaperSizeName.Value);
+        ticket.InputBin = SettingsService.Settings.Page.InputBin.Value;
+        printDialog.PrintTicket = ticket;
+
         return (printDialog.ShowDialog(), printDialog);
     }
 
