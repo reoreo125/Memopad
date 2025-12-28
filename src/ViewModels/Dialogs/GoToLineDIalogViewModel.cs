@@ -1,6 +1,5 @@
 using R3;
 using Reoreo125.Memopad.Models;
-using Reoreo125.Memopad.Models.Commands;
 using IDialogService = Reoreo125.Memopad.Models.IDialogService;
 
 namespace Reoreo125.Memopad.ViewModels.Windows;

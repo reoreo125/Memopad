@@ -21,8 +21,7 @@ public partial class MainWindow : Window, IDisposable
     {
         InitializeComponent();
 
-        var vm = DataContext as MainWindowViewModel;
-        if (vm is null) throw new Exception(nameof(DataContext));
+        if (DataContext is not MainWindowViewModel vm) throw new Exception(nameof(DataContext));
 
         vm.EditorService.RequestCut
             .Subscribe(_ => EditorBox.Cut())

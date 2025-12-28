@@ -1,9 +1,6 @@
-using System.Data.Common;
-using System.Windows;
 using R3;
 using Reoreo125.Memopad.Models;
 using Reoreo125.Memopad.Models.Commands;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Reoreo125.Memopad.ViewModels.Dialogs
 {

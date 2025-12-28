@@ -1,5 +1,4 @@
 using Reoreo125.Memopad.Models;
-using Reoreo125.Memopad.Models.Commands;
 
 namespace Reoreo125.Memopad.ViewModels.Dialogs
 {
