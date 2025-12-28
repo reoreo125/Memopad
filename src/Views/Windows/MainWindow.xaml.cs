@@ -146,6 +146,57 @@ public partial class MainWindow : Window, IDisposable
                 }
             })
             .AddTo(ref _disposableCollection);
+        vm.EditorService.RequestReplaceAll
+            .Subscribe(args =>
+            {
+                //var (searchText, replaceText, matchCase) = args;
+
+                if (string.IsNullOrEmpty(args.SearchText))
+                {
+                    args.IsSuccess = false;
+                    return;
+                }
+
+                string currentText = EditorBox.Text;
+                var options = args.MatchCase ? System.Text.RegularExpressions.RegexOptions.None
+                                             : System.Text.RegularExpressions.RegexOptions.IgnoreCase;
+
+                var regex = new System.Text.RegularExpressions.Regex(
+                    System.Text.RegularExpressions.Regex.Escape(args.SearchText), options);
+
+                // 1. 一致する箇所をすべて取得
+                var matches = regex.Matches(currentText);
+                var replacedCount = matches.Count;
+
+                // 2. 1件もなければ失敗として終了
+                if (replacedCount == 0)
+                {
+                    args.IsSuccess = false;
+                    return;
+                }
+
+                // 3. 置換実行
+                string newText = regex.Replace(currentText, args.ReplaceText);
+
+                // 4. TextBoxへの反映（Undo履歴を保護）
+                EditorBox.BeginChange();
+                try
+                {
+                    EditorBox.SelectAll();
+                    EditorBox.SelectedText = newText;
+
+                    EditorBox.CaretIndex = 0;
+                    EditorBox.ScrollToHome();
+                    EditorBox.Focus();
+                }
+                finally
+                {
+                    EditorBox.EndChange();
+                }
+
+                args.IsSuccess = true;
+            })
+            .AddTo(ref _disposableCollection);
     }
 
     private void EditorBox_TextChanged(object sender, TextChangedEventArgs e)

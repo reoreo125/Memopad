@@ -20,6 +20,7 @@ public interface IEditorService : IDisposable
     public Observable<Unit> RequestSelectAll { get; }
     public Observable<GoToLineEventArgs> RequestGoToLine { get; }
     public Observable<ReplaceNextEventArgs> RequestReplaceNext { get; }
+    public Observable<ReplaceAllEventArgs> RequestReplaceAll { get; }
 
     public EditorDocument Document { get; }
 
@@ -38,6 +39,7 @@ public interface IEditorService : IDisposable
     public void SelectAll();
     public bool GoToLine(int lineIndex);
     public bool ReplaceNext();
+    public bool ReplaceAll();
 }
 
 public sealed class EditorService : IEditorService
@@ -68,6 +70,8 @@ public sealed class EditorService : IEditorService
     public Observable<GoToLineEventArgs> RequestGoToLine => _requestGoToLineSubject;
     private readonly Subject<ReplaceNextEventArgs> _requestReplaceNextSubject = new();
     public Observable<ReplaceNextEventArgs> RequestReplaceNext => _requestReplaceNextSubject;
+    private readonly Subject<ReplaceAllEventArgs> _requestReplaceAllSubject = new();
+    public Observable<ReplaceAllEventArgs> RequestReplaceAll => _requestReplaceAllSubject;
 
     public EditorDocument Document { get; }
 
@@ -236,6 +240,16 @@ public sealed class EditorService : IEditorService
 
         return args.IsSuccess;
     }
+    public bool ReplaceAll()
+    {
+        ReplaceAllEventArgs args = new(
+            Document.SearchText.Value,
+            Document.ReplaceText.Value,
+            Document.MatchCase.Value);
+        _requestReplaceAllSubject.OnNext(args);
+
+        return args.IsSuccess;
+    }
     public void Dispose()
     {
         _disposableCollection.Dispose();
@@ -255,8 +269,8 @@ public class ReplaceNextEventArgs
 {
     public string SearchText { get; }
     public string ReplaceText { get; }
-    public bool MatchCase { get; set; }
-    public bool WrapAround { get; set; }
+    public bool MatchCase { get; }
+    public bool WrapAround { get; }
     public bool IsSuccess { get; set; } = false;
 
     public ReplaceNextEventArgs(string searchText, string replaceText, bool matchCase, bool wrapAround)
@@ -265,5 +279,19 @@ public class ReplaceNextEventArgs
         ReplaceText = replaceText;
         MatchCase = matchCase;
         WrapAround = wrapAround;
+    }
+}
+public class ReplaceAllEventArgs
+{
+    public string SearchText { get; }
+    public string ReplaceText { get; }
+    public bool MatchCase { get; }
+    public bool IsSuccess { get; set; } = false;
+
+    public ReplaceAllEventArgs(string searchText, string replaceText, bool matchCase)
+    {
+        SearchText = searchText;
+        ReplaceText = replaceText;
+        MatchCase = matchCase;
     }
 }

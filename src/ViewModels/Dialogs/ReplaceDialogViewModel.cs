@@ -13,11 +13,13 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
 
         public DialogCloseListener RequestClose { get; }
 
-        public DelegateCommand CancelCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
         [Dependency]
         public IFindNextCommand? FindNextCommand { get; set; }
         [Dependency]
         public IReplaceNextCommand? ReplaceNextCommand { get; set; }
+        [Dependency]
+        public IReplaceAllCommand? ReplaceAllCommand { get; set; }
+        public DelegateCommand CancelCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
 
         public BindableReactiveProperty<string> SearchText { get; }
         public BindableReactiveProperty<string> ReplaceText { get; }
