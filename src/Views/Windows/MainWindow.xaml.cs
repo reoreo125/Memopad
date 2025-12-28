@@ -149,7 +149,6 @@ public partial class MainWindow : Window, IDisposable
         vm.EditorService.RequestReplaceAll
             .Subscribe(args =>
             {
-                //var (searchText, replaceText, matchCase) = args;
 
                 if (string.IsNullOrEmpty(args.SearchText))
                 {
@@ -164,21 +163,17 @@ public partial class MainWindow : Window, IDisposable
                 var regex = new System.Text.RegularExpressions.Regex(
                     System.Text.RegularExpressions.Regex.Escape(args.SearchText), options);
 
-                // 1. 一致する箇所をすべて取得
                 var matches = regex.Matches(currentText);
                 var replacedCount = matches.Count;
 
-                // 2. 1件もなければ失敗として終了
                 if (replacedCount == 0)
                 {
                     args.IsSuccess = false;
                     return;
                 }
 
-                // 3. 置換実行
                 string newText = regex.Replace(currentText, args.ReplaceText);
 
-                // 4. TextBoxへの反映（Undo履歴を保護）
                 EditorBox.BeginChange();
                 try
                 {
@@ -214,16 +209,12 @@ public partial class MainWindow : Window, IDisposable
     {
         if (sender is TextBox textBox)
         {
-            // 現在のカーソル位置（0から始まるインデックス）
             int caretIndex = textBox.CaretIndex;
 
-            // 0文字目からカーソル位置までのテキストを切り出す
             string textUntilCaret = textBox.Text.Substring(0, caretIndex);
 
-            // 行数：そこまでに含まれる改行コード '\n' の数 + 1
             int line = textUntilCaret.Count(c => c == '\n') + 1;
 
-            // 列数：最後の改行コードのインデックスを探し、そこからの距離を測る
             int lastNewLineIndex = textUntilCaret.LastIndexOf('\n');
             int column = caretIndex - lastNewLineIndex;
 
