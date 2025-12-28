@@ -26,7 +26,8 @@
                       InputGestureText="Ctrl+Shift+S"
                       Command="{Binding SaveAsTextFileCommand}" />
             <Separator />
-            <MenuItem Header="ページ設定(_U)..." />
+            <MenuItem Header="ページ設定(_U)..."
+                      Command="{Binding OpenPageSettingsCommand}"/>
             <MenuItem Header="印刷(_P)..."
                       InputGestureText="Ctrl+P"
                       Command="{Binding OpenPrintCommand}"/>

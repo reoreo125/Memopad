@@ -18,6 +18,7 @@ public interface IDialogService
     public IDialogResult? ShowGoToLine(int currentLineIndex);
     public IDialogResult? ShowLineOutOfBounds();
     public IDialogResult? ShowReplace();
+    public IDialogResult? ShowPageSettings();
 }
 public class DialogService : IDialogService
 {
@@ -114,7 +115,7 @@ public class DialogService : IDialogService
     public IDialogResult? ShowLineOutOfBounds() => ShowDialogWithoutParameters(typeof(LineOutOfBoundsDialog));
     public IDialogResult? ShowReplace() => ShowWithoutParameters(typeof(ReplaceDialog));
     public IDialogResult? ShowAbout() => ShowDialogWithoutParameters(typeof(AboutDialog));
-
+    public IDialogResult? ShowPageSettings() => ShowDialogWithoutParameters(typeof(PageSettingsDialog));
 
 
     private IDialogResult? ShowDialogWithoutParameters(Type dialogType)

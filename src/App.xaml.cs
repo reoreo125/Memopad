@@ -60,6 +60,7 @@ public partial class App : PrismApplication
         containerRegistry.RegisterDialog<GoToLineDialog, GoToLineDIalogViewModel>();
         containerRegistry.RegisterDialog<LineOutOfBoundsDialog, LineOutOfBoundsDialogViewModel>();
         containerRegistry.RegisterDialog<ReplaceDialog, ReplaceDialogViewModel>();
+        containerRegistry.RegisterDialog<PageSettingsDialog, PageSettingsDialogViewModel>();
     }
 
     protected override Window CreateShell() => Container.Resolve<MainWindow>();

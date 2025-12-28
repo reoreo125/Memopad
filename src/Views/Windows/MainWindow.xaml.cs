@@ -30,7 +30,11 @@ public partial class MainWindow : Window, IDisposable
             .Subscribe(_ => EditorBox.Copy())
             .AddTo(ref _disposableCollection);
         vm.EditorService.RequestPaste
-            .Subscribe(_ => EditorBox.Paste())
+            .Subscribe(_ =>
+            {
+                EditorBox.Paste();
+                EditorBox.Focus();
+            })
             .AddTo(ref _disposableCollection);
         vm.EditorService.RequestDelete
             .Subscribe(_ => EditorBox.SelectedText = "")
@@ -42,6 +46,8 @@ public partial class MainWindow : Window, IDisposable
 
                 EditorBox.SelectionLength = 0;
                 EditorBox.SelectionStart += value.Length;
+
+                EditorBox.Focus();
             })
             .AddTo(ref _disposableCollection);
         vm.EditorService.RequestLoadText.Subscribe(value =>
@@ -52,6 +58,7 @@ public partial class MainWindow : Window, IDisposable
                 EditorBox.Text = value;
 
                 EditorBox.CaretIndex = 0;
+                EditorBox.Focus();
             })
             .AddTo(ref _disposableCollection);
         vm.EditorService.RequestReset.Subscribe(_ =>
