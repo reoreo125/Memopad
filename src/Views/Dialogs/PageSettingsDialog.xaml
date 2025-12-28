@@ -6,11 +6,12 @@
              xmlns:local="clr-namespace:Reoreo125.Memopad.Views.Dialogs"
              xmlns:models="clr-namespace:Reoreo125.Memopad.Models"
              xmlns:converters="clr-namespace:Reoreo125.Memopad.Views.Converters"
+             xmlns:sp="clr-namespace:System.Printing;assembly=ReachFramework"
              xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        <converters:PageOrientationToBoolConverter x:Key="PageOrientationToBoolConverter"/>
     </UserControl.Resources>
     <prism:Dialog.WindowStyle>
         <Style TargetType="Window">
@@ -36,7 +37,11 @@
                             </DockPanel>
                             <DockPanel Margin="10">
                                 <Label Content="給紙方法(_S):" Margin="0 0 20 0"/>
-                                <ComboBox DockPanel.Dock="Right" />
+                                <ComboBox DockPanel.Dock="Right"
+                                          ItemsSource="{Binding InputBinOptions.Value}"
+                                          DisplayMemberPath="Name"
+                                          SelectedValuePath="Value"
+                                          SelectedValue="{Binding InputBin.Value, UpdateSourceTrigger=PropertyChanged}"/>
                             </DockPanel>
                         </StackPanel>
                     </GroupBox>
@@ -45,11 +50,15 @@
                     <StackPanel Orientation="Vertical">
                         <DockPanel Margin="10">
                             <Label Content="ヘッダ(_H):" Margin="0 0 4 0"/>
-                            <TextBox DockPanel.Dock="Right" VerticalContentAlignment="Center"/>
+                            <TextBox DockPanel.Dock="Right"
+                                     VerticalContentAlignment="Center"
+                                     Text="{Binding Header.Value}"/>
                         </DockPanel>
                         <DockPanel Margin="10">
                             <Label Content="フッター(_F):"/>
-                            <TextBox DockPanel.Dock="Right" VerticalContentAlignment="Center"/>
+                            <TextBox DockPanel.Dock="Right"
+                                     VerticalContentAlignment="Center"
+                                     Text="{Binding Footer.Value}"/>
                         </DockPanel>
                     </StackPanel>
                 </DockPanel>
@@ -57,8 +66,18 @@
                     <DockPanel Margin="0 0 10 0">
                         <GroupBox Header="印刷の向き" Padding="10 10 40 0">
                             <StackPanel Orientation="Vertical">
-                                <RadioButton Content="縦(_O)" Margin="0 0 0 20"/>
-                                <RadioButton Content="横(_A)" Margin="0 0 0 20"/>
+                                <RadioButton Content="縦(_O)"
+                                             Margin="0 0 0 20"
+                                             GroupName="Orientation"
+                                             IsChecked="{Binding Orientation.Value, 
+                                                                 Converter={StaticResource PageOrientationToBoolConverter}, 
+                                                                 ConverterParameter={x:Static sp:PageOrientation.Portrait}}"/>
+                                <RadioButton Content="横(_A)"
+                                             Margin="0 0 0 20"
+                                             GroupName="Orientation"
+                                             IsChecked="{Binding Orientation.Value, 
+                                                                 Converter={StaticResource PageOrientationToBoolConverter}, 
+                                                                 ConverterParameter={x:Static sp:PageOrientation.Landscape}}"/>
                             </StackPanel>
                         </GroupBox>
                     </DockPanel>
@@ -67,19 +86,27 @@
                             <UniformGrid Rows="2" Columns="2" Margin="0 0 10 0">
                                 <DockPanel VerticalAlignment="Center">
                                     <Label Content="左(_L):"/>
-                                    <TextBox Height="22" VerticalContentAlignment="Center"/>
+                                    <TextBox Height="22"
+                                             VerticalContentAlignment="Center"
+                                             Text="{Binding MarginLeft.Value}"/>
                                 </DockPanel>
                                 <DockPanel VerticalAlignment="Center">
                                     <Label Content="右(_R):"/>
-                                    <TextBox Height="22" VerticalContentAlignment="Center"/>
+                                    <TextBox Height="22"
+                                             VerticalContentAlignment="Center"
+                                             Text="{Binding MarginRight.Value}"/>
                                 </DockPanel>
                                 <DockPanel VerticalAlignment="Center">
                                     <Label Content="上(_T):"/>
-                                    <TextBox Height="22" VerticalContentAlignment="Center"/>
+                                    <TextBox Height="22"
+                                             VerticalContentAlignment="Center"
+                                             Text="{Binding MarginTop.Value}"/>
                                 </DockPanel>
                                 <DockPanel VerticalAlignment="Center">
                                     <Label Content="下(_B):"/>
-                                    <TextBox Height="22" VerticalContentAlignment="Center"/>
+                                    <TextBox Height="22"
+                                             VerticalContentAlignment="Center"
+                                             Text="{Binding MarginBottom.Value}"/>
                                 </DockPanel>
                             </UniformGrid>
                         </GroupBox>

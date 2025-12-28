@@ -49,21 +49,23 @@ public class PageSettings
     public Observable<Unit> Changed { get; }
 
     [JsonProperty]
-    public ReactiveProperty<PageMediaSizeName> PaperSizeName { get; } = new(PageMediaSizeName.ISOA4);
+    public ReactiveProperty<PageMediaSizeName> PaperSizeName { get; } = new(Defaults.PaperSizeName);
     [JsonProperty]
-    public ReactiveProperty<PageOrientation> Orientation { get; } = new(PageOrientation.Portrait);
+    public ReactiveProperty<InputBin> InputBin { get; } = new(Defaults.InputBin);
     [JsonProperty]
-    public ReactiveProperty<double> MarginLeft { get; } = new(20.0);
+    public ReactiveProperty<PageOrientation> Orientation { get; } = new(Defaults.PageOrientation);
     [JsonProperty]
-    public ReactiveProperty<double> MarginTop { get; } = new(25.0);
+    public ReactiveProperty<double> MarginLeft { get; } = new(Defaults.MarginLeft);
     [JsonProperty]
-    public ReactiveProperty<double> MarginRight { get; } = new(20.0);
+    public ReactiveProperty<double> MarginTop { get; } = new(Defaults.MarginTop);
     [JsonProperty]
-    public ReactiveProperty<double> MarginBottom { get; } = new(25.0);
+    public ReactiveProperty<double> MarginRight { get; } = new(Defaults.MarginRight);
     [JsonProperty]
-    public ReactiveProperty<string> Header { get; } = new("&f");  // &f はファイル名のマクロ
+    public ReactiveProperty<double> MarginBottom { get; } = new(Defaults.MarginBottom);
     [JsonProperty]
-    public ReactiveProperty<string> Footer { get; } = new("Page &p"); // &p はページ番号のマクロ
+    public ReactiveProperty<string> Header { get; } = new(Defaults.Header);  // &f はファイル名のマクロ
+    [JsonProperty]
+    public ReactiveProperty<string> Footer { get; } = new(Defaults.Footer); // &p はページ番号のマクロ
 
     [JsonConstructor]
     public PageSettings()

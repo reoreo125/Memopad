@@ -1,6 +1,9 @@
+using System.Printing;
 using System.Reflection;
 using System.Text;
 using System.Windows;
+using Newtonsoft.Json;
+using R3;
 using Reoreo125.Memopad.Models.TextProcessing;
 
 namespace Reoreo125.Memopad.Models;
@@ -34,4 +37,13 @@ public record Defaults
     public static bool WrapAround => false;
     public static int SearchTextMaxLength => 128;
     public static int ReplaceTextMaxLength => 128;
+    public static PageMediaSizeName PaperSizeName => PageMediaSizeName.ISOA4;
+    public static InputBin InputBin => InputBin.AutoSelect;
+    public static PageOrientation PageOrientation => PageOrientation.Portrait;
+    public static double MarginLeft => 20.0d;
+    public static double MarginTop => 25.0d;
+    public static double MarginRight => 20.0d;
+    public static double MarginBottom => 25.0d;
+    public static string Header => "&f";
+    public static string Footer => "Page &p";
 }
