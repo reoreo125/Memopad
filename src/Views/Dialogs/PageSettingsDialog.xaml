@@ -27,7 +27,12 @@
                         <StackPanel Orientation="Vertical">
                             <DockPanel Margin="10">
                                 <Label Content="サイズ(_Z):" Margin="0 0 40 0"/>
-                                <ComboBox DockPanel.Dock="Right" Width="280"/>
+                                <ComboBox DockPanel.Dock="Right"
+                                          Width="280"
+                                          ItemsSource="{Binding PageSizeOptions}"
+                                          DisplayMemberPath="Name" 
+                                          SelectedValuePath="Value"
+                                          SelectedValue="{Binding PageSizeName.Value, UpdateSourceTrigger=PropertyChanged}"/>
                             </DockPanel>
                             <DockPanel Margin="10">
                                 <Label Content="給紙方法(_S):" Margin="0 0 20 0"/>
