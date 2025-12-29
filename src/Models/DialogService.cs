@@ -22,6 +22,7 @@ public interface IDialogService
     public IDialogResult? ShowReplace();
     public IDialogResult? ShowPageSettings();
     public IDialogResult? ShowFont();
+    public IDialogResult? ShowFontNotFound();
 }
 public class DialogService : IDialogService
 {
@@ -131,7 +132,7 @@ public class DialogService : IDialogService
     public IDialogResult? ShowAbout() => ShowDialogWithoutParameters(typeof(AboutDialog));
     public IDialogResult? ShowPageSettings() => ShowDialogWithoutParameters(typeof(PageSettingsDialog));
     public IDialogResult? ShowFont() => ShowDialogWithoutParameters(typeof(FontDialog));
-
+    public IDialogResult? ShowFontNotFound() => ShowDialogWithoutParameters(typeof(FontNotFoundDialog));
     private IDialogResult? ShowDialogWithoutParameters(Type dialogType)
     {
         IDialogResult? result = null;

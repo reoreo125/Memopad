@@ -21,7 +21,7 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
             // もし選択したフォント名がフォントリストになかったらダイアログを出してOKさせない
             if(FontNames.Contains(FontName.Value) is not true)
             {
-                // DialogService.ShowFontNotFound();
+                DialogService.ShowFontNotFound();
                 return;
             }
 
