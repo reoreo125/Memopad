@@ -48,7 +48,8 @@
                              MaxLength="3"/>
                     <ListBox Height="118"
                              ItemsSource="{Binding PresetSizes}" 
-                             SelectedItem="{Binding ListBoxSize.Value}"/>
+                             SelectedItem="{Binding ListBoxSize.Value}"
+                             SelectionChanged="FontListBox_SelectionChanged"/>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Margin="0 0 15 15">
                     <Label Content="スタイル(_Y):"/>
@@ -59,7 +60,8 @@
                              Text="{Binding FontStyleName.Value, UpdateSourceTrigger=PropertyChanged}"/>
                     <ListBox Height="118"
                              ItemsSource="{Binding FontStyles}"
-                             SelectedItem="{Binding ListBoxFontStyleName.Value}"/>
+                             SelectedItem="{Binding ListBoxFontStyleName.Value}"
+                             SelectionChanged="FontListBox_SelectionChanged"/>
                 </StackPanel>
             </DockPanel>
         </DockPanel>
