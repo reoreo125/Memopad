@@ -33,6 +33,7 @@
                      AcceptsTab="True"
                      FontFamily="{Binding FontFamily.Value}"
                      FontStyle="{Binding FontStyle.Value}"
+                     FontWeight="{Binding FontWeight.Value}"
                      FontSize="{Binding FontSize.Value}"
                      Padding="5"
                      TextWrapping="{Binding TextWrapping.Value}"

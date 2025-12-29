@@ -57,10 +57,14 @@
                              Width="130"
                              MaxWidth="130"
                              Height="22"
-                             Text="{Binding FontStyleName.Value, UpdateSourceTrigger=PropertyChanged}"/>
+                             IsReadOnly="true"
+                             Text="{Binding FontStyleInfo.Value.Name, UpdateSourceTrigger=PropertyChanged}"/>
                     <ListBox Height="118"
+                             Width="130"
+                             MaxWidth="130"
                              ItemsSource="{Binding FontStyles}"
-                             SelectedItem="{Binding ListBoxFontStyleName.Value}"
+                             SelectedItem="{Binding ListBoxFontStyleInfo.Value}"
+                             DisplayMemberPath="Name"
                              SelectionChanged="FontListBox_SelectionChanged"/>
                 </StackPanel>
             </DockPanel>
