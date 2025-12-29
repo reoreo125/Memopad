@@ -43,8 +43,10 @@ public class MainWindowViewModel : BindableBase, IDisposable
         Text = new BindableReactiveProperty<string>(string.Empty);
         FontFamily = SettingsService.Settings.FontFamilyName
             .ToBindableReactiveProperty(Defaults.FontFamilyName);
-        FontSize = SettingsService.Settings.ZoomLevel
-            .Select(value => Defaults.FontSize * value)
+        FontSize = Observable.Merge(
+                SettingsService.Settings.ZoomLevel.AsUnitObservable(),
+                SettingsService.Settings.FontSize.AsUnitObservable())
+            .Select(value => SettingsService.Settings.FontSize.Value * SettingsService.Settings.ZoomLevel.Value)
             .ToBindableReactiveProperty(Defaults.FontSize);
         TextWrapping = SettingsService.Settings.IsWordWrap
             .Select(value => value ? System.Windows.TextWrapping.Wrap : System.Windows.TextWrapping.NoWrap)

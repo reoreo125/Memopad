@@ -16,6 +16,7 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
         public DelegateCommand CancelCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
         public DelegateCommand OkCommand => new(() =>
         {
+            SettingsService.Settings.FontSize.Value = Convert.ToInt32(Size.Value);
             RequestClose.Invoke(new DialogResult(ButtonResult.OK));
         });
 
