@@ -55,8 +55,11 @@
                     <TextBox VerticalContentAlignment="Center"
                              Width="130"
                              MaxWidth="130"
-                             Height="22" />
-                    <ListBox Height="118"/>
+                             Height="22"
+                             Text="{Binding FontStyleName.Value, UpdateSourceTrigger=PropertyChanged}"/>
+                    <ListBox Height="118"
+                             ItemsSource="{Binding FontStyles}"
+                             SelectedItem="{Binding ListBoxFontStyleName.Value}"/>
                 </StackPanel>
             </DockPanel>
         </DockPanel>

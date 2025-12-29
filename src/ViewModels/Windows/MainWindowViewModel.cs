@@ -20,6 +20,7 @@ public class MainWindowViewModel : BindableBase, IDisposable
     public BindableReactiveProperty<string> Title { get; }
     public BindableReactiveProperty<string> Text { get; }
     public BindableReactiveProperty<string> FontFamily { get; }
+    public BindableReactiveProperty<string> FontStyle { get; }
     public BindableReactiveProperty<double> FontSize { get; }
     public BindableReactiveProperty<TextWrapping> TextWrapping { get; }
 
@@ -42,6 +43,8 @@ public class MainWindowViewModel : BindableBase, IDisposable
             .ToBindableReactiveProperty(string.Empty);
         Text = new BindableReactiveProperty<string>(string.Empty);
         FontFamily = SettingsService.Settings.FontFamilyName
+            .ToBindableReactiveProperty(Defaults.FontFamilyName);
+        FontStyle = SettingsService.Settings.FontStyleName
             .ToBindableReactiveProperty(Defaults.FontFamilyName);
         FontSize = Observable.Merge(
                 SettingsService.Settings.ZoomLevel.AsUnitObservable(),

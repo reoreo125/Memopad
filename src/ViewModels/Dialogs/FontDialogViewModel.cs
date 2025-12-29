@@ -25,8 +25,13 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
                 DialogService.ShowFontNotFound("その名前のフォントはありません。\nフォント一覧からフォントを選んでください。");
                 return;
             }
-
+            if (FontStyles.Contains(FontStyleName.Value) is not true)
+            {
+                DialogService.ShowFontNotFound("そのスタイルでは、このフォントを利用できません。\nスタイル一覧からスタイルを選んでください。");
+                return;
+            }
             SettingsService.Settings.FontFamilyName.Value = FontName.Value;
+            SettingsService.Settings.FontStyleName.Value = FontStyleName.Value;
             SettingsService.Settings.FontSize.Value = Convert.ToInt32(Size.Value);
             RequestClose.Invoke(new DialogResult(ButtonResult.OK));
         });
@@ -35,7 +40,10 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
         public List<string> FontNames { get; }
         public BindableReactiveProperty<string> ListBoxFontName { get; }
 
-        public ObservableCollection<string> FontStyles { get; } = new();
+        public BindableReactiveProperty<string> FontStyleName { get; }
+        public ObservableCollection<string> FontStyles { get; }
+        public BindableReactiveProperty<string> ListBoxFontStyleName { get; }
+
         public BindableReactiveProperty<string> Size { get; }
         public BindableReactiveProperty<string?> ListBoxSize { get; }
 
@@ -74,22 +82,47 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
             // ---
 
             // フォントスタイル
+            FontStyles = new();
+            FontStyleName = new(SettingsService.Settings.FontStyleName.Value);
+            ListBoxFontStyleName = new(SettingsService.Settings.FontStyleName.Value);
             FontName.Subscribe(name =>
                     {
                         if (string.IsNullOrEmpty(name)) return;
 
+                        bool isFirst = false;
+                        if(FontStyles.Count == 0) isFirst = true;
+
                         var family = new FontFamily(name);
                         FontStyles.Clear();
 
-                        // そのフォントが持つスタイル（標準、太字、斜体など）を抽出
                         var styles = family.GetTypefaces()
-                            .Select(t => t.FaceNames.Values.FirstOrDefault() ?? "Regular")
+                            .Select(t => t.FaceNames.Values.FirstOrDefault() ?? Defaults.FontStyleName)
                             .Distinct()
                             .ToList();
-
                         foreach (var s in styles) FontStyles.Add(s);
+
+                        if(isFirst)
+                        {
+                            ListBoxFontStyleName.Value = SettingsService.Settings.FontStyleName.Value;
+                        }
+                        else
+                        {
+                            if(FontStyles.Contains(Defaults.FontStyleName))
+                            {
+                                ListBoxFontStyleName.Value = Defaults.FontStyleName;
+                            }
+                            else
+                            {
+                                ListBoxFontStyleName.Value = FontStyles.First();
+                            }
+                            
+                        }
                     })
                     .AddTo(ref _disposableCollection);
+            ListBoxFontStyleName
+                .Where(value => value != null)
+                .Subscribe(value => FontStyleName.Value = value)
+                .AddTo(ref _disposableCollection);
             // ---
 
             // フォントサイズ ---

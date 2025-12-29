@@ -23,6 +23,7 @@ public record Defaults
     public static string EncodingText => Encoding.WebName.ToUpper();
     public static string PositionText => "1行、1列";
     public static string FontFamilyName => "Consolas";
+    public static string FontStyleName => "Regular";
     public static int FontSize => 12;
     public static double ZoomLevel => 1.0;
     public static double ZoomStep => 0.1;

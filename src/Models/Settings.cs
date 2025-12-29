@@ -16,6 +16,8 @@ public class Settings
     [JsonProperty]
     public ReactiveProperty<string> FontFamilyName { get; } = new(Defaults.FontFamilyName);
     [JsonProperty]
+    public ReactiveProperty<string> FontStyleName { get; } = new(Defaults.FontStyleName);
+    [JsonProperty]
     public ReactiveProperty<int> FontSize { get; } = new(Defaults.FontSize);
     [JsonProperty]
     public ReactiveProperty<bool> IsWordWrap { get; } = new(Defaults.IsWrapping);
@@ -35,6 +37,7 @@ public class Settings
             (
                 LastOpenedFolderPath.AsUnitObservable(),
                 FontFamilyName.AsUnitObservable(),
+                FontStyleName.AsUnitObservable(),
                 FontSize.AsUnitObservable(),
                 IsWordWrap.AsUnitObservable(),
                 ShowStatusBar.AsUnitObservable(),
