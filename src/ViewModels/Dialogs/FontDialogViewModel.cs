@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,7 +22,7 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
             // もし選択したフォント名がフォントリストになかったらダイアログを出してOKさせない
             if(FontNames.Contains(FontName.Value) is not true)
             {
-                DialogService.ShowFontNotFound();
+                DialogService.ShowFontNotFound("その名前のフォントはありません。\nフォント一覧からフォントを選んでください。");
                 return;
             }
 
@@ -31,11 +32,13 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
         });
 
         public BindableReactiveProperty<string> FontName { get; }
+        public List<string> FontNames { get; }
+        public BindableReactiveProperty<string> ListBoxFontName { get; }
+
+        public ObservableCollection<string> FontStyles { get; } = new();
         public BindableReactiveProperty<string> Size { get; }
         public BindableReactiveProperty<string?> ListBoxSize { get; }
 
-        public BindableReactiveProperty<string> ListBoxFontName { get; }
-        public List<string> FontNames { get; }
         public string[] PresetSizes { get; } = new[]
         { "8", "9", "10", "11", "12", "14", "16", "18", "20", "22", "24", "26", "28", "36", "48", "72" };
 
@@ -68,6 +71,25 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
                 .Where(x => x != null)
                 .Subscribe(x => FontName.Value = x)
                 .AddTo(ref _disposableCollection);
+            // ---
+
+            // フォントスタイル
+            FontName.Subscribe(name =>
+                    {
+                        if (string.IsNullOrEmpty(name)) return;
+
+                        var family = new FontFamily(name);
+                        FontStyles.Clear();
+
+                        // そのフォントが持つスタイル（標準、太字、斜体など）を抽出
+                        var styles = family.GetTypefaces()
+                            .Select(t => t.FaceNames.Values.FirstOrDefault() ?? "Regular")
+                            .Distinct()
+                            .ToList();
+
+                        foreach (var s in styles) FontStyles.Add(s);
+                    })
+                    .AddTo(ref _disposableCollection);
             // ---
 
             // フォントサイズ ---
