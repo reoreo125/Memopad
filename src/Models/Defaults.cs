@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Printing;
 using System.Reflection;
 using System.Text;
@@ -5,6 +6,7 @@ using System.Windows;
 using Newtonsoft.Json;
 using R3;
 using Reoreo125.Memopad.Models.TextProcessing;
+using FontStyle = System.Windows.FontStyle;
 
 namespace Reoreo125.Memopad.Models;
 

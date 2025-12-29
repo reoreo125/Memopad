@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Reoreo125.Memopad.Views.Dialogs"
              xmlns:converters="clr-namespace:Reoreo125.Memopad.Views.Converters"
              xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
     <prism:Dialog.WindowStyle>
         <Style TargetType="Window">
@@ -19,12 +20,19 @@
         <DockPanel DockPanel.Dock="Top">
             <DockPanel DockPanel.Dock="Right">
                 <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Margin="0 0 15 15">
-                    <Label Content="フォント名(_F):"/>
-                    <TextBox VerticalContentAlignment="Center"
+                    <Label Content="フォント名(_F):"
+                           Target="{Binding ElementName=FontTextBox}"/>
+                    <TextBox x:Name="FontTextBox"
+                             VerticalContentAlignment="Center"
                              Width="170"
                              MaxWidth="170"
-                             Height="22"/>
-                    <ListBox Height="118"/>
+                             Height="22"
+                             Text="{Binding FontName.Value, UpdateSourceTrigger=PropertyChanged}"/>
+                    <ListBox x:Name="FontListBox"
+                             Height="118"
+                             ItemsSource="{Binding FontNames}" 
+                             SelectedItem="{Binding ListBoxFontName.Value}"
+                             SelectionChanged="FontListBox_SelectionChanged"/>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Right" Orientation="Vertical" Margin="0 0 0 15">
                     <Label Content="サイズ(_S):"/>
