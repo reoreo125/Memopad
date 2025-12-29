@@ -14,23 +14,41 @@
             <Setter Property="SizeToContent" Value="WidthAndHeight"/>
         </Style>
     </prism:Dialog.WindowStyle>
+
     <DockPanel Margin="10">
         <DockPanel DockPanel.Dock="Top">
             <DockPanel DockPanel.Dock="Right">
                 <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Margin="0 0 15 15">
                     <Label Content="フォント名(_F):"/>
-                    <TextBox Height="22" VerticalContentAlignment="Center"/>
-                    <ListBox Width="170" Height="118"/>
+                    <TextBox VerticalContentAlignment="Center"
+                             Width="170"
+                             MaxWidth="170"
+                             Height="22"/>
+                    <ListBox Height="118"/>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Right" Orientation="Vertical" Margin="0 0 0 15">
                     <Label Content="サイズ(_S):"/>
-                    <TextBox Height="22" VerticalContentAlignment="Center"/>
-                    <ListBox Width="60" Height="118"/>
+                    <TextBox x:Name="SizeTextBox"
+                             Width="60"
+                             MaxWidth="60"
+                             Height="22"
+                             VerticalContentAlignment="Center"
+                             Text="{Binding Size.Value, UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="NumberOnly_PreviewTextInput"
+                             PreviewKeyDown="NumberOnly_PreviewKeyDown"
+                             InputMethod.IsInputMethodEnabled="False"
+                             MaxLength="3"/>
+                    <ListBox Height="118"
+                             ItemsSource="{Binding PresetSizes}" 
+                             SelectedItem="{Binding ListBoxSize.Value}"/>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Margin="0 0 15 15">
                     <Label Content="スタイル(_Y):"/>
-                    <TextBox Height="22" VerticalContentAlignment="Center"/>
-                    <ListBox Width="130" Height="118"/>
+                    <TextBox VerticalContentAlignment="Center"
+                             Width="130"
+                             MaxWidth="130"
+                             Height="22" />
+                    <ListBox Height="118"/>
                 </StackPanel>
             </DockPanel>
         </DockPanel>
@@ -60,4 +78,5 @@
         </DockPanel>
         
     </DockPanel>
+    
 </UserControl>
