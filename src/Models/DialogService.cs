@@ -21,6 +21,7 @@ public interface IDialogService
     public IDialogResult? ShowLineOutOfBounds();
     public IDialogResult? ShowReplace();
     public IDialogResult? ShowPageSettings();
+    public IDialogResult? ShowFont();
 }
 public class DialogService : IDialogService
 {
@@ -129,7 +130,7 @@ public class DialogService : IDialogService
     public IDialogResult? ShowReplace() => ShowWithoutParameters(typeof(ReplaceDialog));
     public IDialogResult? ShowAbout() => ShowDialogWithoutParameters(typeof(AboutDialog));
     public IDialogResult? ShowPageSettings() => ShowDialogWithoutParameters(typeof(PageSettingsDialog));
-
+    public IDialogResult? ShowFont() => ShowDialogWithoutParameters(typeof(FontDialog));
 
     private IDialogResult? ShowDialogWithoutParameters(Type dialogType)
     {

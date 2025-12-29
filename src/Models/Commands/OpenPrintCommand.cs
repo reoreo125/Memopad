@@ -33,7 +33,7 @@ public class OpenPrintCommand : CommandBase, IOpenPrintCommand
         if (result is true)
         {
             FlowDocument doc = new FlowDocument();
-
+            
             double mmToDpi = 96.0 / 25.4;
             doc.PagePadding = new Thickness(
                 SettingsService.Settings.Page.MarginLeft.Value * mmToDpi,

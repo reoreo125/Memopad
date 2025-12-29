@@ -56,7 +56,8 @@ public class MenuViewModel : BindableBase
     public IOpenReplaceCommand? OpenReplaceCommand { get; set; }
     [Dependency]
     public IOpenPageSettingsCommand? OpenPageSettingsCommand { get; set; }
-
+    [Dependency]
+    public IOpenFontCommand? OpenFontCommand { get; set; }
 
 
     public BindableReactiveProperty<bool> ShowStatusBar { get; }

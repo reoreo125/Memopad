@@ -84,7 +84,8 @@
             <MenuItem Header="右端で折り返す(_W)"
                       Command="{Binding ToggleWordWrapCommand}"
                       IsChecked="{Binding IsWordWrap.Value}"/>
-            <MenuItem Header="フォント(_F)..." />
+            <MenuItem Header="フォント(_F)..."
+                      Command="{Binding OpenFontCommand}"/>
         </MenuItem>
         <MenuItem Header="表示(_V)">
             <MenuItem Header="ズーム(_Z)">
