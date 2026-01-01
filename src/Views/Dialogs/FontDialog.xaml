@@ -88,9 +88,18 @@
         <DockPanel Margin="0 0 0 50">
             <Grid DockPanel.Dock="Left" Width="183"/>
             <StackPanel DockPanel.Dock="Right" Orientation="Vertical">
-                <GroupBox Header="サンプル" Padding="10 60 0 0" Margin="0 0 0 0"/>
+                <GroupBox Header="サンプル" Width="210" Height="80" Margin="0 0 0 0">
+                    <Label HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           FontSize="{Binding Size.Value}"
+                           FontStyle="{Binding FontStyleInfo.Value.Style}"
+                           FontWeight="{Binding FontStyleInfo.Value.Weight}"
+                           Content="{Binding SampleText.Value}" />
+                </GroupBox>
                 <Label Content="文字セット(_R):"/>
-                <ComboBox/>
+                <ComboBox ItemsSource="{Binding AvailableCharacterSets}"
+                          SelectedItem="{Binding CharacterSet.Value}"
+                          DisplayMemberPath="Name"/>
             </StackPanel>
         </DockPanel>
         

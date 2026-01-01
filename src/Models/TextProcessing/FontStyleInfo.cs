@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Media;
 using R3;
 
-namespace Reoreo125.Memopad.Models;
+namespace Reoreo125.Memopad.Models.TextProcessing;
 
 public record FontStyleInfo(string Name, FontStyle Style, FontWeight Weight)
 {

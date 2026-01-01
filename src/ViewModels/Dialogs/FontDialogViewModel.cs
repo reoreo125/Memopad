@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -6,6 +7,8 @@ using System.Xml.Linq;
 using R3;
 using Reoreo125.Memopad.Models;
 using Reoreo125.Memopad.Models.Commands;
+using Reoreo125.Memopad.Models.TextProcessing;
+using static Reoreo125.Memopad.Models.TextProcessing.Characterset;
 using IDialogService = Reoreo125.Memopad.Models.IDialogService;
 
 namespace Reoreo125.Memopad.ViewModels.Dialogs
@@ -48,9 +51,11 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
         public BindableReactiveProperty<string> Size { get; }
         public BindableReactiveProperty<string?> ListBoxSize { get; }
 
+        public BindableReactiveProperty<CharacterSet> CharacterSet { get; }
+        public ObservableCollection<CharacterSet> AvailableCharacterSets { get; }
+        public BindableReactiveProperty<string> SampleText { get; }
         public string[] PresetSizes { get; } = new[]
         { "8", "9", "10", "11", "12", "14", "16", "18", "20", "22", "24", "26", "28", "36", "48", "72" };
-
 
         public IEditorService EditorService => _editorService;
         private readonly IEditorService _editorService;
@@ -84,13 +89,13 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
 
             // フォントスタイル
             FontStyles = new();
-            var styles = Models.FontStyleInfo.FromFontFamily(FontName.Value);
+            var styles = Models.TextProcessing.FontStyleInfo.FromFontFamily(FontName.Value);
             FontStyleInfo = new();
             var styleInfo = styles.FirstOrDefault(value => value.Name == SettingsService.Settings.FontStyleName.Value);
             if (styleInfo is null) styleInfo = styles.First();
             FontStyleInfo.Value = styleInfo;
             ListBoxFontStyleInfo = new();
-
+            
             FontName.Subscribe(name =>
                     {
                         if (string.IsNullOrEmpty(name)) return;
@@ -98,7 +103,7 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
                         bool isFirst = false;
                         if (FontStyles.Count == 0) isFirst = true;
 
-                        var styles = Models.FontStyleInfo.FromFontFamily(name);
+                        var styles = Models.TextProcessing.FontStyleInfo.FromFontFamily(name);
 
                         FontStyles.Clear();
                         foreach (var style in styles) FontStyles.Add(style);
@@ -148,7 +153,54 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
                 })
                 .AddTo(ref _disposableCollection);
             // ---
+
+            // サンプル
+            AvailableCharacterSets = new();
+            CharacterSet = new();
+            SampleText = new();
+            FontName.Subscribe(name =>
+                {
+                    AvailableCharacterSets.Clear();
+                    foreach (var set in AllCharacterSets.Where(cs => IsFontSupportCharacterSet(FontName.Value, cs)))
+                    {
+                        AvailableCharacterSets.Add(set);
+                    }
+                    CharacterSet.Value = AvailableCharacterSets.FirstOrDefault();
+                })
+                .AddTo(ref _disposableCollection);
+            CharacterSet.Subscribe(charSet =>
+                {
+                    if (charSet is null) return;
+
+                    SampleText.Value = charSet.SampleText;
+                })
+                .AddTo(ref _disposableCollection);
+            // ---
         }
+        private bool IsFontSupportCharacterSet(string fontName, CharacterSet set)
+        {
+            // 欧文は基本サポートとみなす（または判定をスキップ）
+            if (set.CharSet == GdiCharSet.Ansi) return true;
+
+            try
+            {
+                var family = new System.Windows.Media.FontFamily(fontName);
+                var typeface = family.GetTypefaces().FirstOrDefault();
+                if (typeface == null) return false;
+
+                if (typeface.TryGetGlyphTypeface(out var glyph))
+                {
+                    // CharacterToGlyphMap に判定用文字の Unicode (int) が含まれているか確認
+                    return glyph.CharacterToGlyphMap.ContainsKey(set.CheckChar);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            return false;
+        }
+
         public void OnDialogOpened(IDialogParameters parameters) {}
         public bool CanCloseDialog() => true;
         public void OnDialogClosed() { }

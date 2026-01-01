@@ -2,10 +2,11 @@ using System.Windows;
 using R3;
 using Reoreo125.Memopad.Models;
 using Reoreo125.Memopad.Models.Commands;
+using Reoreo125.Memopad.Models.TextProcessing;
 
 namespace Reoreo125.Memopad.ViewModels.Windows;
 
-public class MainWindowViewModel : BindableBase, IDisposable
+public partial class MainWindowViewModel : BindableBase, IDisposable
 {
     [Dependency]
     public INewTextFileCommand? NewTextFileCommand { get; set; }
@@ -70,7 +71,6 @@ public class MainWindowViewModel : BindableBase, IDisposable
             .AddTo(ref _disposableCollection);
         #endregion
     }
-
     public void Dispose()
     {
         _disposableCollection.Dispose();
