@@ -1,12 +1,7 @@
 using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Xml.Linq;
 using R3;
 using Reoreo125.Memopad.Models;
-using Reoreo125.Memopad.Models.Commands;
 using Reoreo125.Memopad.Models.TextProcessing;
 using static Reoreo125.Memopad.Models.TextProcessing.Characterset;
 using IDialogService = Reoreo125.Memopad.Models.IDialogService;
@@ -72,14 +67,12 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
             _settingsService = settingsService ?? throw new ArgumentNullException(nameof(SettingsService));
             _dialogService = dialogService ?? throw new ArgumentNullException(nameof(DialogService));
 
-            // フォント名 ---
+            // FontName ---
             FontName = new(SettingsService.Settings.FontFamilyName.Value);
-            // システムフォント名を取得してソート
             FontNames = Fonts.SystemFontFamilies
                 .Select(f => f.Source)
                 .OrderBy(n => n)
                 .ToList();
-            // ListBoxで選ばれたらTextBoxと結果に反映
             ListBoxFontName = new(FontName.Value);
             ListBoxFontName
                 .Where(x => x != null)
@@ -87,7 +80,7 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
                 .AddTo(ref _disposableCollection);
             // ---
 
-            // フォントスタイル
+            // FontStyle
             FontStyles = new();
             var styles = Models.TextProcessing.FontStyleInfo.FromFontFamily(FontName.Value);
             FontStyleInfo = new();
@@ -135,7 +128,7 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
                 .AddTo (ref _disposableCollection);
             // ---
 
-            // フォントサイズ ---
+            // FontSize ---
             Size = new(SettingsService.Settings.FontSize.Value.ToString());
             ListBoxSize = new(SettingsService.Settings.FontSize.Value.ToString());
             ListBoxSize
@@ -154,7 +147,7 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
                 .AddTo(ref _disposableCollection);
             // ---
 
-            // サンプル
+            // SampleText
             AvailableCharacterSets = new();
             CharacterSet = new();
             SampleText = new();

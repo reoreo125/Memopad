@@ -1,11 +1,9 @@
-using System.Printing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Reoreo125.Memopad.Models.TextProcessing;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Reoreo125.Memopad.Models.Commands;
 

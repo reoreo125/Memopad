@@ -2,9 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using R3;
-using Reoreo125.Memopad.Models;
 using Reoreo125.Memopad.ViewModels.Dialogs;
-using Reoreo125.Memopad.ViewModels.Windows;
 
 namespace Reoreo125.Memopad.Views.Dialogs
 {

@@ -1,9 +1,6 @@
-using System.Drawing.Printing;
 using System.Printing;
-using Newtonsoft.Json;
 using R3;
 using Reoreo125.Memopad.Models;
-using Reoreo125.Memopad.Models.Commands;
 
 namespace Reoreo125.Memopad.ViewModels.Dialogs
 {

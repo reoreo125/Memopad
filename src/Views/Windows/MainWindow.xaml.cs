@@ -153,17 +153,14 @@ public partial class MainWindow : Window, IDisposable
         vm.EditorService.RequestGoToLine
             .Subscribe(args =>
             {
-                // ユーザーが「1」と入力したら index は 「0」になる
                 int targetIndex = args.LineIndex - 1;
 
-                // 範囲チェック (0 未満、または 最大行数-1 より大きい場合は無効)
                 if (targetIndex < 0 || targetIndex >= EditorBox.LineCount)
                 {
                     args.IsSuccess = false;
                     return;
                 }
 
-                // 指定した行の先頭文字位置を取得
                 int charIndex = EditorBox.GetCharacterIndexFromLineIndex(targetIndex);
 
                 if (charIndex != -1)
@@ -297,7 +294,6 @@ public partial class MainWindow : Window, IDisposable
     }
     void EditorBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
     {
-        // Ctrlキーが押されているかチェック
         if (Keyboard.Modifiers == ModifierKeys.Control)
         {
             switch (e.Delta)
@@ -313,7 +309,7 @@ public partial class MainWindow : Window, IDisposable
                     break;
                 default:
             }
-            // イベントをここで完結させ、通常のスクロールを防ぐ
+            
             e.Handled = true;
         }
     }

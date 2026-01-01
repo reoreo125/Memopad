@@ -1,7 +1,6 @@
 using System.Printing;
 using System.Windows.Controls;
 using Microsoft.Win32;
-using Prism.Dialogs;
 using Reoreo125.Memopad.Views.Dialogs;
 using Reoreo125.Memopad.Views.Windows;
 using IPrismDialogService = Prism.Dialogs.IDialogService;
