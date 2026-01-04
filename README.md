@@ -2,6 +2,8 @@
 Windows純正メモ帳（クラシック）の機能を再現した、WPF製のテキストエディタです。
 Prismによるクリーンアーキテクチャと、R3 (ReactiveProperty) によるリアクティブな状態管理を学習・実践するプロジェクトとして開発しています。
 
+![ScreenShot](https://raw.githubusercontent.com/reoreo125/Memopad/refs/heads/develop/screenshot.jpg)
+
 ## 特徴
 * UIレイアウト、メニュー構成、フォント設定などクラシックなメモ帳を再現。
 * Prismライブラリを用いたMVVMパターン。
