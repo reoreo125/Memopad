@@ -10,6 +10,18 @@ public partial class MainWindowViewModel : BindableBase, IDisposable
 {
     [Dependency]
     public INewTextFileCommand? NewTextFileCommand { get; set; }
+    [Dependency]
+    public IOpenNewWindowCommand? OpenNewWindowCommand { get; set; }
+    [Dependency]
+    public IOpenTextFileCommand? OpenTextFileCommand { get; set; }
+    [Dependency]
+    public ISaveTextFileCommand? SaveTextFileCommand { get; set; }
+    [Dependency]
+    public ISaveAsTextFileCommand? SaveAsTextFileCommand { get; set; }
+    [Dependency]
+    public IOpenPrintCommand? OpenPrintCommand { get; set; }
+    [Dependency]
+    public IExitCommand? ExitCommand { get; set; }
 
     [Dependency]
     public ICutCommand? CutCommand { get; set; }
@@ -17,6 +29,22 @@ public partial class MainWindowViewModel : BindableBase, IDisposable
     public ICopyCommand? CopyCommand { get; set; }
     [Dependency]
     public IPasteCommand? PasteCommand { get; set; }
+    [Dependency]
+    public IInsertDateTimeCommand? InsertDateTimeCommand { get; set; }
+
+    [Dependency]
+    public IOpenFindCommand? OpenFindCommand { get; set; }
+    [Dependency]
+    public IFindNextCommand? FindNextCommand { get; set; }
+    [Dependency]
+    public IFindPrevCommand? FindPrevCommand { get; set; }
+    [Dependency]
+    public IOpenReplaceCommand? OpenReplaceCommand { get; set; }
+    [Dependency]
+    public IOpenGoToLineCommand? OpenGoToLineCommand { get; set; }
+
+    [Dependency]
+    public IZoomCommand? ZoomCommand { get; set; }
 
     public BindableReactiveProperty<string> Title { get; }
     public BindableReactiveProperty<string> Text { get; }

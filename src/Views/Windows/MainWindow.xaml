@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:comp="clr-namespace:Reoreo125.Memopad.Views.Components"
         xmlns:vm="clr-namespace:Reoreo125.Memopad.ViewModels.Windows"
+        xmlns:commands="clr-namespace:Reoreo125.Memopad.Models.Commands"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
@@ -18,6 +19,22 @@
         Closing="MainWindow_Closing">
     <Window.InputBindings>
         <KeyBinding Gesture="Ctrl+N" Command="{Binding NewTextFileCommand}" />
+        <KeyBinding Modifiers="Ctrl+Shift" Key="N" Command="{Binding OpenNewWindowCommand}" />
+        <KeyBinding Modifiers="Ctrl" Key="O" Command="{Binding OpenTextFileCommand}" />
+        <KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding SaveTextFileCommand}" />
+        <KeyBinding Modifiers="Ctrl+Shift" Key="S" Command="{Binding SaveAsTextFileCommand}" />
+        <KeyBinding Modifiers="Ctrl" Key="P" Command="{Binding OpenPrintCommand}" />
+        <KeyBinding Modifiers="Alt" Key="F4" Command="{Binding ExitCommand}" />
+
+        <KeyBinding Modifiers="Ctrl" Key="F" Command="{Binding OpenFindCommand}" />
+        <KeyBinding Key="F3" Command="{Binding FindNextCommand}" />
+        <KeyBinding Modifiers="Shift" Key="F3" Command="{Binding FindPrevCommand}" />
+        <KeyBinding Modifiers="Ctrl" Key="H" Command="{Binding OpenReplaceCommand}" />
+        <KeyBinding Modifiers="Ctrl" Key="G" Command="{Binding OpenGoToLineCommand}" />
+
+        <KeyBinding Modifiers="Ctrl" Key="OemPlus" Command="{Binding ZoomCommand}" CommandParameter="{x:Static commands:ZoomOperation.In}"/>
+        <KeyBinding Modifiers="Ctrl" Key="OemMinus" Command="{Binding ZoomCommand}" CommandParameter="{x:Static commands:ZoomOperation.Out}"/>
+        <KeyBinding Modifiers="Ctrl" Key="D0" Command="{Binding ZoomCommand}" CommandParameter="{x:Static commands:ZoomOperation.Reset}"/>
     </Window.InputBindings>
     <DockPanel>
         <!-- Menu Component -->
@@ -48,6 +65,7 @@
                     <KeyBinding Gesture="Ctrl+X" Command="{Binding CutCommand}"/>
                     <KeyBinding Gesture="Ctrl+C" Command="{Binding CopyCommand}"/>
                     <KeyBinding Gesture="Ctrl+V" Command="{Binding PasteCommand}"/>
+                    <KeyBinding Key="F5" Command="{Binding InsertDateTimeCommand}"/>
                 </TextBox.InputBindings>
             </TextBox>
         </Grid>
