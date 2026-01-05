@@ -1,4 +1,5 @@
 using System.Printing;
+using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using Reoreo125.Memopad.Views.Dialogs;
@@ -22,13 +23,14 @@ public interface IDialogService
     public IDialogResult? ShowPageSettings();
     public IDialogResult? ShowFont();
     public IDialogResult? ShowFontNotFound(string message);
+    public void ShowFileLoadError();
 }
 public class DialogService : IDialogService
 {
     [Dependency]
     public IPrismDialogService? PrismDialogService { get; set; }
     [Dependency]
-    public ISettingsService SettingsService { get; set;  }
+    public ISettingsService? SettingsService { get; set;  }
 
     public IDialogResult? ConfirmSave(string fileNameWithoutExtension)
     {
@@ -165,5 +167,9 @@ public class DialogService : IDialogService
             _result => result = _result);
 
         return result;
+    }
+    public void ShowFileLoadError()
+    {
+        MessageBox.Show("ファイルの読み込みに失敗しました。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
     }
 }

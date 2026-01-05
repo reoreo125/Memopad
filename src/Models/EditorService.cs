@@ -81,13 +81,17 @@ public sealed class EditorService : IEditorService
 
     private ITextFileService TextFileService { get; }
     private ISettingsService SettingsService { get; }
+    private IDialogService DialogService { get; }
 
     private DisposableBag _disposableCollection = new();
 
-    public EditorService(ITextFileService textFileService, ISettingsService settingsService)
+    public EditorService(ITextFileService textFileService,
+                         ISettingsService settingsService,
+                         IDialogService dialogService)
     {
         TextFileService = textFileService;
         SettingsService = settingsService;
+        DialogService = dialogService;
 
         Document = new EditorDocument();
     }
@@ -97,9 +101,9 @@ public sealed class EditorService : IEditorService
         if (TextFileService is null) throw new Exception("TextFileService");
         var result = TextFileService.Load(filePath);
 
-        if (!result.IsSuccess)
+        if (result.IsSuccess is false)
         {
-            MessageBox.Show("ファイルの読み込みに失敗しました。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            DialogService.ShowFileLoadError();
             return;
         }
 
@@ -125,9 +129,9 @@ public sealed class EditorService : IEditorService
 
         var result = TextFileService.Save(filePath, Document.Text.Value, Document.Encoding.Value, Document.HasBom.Value, Document.LineEnding.Value);
 
-        if (!result.IsSuccess)
+        if (result.IsSuccess is false)
         {
-            MessageBox.Show("ファイルの保存に失敗しました。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            DialogService.ShowFileLoadError();
             return;
         }
 
