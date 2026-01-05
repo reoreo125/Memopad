@@ -9,6 +9,13 @@
         prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
         Height="200" Width="400">
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="ResizeMode" Value="NoResize"/>
+            <Setter Property="ShowInTaskbar" Value="False"/>
+            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+        </Style>
+    </prism:Dialog.WindowStyle>
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
         <StackPanel Margin="0,0,0,10">
             <TextBlock Text="{Binding Message}" FontSize="24" FontWeight="Bold" TextAlignment="Center" />
