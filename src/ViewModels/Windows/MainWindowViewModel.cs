@@ -24,11 +24,18 @@ public partial class MainWindowViewModel : BindableBase, IDisposable
     public IExitCommand? ExitCommand { get; set; }
 
     [Dependency]
+    public IUndoCommand? UndoCommand { get; set; }
+    [Dependency]
     public ICutCommand? CutCommand { get; set; }
     [Dependency]
     public ICopyCommand? CopyCommand { get; set; }
     [Dependency]
     public IPasteCommand? PasteCommand { get; set; }
+    [Dependency]
+    public IDeleteCommand? DeleteCommand { get; set; }
+    [Dependency]
+    public ISelectAllCommand? SelectAllCommand { get; set; }
+
     [Dependency]
     public IInsertDateTimeCommand? InsertDateTimeCommand { get; set; }
 

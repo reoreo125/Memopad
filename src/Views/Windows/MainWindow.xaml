@@ -67,6 +67,30 @@
                     <KeyBinding Gesture="Ctrl+V" Command="{Binding PasteCommand}"/>
                     <KeyBinding Key="F5" Command="{Binding InsertDateTimeCommand}"/>
                 </TextBox.InputBindings>
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="元に戻す(_U)" 
+                                  Command="{Binding UndoCommand}"
+                                  InputGestureText="Ctrl+Z" />
+                        <Separator />
+                        <MenuItem Header="切り取り(_T)"
+                                  Command="{Binding CutCommand}"
+                                  InputGestureText="Ctrl+X" />
+                        <MenuItem Header="コピー(_C)"
+                                  Command="{Binding CopyCommand}"
+                                  InputGestureText="Ctrl+C" />
+                        <MenuItem Header="貼り付け(_P)"
+                                  Command="{Binding PasteCommand}"
+                                  InputGestureText="Ctrl+V" />
+                        <MenuItem Header="削除(_D)"
+                                  Command="{Binding DeleteCommand}"
+                                  InputGestureText="Del" />
+                        <Separator />
+                        <MenuItem Header="すべて選択(_A)"
+                                  Command="{Binding SelectAllCommand}"
+                                  InputGestureText="Ctrl+A" />
+                    </ContextMenu>
+                </TextBox.ContextMenu>
             </TextBox>
         </Grid>
     </DockPanel>
