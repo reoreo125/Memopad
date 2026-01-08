@@ -145,6 +145,9 @@ public sealed class EditorService : IEditorService
     {
         Document.Reset();
         _requestResetSubject.OnNext(Unit.Default);
+
+        Document.CanRedo.Value = false;
+        Document.CanUndo.Value = false;
     }
     public void Cut()
     {
