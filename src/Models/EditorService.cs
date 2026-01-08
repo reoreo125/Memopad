@@ -121,6 +121,9 @@ public sealed class EditorService : IEditorService
 
         // 成功したら前回開いたフォルダを記憶しておく
         SettingsService.Settings.LastOpenedFolderPath.Value = Path.GetDirectoryName(result.FilePath)!;
+
+        Document.CanRedo.Value = false;
+        Document.CanUndo.Value = false;
     }
     public void SaveText() => SaveText(Document.FilePath.Value);
     public void SaveText(string filePath)

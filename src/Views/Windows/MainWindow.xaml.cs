@@ -57,6 +57,7 @@ public partial class MainWindow : Window, IDisposable
 
                 EditorBox.Text = value;
 
+                EditorBox.ScrollToHome();
                 EditorBox.CaretIndex = 0;
                 EditorBox.Focus();
             })
@@ -283,12 +284,14 @@ public partial class MainWindow : Window, IDisposable
 
             if (DataContext is MainWindowViewModel vm)
             {
-                vm.EditorService.Document.Row.Value = line;
-                vm.EditorService.Document.Column.Value = column;
+                var doc = vm.EditorService.Document;
 
-                vm.EditorService.Document.CaretIndex.Value = textBox.CaretIndex;
-                vm.EditorService.Document.SelectedText.Value = textBox.SelectedText;
-                vm.EditorService.Document.SelectionLength.Value = textBox.SelectionLength;
+                doc.Row.Value = line;
+                doc.Column.Value = column;
+
+                doc.CaretIndex.Value = textBox.CaretIndex;
+                doc.SelectedText.Value = textBox.SelectedText;
+                doc.SelectionLength.Value = textBox.SelectionLength;
             }
         }
     }
