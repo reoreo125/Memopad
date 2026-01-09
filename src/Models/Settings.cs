@@ -1,6 +1,8 @@
+using System.ComponentModel;
 using System.Printing;
 using Newtonsoft.Json;
 using R3;
+using Reoreo125.Memopad.Models.Validators;
 
 namespace Reoreo125.Memopad.Models;
 
@@ -10,7 +12,7 @@ public class Settings
     [JsonIgnore]
     public Observable<Unit> Changed { get; }
 
-    [JsonProperty]
+    [JsonProperty, FolderPathValidator, DynamicDefaultValue(nameof(Defaults.LastOpenedFolderPath))]
     public ReactiveProperty<string> LastOpenedFolderPath { get; } = new(Defaults.LastOpenedFolderPath);
     [JsonProperty]
     public ReactiveProperty<string> FontFamilyName { get; } = new(Defaults.FontFamilyName);

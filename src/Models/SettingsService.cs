@@ -1,7 +1,11 @@
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Reflection;
 using Newtonsoft.Json;
 using R3;
 using Reoreo125.Memopad.Models.Converters;
+using Reoreo125.Memopad.Models.Validators;
 
 namespace Reoreo125.Memopad.Models;
 
@@ -24,6 +28,7 @@ public class SettingsService : ISettingsService, IDisposable
         _settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{assemblyName}.settings");
 
         Settings = Load();
+        Validate(Settings);
 
         Settings.Changed
             .Debounce(TimeSpan.FromMilliseconds(Defaults.SettingsSaveInterval))
@@ -55,6 +60,57 @@ public class SettingsService : ISettingsService, IDisposable
         }
 
         return new Settings(); // 失敗時や初回はデフォルト値を返す
+    }
+    void Validate(object target)
+    {
+        var settingsProperties = target.GetType().GetProperties();
+
+        foreach (var prop in settingsProperties)
+        {
+            // [JsonIgnore] が付いていたら、そのプロパティ（およびネストされたクラス）は無視
+            if (prop.GetCustomAttribute<JsonIgnoreAttribute>() != null) continue;
+
+            // ReactiveProperty<T>でないとチェックしない
+            if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(ReactiveProperty<>))
+            {
+                // プロパティに付与されている ValidationAttribute をすべて取得
+                var attributes = prop.GetCustomAttributes<ValidationAttribute>(true);
+                var reactiveProp = prop.GetValue(target);
+                var reactivePropValue = reactiveProp?.GetType().GetProperty("Value");
+                var value = reactivePropValue?.GetValue(reactiveProp);
+
+                foreach (var attr in attributes)
+                {
+                    if (!attr.IsValid(value))
+                    {
+                        var dynamicDefaultAttr = prop.GetCustomAttribute<DynamicDefaultValueAttribute>();
+                        if (dynamicDefaultAttr != null)
+                        {
+                            // 指定された名前のプロパティ（またはフィールド/メソッド）から値を取得
+                            var sourceProp = typeof(Defaults).GetProperty(dynamicDefaultAttr.SourcePropertyName,
+                                                BindingFlags.Public | BindingFlags.Static);
+
+                            var defaultValue = sourceProp?.GetValue(null); // staticプロパティなのでnullでOK
+
+                            // 取得したデフォルト値を ReactiveProperty.Value にセット
+                            reactivePropValue?.SetValue(reactiveProp, defaultValue);
+                        }
+                        break;
+                    }
+                }
+            }
+            // PageSettings などのネストされた「設定クラス」の場合、さらに再帰させる
+            else if (prop.PropertyType.IsClass)
+            {
+                var nestedObject = prop.GetValue(target);
+                if (nestedObject != null)
+                {
+                    Validate(nestedObject);
+                }
+            }
+
+
+        }
     }
     void Save()
     {
