@@ -12,13 +12,13 @@ public class Settings
     [JsonIgnore]
     public Observable<Unit> Changed { get; }
 
-    [JsonProperty, FolderPathValidator, FailbackValue(nameof(Defaults.LastOpenedFolderPath))]
+    [JsonProperty, FolderPathValidator, FallbackValue(nameof(Defaults.LastOpenedFolderPath))]
     public ReactiveProperty<string> LastOpenedFolderPath { get; } = new(Defaults.LastOpenedFolderPath);
 
-    [JsonProperty, FontFamilyNameValidator, FailbackValue(nameof(Defaults.FontFamilyName))]
+    [JsonProperty, FontFamilyNameValidator, FallbackValue(nameof(Defaults.FontFamilyName))]
     public ReactiveProperty<string> FontFamilyName { get; } = new(Defaults.FontFamilyName);
 
-    [JsonProperty]
+    [JsonProperty, FontStyleNameValidator, FallbackValue(nameof(Defaults.FontStyleName))]
     public ReactiveProperty<string> FontStyleName { get; } = new(Defaults.FontStyleName);
     [JsonProperty]
     public ReactiveProperty<int> FontSize { get; } = new(Defaults.FontSize);

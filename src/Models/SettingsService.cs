@@ -81,9 +81,12 @@ public class SettingsService : ISettingsService, IDisposable
 
                 foreach (var attr in attributes)
                 {
-                    if (!attr.IsValid(value))
+                    var context = new ValidationContext(target) { MemberName = prop.Name };
+                    var validationResult = attr.GetValidationResult(value, context);
+
+                    if (validationResult != ValidationResult.Success)
                     {
-                        var dynamicDefaultAttr = prop.GetCustomAttribute<FailbackValueAttribute>();
+                        var dynamicDefaultAttr = prop.GetCustomAttribute<FallbackValueAttribute>();
                         if (dynamicDefaultAttr != null)
                         {
                             // 指定された名前のプロパティ（またはフィールド/メソッド）から値を取得
