@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Printing;
 using Newtonsoft.Json;
 using R3;
@@ -21,16 +22,16 @@ public class Settings
     [JsonProperty, FontStyleNameValidator, FallbackValueFromMethod(nameof(Defaults.GetFontStyleName), nameof(FontFamilyName))]
     public ReactiveProperty<string> FontStyleName { get; } = new(Defaults.GetFontStyleName(Defaults.FontFamilyName));
 
-    [JsonProperty]
+    [JsonProperty, Range(1, 999), FallbackValue(nameof(Defaults.FontSize))]
     public ReactiveProperty<int> FontSize { get; } = new(Defaults.FontSize);
 
-    [JsonProperty]
+    [JsonProperty, FallbackValue(nameof(Defaults.IsWrapping))]
     public ReactiveProperty<bool> IsWordWrap { get; } = new(Defaults.IsWrapping);
 
-    [JsonProperty]
+    [JsonProperty, FallbackValue(nameof(Defaults.ShowStatusBar))]
     public ReactiveProperty<bool> ShowStatusBar { get; } = new(Defaults.ShowStatusBar);
 
-    [JsonProperty]
+    [JsonProperty, Range(0.1d, 5.0d), FallbackValue(nameof(Defaults.ZoomLevel))]
     public ReactiveProperty<double> ZoomLevel { get; } = new(Defaults.ZoomLevel);
 
     // PageSettings
