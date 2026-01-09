@@ -2,6 +2,7 @@ using System.Printing;
 using System.Reflection;
 using System.Text;
 using System.Windows;
+using System.Windows.Media;
 using Reoreo125.Memopad.Models.TextProcessing;
 
 namespace Reoreo125.Memopad.Models;
@@ -19,6 +20,18 @@ public record Defaults
     public static string EncodingText => Encoding.WebName.ToUpper();
     public static string PositionText => "1行、1列";
     public static string FontFamilyName => "Consolas";
+    public static string GetFontStyleName(string familyName)
+    {
+        var family = Fonts.SystemFontFamilies.FirstOrDefault(f =>
+            f.Source == familyName || f.FamilyNames.Values.Contains(familyName));
+
+        var styleNames = family?.GetTypefaces().Select(tf => tf.FaceNames.FirstOrDefault().Value);
+
+        if (styleNames is null) return FontStyleName;
+        if (styleNames!.Contains(FontStyleName)) return FontStyleName;
+
+        return styleNames.First();
+    }
     public static string FontStyleName => "Regular";
     public static int FontSize => 12;
     public static double ZoomLevel => 1.0;

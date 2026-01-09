@@ -86,17 +86,41 @@ public class SettingsService : ISettingsService, IDisposable
 
                     if (validationResult != ValidationResult.Success)
                     {
-                        var dynamicDefaultAttr = prop.GetCustomAttribute<FallbackValueAttribute>();
-                        if (dynamicDefaultAttr != null)
+                        object? fallbackValue = null;
+
+                        // メソッド指定の属性がある場合
+                        var methodAttr = prop.GetCustomAttribute<FallbackValueFromMethodAttribute>();
+                        if (methodAttr != null)
                         {
-                            // 指定された名前のプロパティ（またはフィールド/メソッド）から値を取得
-                            var sourceProp = typeof(Defaults).GetProperty(dynamicDefaultAttr.SourcePropertyName,
-                                                BindingFlags.Public | BindingFlags.Static);
-
-                            var defaultValue = sourceProp?.GetValue(null); // staticプロパティなのでnullでOK
-
-                            // 取得したデフォルト値を ReactiveProperty.Value にセット
-                            reactivePropValue?.SetValue(reactiveProp, defaultValue);
+                            var method = typeof(Defaults).GetMethod(methodAttr.SourceMethodName, BindingFlags.Public | BindingFlags.Static);
+                            if (method != null)
+                            {
+                                object?[]? parameters = null;
+                                if (methodAttr.SourcePropertyName is string depName)
+                                {
+                                    // 依存プロパティ(FontFamilyName)のValueを取得
+                                    var depProp = target.GetType().GetProperty(depName);
+                                    var depRx = depProp?.GetValue(target);
+                                    var depValue = depRx?.GetType().GetProperty("Value")?.GetValue(depRx);
+                                    parameters = new[] { depValue };
+                                }
+                                fallbackValue = method.Invoke(null, parameters);
+                            }
+                        }
+                        // プロパティ指定の場合
+                        else
+                        {
+                            var fallbackAttr = prop.GetCustomAttribute<FallbackValueAttribute>();
+                            if (fallbackAttr != null)
+                            {
+                                var sourceProp = typeof(Defaults).GetProperty(fallbackAttr.SourcePropertyName, BindingFlags.Public | BindingFlags.Static);
+                                fallbackValue = sourceProp?.GetValue(null);
+                            }
+                        }
+                        // 取得できたリカバリー値をセット
+                        if (fallbackValue != null)
+                        {
+                            reactivePropValue?.SetValue(reactiveProp, fallbackValue);
                         }
                         break;
                     }

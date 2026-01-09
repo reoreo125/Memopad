@@ -18,14 +18,18 @@ public class Settings
     [JsonProperty, FontFamilyNameValidator, FallbackValue(nameof(Defaults.FontFamilyName))]
     public ReactiveProperty<string> FontFamilyName { get; } = new(Defaults.FontFamilyName);
 
-    [JsonProperty, FontStyleNameValidator, FallbackValue(nameof(Defaults.FontStyleName))]
-    public ReactiveProperty<string> FontStyleName { get; } = new(Defaults.FontStyleName);
+    [JsonProperty, FontStyleNameValidator, FallbackValueFromMethod(nameof(Defaults.GetFontStyleName), nameof(FontFamilyName))]
+    public ReactiveProperty<string> FontStyleName { get; } = new(Defaults.GetFontStyleName(Defaults.FontFamilyName));
+
     [JsonProperty]
     public ReactiveProperty<int> FontSize { get; } = new(Defaults.FontSize);
+
     [JsonProperty]
     public ReactiveProperty<bool> IsWordWrap { get; } = new(Defaults.IsWrapping);
+
     [JsonProperty]
     public ReactiveProperty<bool> ShowStatusBar { get; } = new(Defaults.ShowStatusBar);
+
     [JsonProperty]
     public ReactiveProperty<double> ZoomLevel { get; } = new(Defaults.ZoomLevel);
 
