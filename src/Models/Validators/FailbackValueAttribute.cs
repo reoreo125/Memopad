@@ -4,10 +4,11 @@ using System.Text;
 
 namespace Reoreo125.Memopad.Models.Validators;
 
-public class DynamicDefaultValueAttribute : Attribute
+[AttributeUsage(AttributeTargets.Property)]
+public class FailbackValueAttribute : Attribute
 {
     public string SourcePropertyName { get; }
-    public DynamicDefaultValueAttribute(string sourcePropertyName)
+    public FailbackValueAttribute(string sourcePropertyName)
     {
         SourcePropertyName = sourcePropertyName;
     }

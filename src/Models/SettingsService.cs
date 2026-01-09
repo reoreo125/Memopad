@@ -83,7 +83,7 @@ public class SettingsService : ISettingsService, IDisposable
                 {
                     if (!attr.IsValid(value))
                     {
-                        var dynamicDefaultAttr = prop.GetCustomAttribute<DynamicDefaultValueAttribute>();
+                        var dynamicDefaultAttr = prop.GetCustomAttribute<FailbackValueAttribute>();
                         if (dynamicDefaultAttr != null)
                         {
                             // 指定された名前のプロパティ（またはフィールド/メソッド）から値を取得

@@ -12,10 +12,12 @@ public class Settings
     [JsonIgnore]
     public Observable<Unit> Changed { get; }
 
-    [JsonProperty, FolderPathValidator, DynamicDefaultValue(nameof(Defaults.LastOpenedFolderPath))]
+    [JsonProperty, FolderPathValidator, FailbackValue(nameof(Defaults.LastOpenedFolderPath))]
     public ReactiveProperty<string> LastOpenedFolderPath { get; } = new(Defaults.LastOpenedFolderPath);
-    [JsonProperty]
+
+    [JsonProperty, FontFamilyNameValidator, FailbackValue(nameof(Defaults.FontFamilyName))]
     public ReactiveProperty<string> FontFamilyName { get; } = new(Defaults.FontFamilyName);
+
     [JsonProperty]
     public ReactiveProperty<string> FontStyleName { get; } = new(Defaults.FontStyleName);
     [JsonProperty]
