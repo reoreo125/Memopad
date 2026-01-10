@@ -56,6 +56,8 @@ public record Defaults
     public static double MarginTop => 25.0d;
     public static double MarginRight => 20.0d;
     public static double MarginBottom => 25.0d;
+    public const double MarginMin = 0.0d;
+    public const double MarginMax = 1000.0d;
     public static string Header => "&f";
     public static string Footer => "Page &p";
 }

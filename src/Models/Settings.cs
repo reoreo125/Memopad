@@ -62,18 +62,25 @@ public class PageSettings
 
     [JsonProperty, PaperSizeNameValidator, FallbackValue(nameof(Defaults.PaperSizeName))]
     public ReactiveProperty<PageMediaSizeName> PaperSizeName { get; } = new(Defaults.PaperSizeName);
+
     [JsonProperty, InputBinValidator, FallbackValue(nameof(Defaults.InputBin))]
     public ReactiveProperty<InputBin> InputBin { get; } = new(Defaults.InputBin);
+
     [JsonProperty, PageOrientationValidator, FallbackValue(nameof(Defaults.PageOrientation))]
     public ReactiveProperty<PageOrientation> Orientation { get; } = new(Defaults.PageOrientation);
-    [JsonProperty]
+
+    [JsonProperty, Range(Defaults.MarginMin, Defaults.MarginMax), FallbackValue(nameof(Defaults.MarginLeft))]
     public ReactiveProperty<double> MarginLeft { get; } = new(Defaults.MarginLeft);
-    [JsonProperty]
+
+    [JsonProperty, Range(Defaults.MarginMin, Defaults.MarginMax), FallbackValue(nameof(Defaults.MarginTop))]
     public ReactiveProperty<double> MarginTop { get; } = new(Defaults.MarginTop);
-    [JsonProperty]
+
+    [JsonProperty, Range(Defaults.MarginMin, Defaults.MarginMax), FallbackValue(nameof(Defaults.MarginRight))]
     public ReactiveProperty<double> MarginRight { get; } = new(Defaults.MarginRight);
-    [JsonProperty]
+
+    [JsonProperty, Range(Defaults.MarginMin, Defaults.MarginMax), FallbackValue(nameof(Defaults.MarginBottom))]
     public ReactiveProperty<double> MarginBottom { get; } = new(Defaults.MarginBottom);
+
     [JsonProperty]
     public ReactiveProperty<string> Header { get; } = new(Defaults.Header);  // &f はファイル名のマクロ
     [JsonProperty]
