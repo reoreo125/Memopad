@@ -62,7 +62,7 @@ public class PageSettings
 
     [JsonProperty, PaperSizeNameValidator, FallbackValue(nameof(Defaults.PaperSizeName))]
     public ReactiveProperty<PageMediaSizeName> PaperSizeName { get; } = new(Defaults.PaperSizeName);
-    [JsonProperty]
+    [JsonProperty, InputBinValidator, FallbackValue(nameof(Defaults.InputBin))]
     public ReactiveProperty<InputBin> InputBin { get; } = new(Defaults.InputBin);
     [JsonProperty]
     public ReactiveProperty<PageOrientation> Orientation { get; } = new(Defaults.PageOrientation);
