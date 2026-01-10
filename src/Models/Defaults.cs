@@ -59,5 +59,7 @@ public record Defaults
     public const double MarginMin = 0.0d;
     public const double MarginMax = 1000.0d;
     public static string Header => "&f";
+    public const int HeaderMaxLength = 256;
     public static string Footer => "Page &p";
+    public const int FooterMaxLength = 256;
 }
