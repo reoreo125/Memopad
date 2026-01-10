@@ -60,7 +60,7 @@ public class PageSettings
     [JsonIgnore]
     public Observable<Unit> Changed { get; }
 
-    [JsonProperty]
+    [JsonProperty, PaperSizeNameValidator, FallbackValue(nameof(Defaults.PaperSizeName))]
     public ReactiveProperty<PageMediaSizeName> PaperSizeName { get; } = new(Defaults.PaperSizeName);
     [JsonProperty]
     public ReactiveProperty<InputBin> InputBin { get; } = new(Defaults.InputBin);

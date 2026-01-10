@@ -117,6 +117,7 @@ public class SettingsService : ISettingsService, IDisposable
                                 fallbackValue = sourceProp?.GetValue(null);
                             }
                         }
+
                         // 取得できたリカバリー値をセット
                         if (fallbackValue != null)
                         {
