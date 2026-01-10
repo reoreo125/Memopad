@@ -82,8 +82,15 @@ public class PageSettings
     public ReactiveProperty<double> MarginBottom { get; } = new(Defaults.MarginBottom);
 
     [JsonProperty]
+    [StringLength(256, ErrorMessage = "{0} is too long.")]
+    [RegularExpression(@"^[^\r\n]*$", ErrorMessage = "{0} cannot contain line breaks.")]
+    [FallbackValue(nameof(Defaults.Header))]
     public ReactiveProperty<string> Header { get; } = new(Defaults.Header);  // &f はファイル名のマクロ
+
     [JsonProperty]
+    [StringLength(256, ErrorMessage = "{0} is too long.")]
+    [RegularExpression(@"^[^\r\n]*$", ErrorMessage = "{0} cannot contain line breaks.")]
+    [FallbackValue(nameof(Defaults.Footer))]
     public ReactiveProperty<string> Footer { get; } = new(Defaults.Footer); // &p はページ番号のマクロ
 
     [JsonConstructor]
