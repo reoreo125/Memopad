@@ -41,6 +41,7 @@ namespace Reoreo125.Memopad.Tests
         #region FontFamilyName
         [Theory(DisplayName = "【正常系】FontFamilyName:フォントファミリー名が有効な場合、値が維持されること")]
         [InlineData("Arial")]
+        [InlineData("Consolas")]
         [InlineData("Times New Roman")]
         [InlineData("MS Gothic")]
         public void FontFamilyName_ValidValue_ShouldKeepValue(string validFontFamilyName)
@@ -67,6 +68,78 @@ namespace Reoreo125.Memopad.Tests
             settingsService.Validate(settings);
 
             Assert.Equal(settings.FontFamilyName.Value, Defaults.FontFamilyName);
+        }
+        #endregion
+
+        #region FontStyleName
+        [Theory(DisplayName = "【正常系】FontStyleName:フォントスタイル名が有効な場合、値が維持されること")]
+        [InlineData("Regular")]
+        [InlineData("Italic")]
+        [InlineData("Oblique")]
+        [InlineData("Bold")]
+        [InlineData("Bold Italic")]
+        [InlineData("Bold Oblique")]
+        public void FontStyleName_ValidValue_ShouldKeepValue(string validFontStyleName)
+        {
+            var settingsService = new SettingsService();
+            var settings = new Settings();
+            settings.FontFamilyName.Value = "Consolas";
+            settings.FontStyleName.Value = validFontStyleName;
+
+            settingsService.Validate(settings);
+
+            Assert.Equal(settings.FontStyleName.Value, validFontStyleName);
+        }
+
+        [Theory(DisplayName = "【異常系】FontStyleName:フォントスタイル名が無効な場合、デフォルト値(Regular)に復元されること")]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData("TestStyle")]
+        public void FontStyleName_InvalidValue_ShouldFallbackToDefault_1(string invalidFontStyleName)
+        {
+            var settingsService = new SettingsService();
+            var settings = new Settings();
+            settings.FontFamilyName.Value = "Consolas";
+            settings.FontStyleName.Value = invalidFontStyleName;
+
+            settingsService.Validate(settings);
+
+            //Assert.Equal(settings.FontFamilyName.Value, Defaults.GetFontStyleName(settings.FontFamilyName.Value));
+            Assert.Equal("Regular", settings.FontStyleName.Value);
+        }
+
+        [Theory(DisplayName = "【異常系】FontStyleName:フォントスタイル名が無効な場合、デフォルト値(Normal)に復元されること")]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData("TestStyle")]
+        public void FontStyleName_InvalidValue_ShouldFallbackToDefault_2(string invalidFontStyleName)
+        {
+            var settingsService = new SettingsService();
+            var settings = new Settings();
+            settings.FontFamilyName.Value = "Arial";
+            settings.FontStyleName.Value = invalidFontStyleName;
+
+            settingsService.Validate(settings);
+
+            //Assert.Equal(settings.FontFamilyName.Value, Defaults.GetFontStyleName(settings.FontFamilyName.Value));
+            Assert.Equal("Normal", settings.FontStyleName.Value);
+        }
+
+        [Theory(DisplayName = "【異常系】FontStyleName:フォントスタイル名が無効な場合、デフォルト値(既定外)に復元されること")]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData("TestStyle")]
+        public void FontStyleName_InvalidValue_ShouldFallbackToDefault_3(string invalidFontStyleName)
+        {
+            var settingsService = new SettingsService();
+            var settings = new Settings();
+            settings.FontFamilyName.Value = "DejaVu Sans";
+            settings.FontStyleName.Value = invalidFontStyleName;
+
+            settingsService.Validate(settings);
+
+            //Assert.Equal(settings.FontFamilyName.Value, Defaults.GetFontStyleName(settings.FontFamilyName.Value));
+            Assert.Equal("ExtraLight", settings.FontStyleName.Value);
         }
         #endregion
     }

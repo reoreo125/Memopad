@@ -27,12 +27,14 @@ public record Defaults
 
         var styleNames = family?.GetTypefaces().Select(tf => tf.FaceNames.FirstOrDefault().Value);
 
-        if (styleNames is null) return FontStyleName;
-        if (styleNames!.Contains(FontStyleName)) return FontStyleName;
+        foreach (var styleName in styleNames!)
+        {
+            if (FontStyleNames.Contains(styleName)) return styleName;
+        }
 
         return styleNames.First();
     }
-    public static string FontStyleName => "Regular";
+    public static string[] FontStyleNames => ["Regular", "Normal", "Medium"];
     public static int FontSize => 12;
     public static double ZoomLevel => 1.0;
     public static double ZoomStep => 0.1;
