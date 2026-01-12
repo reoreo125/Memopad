@@ -34,4 +34,33 @@ public class PageSettingsTests
         Assert.Equal(settings.PaperSizeName.Value, Defaults.PaperSizeName);
     }
     #endregion
+
+    #region InputBin
+    [Theory(DisplayName = "【正常系】InputBin:有効な給紙方法の場合、値が維持されること")]
+    [InlineData(InputBin.AutoSelect)]
+    [InlineData(InputBin.Manual)]
+    [InlineData(InputBin.AutoSheetFeeder)]
+    public void InputBin_ValidValue_ShouldKeepValue(InputBin validInputBin)
+    {
+        var settings = new PageSettings();
+        settings.InputBin.Value = validInputBin;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.InputBin.Value, validInputBin);
+    }
+
+    [Fact(DisplayName = "【異常系】InputBin:無効な給紙方法の場合、デフォルト値に復元されること")]
+    public void InputBin_InvalidValue_ShouldFallbackToDefault()
+    {
+        var settings = new PageSettings();
+        settings.InputBin.Value = (InputBin)99999;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.InputBin.Value, Defaults.InputBin);
+    }
+    #endregion
 }
