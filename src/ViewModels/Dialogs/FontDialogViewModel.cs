@@ -158,7 +158,7 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs
                     {
                         AvailableCharacterSets.Add(set);
                     }
-                    CharacterSet.Value = AvailableCharacterSets.FirstOrDefault();
+                    CharacterSet.Value = AvailableCharacterSets.First();
                 })
                 .AddTo(ref _disposableCollection);
             CharacterSet.Subscribe(charSet =>

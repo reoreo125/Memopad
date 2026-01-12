@@ -13,7 +13,7 @@ public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
     [Dependency]
     public IDialogService? MemopadDialogService { get; set; }
     [Dependency]
-    public ISettingsService SettingsService { get; set; }
+    public ISettingsService? SettingsService { get; set; }
     //[Dependency]
     //public SaveTextFileCommand? SaveTextFileCommand { get; set; }
     public override bool CanExecute(object? parameter) => true;
