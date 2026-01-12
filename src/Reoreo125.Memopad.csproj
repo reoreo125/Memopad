@@ -39,4 +39,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Reoreo125.Memopad.Tests" />
+  </ItemGroup>
+  
 </Project>

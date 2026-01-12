@@ -61,7 +61,7 @@ public class SettingsService : ISettingsService, IDisposable
 
         return new Settings(); // 失敗時や初回はデフォルト値を返す
     }
-    void Validate(object target)
+    internal void Validate(object target)
     {
         var settingsProperties = target.GetType().GetProperties();
 
