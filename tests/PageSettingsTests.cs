@@ -92,4 +92,132 @@ public class PageSettingsTests
         Assert.Equal(settings.Orientation.Value, Defaults.PageOrientation);
     }
     #endregion
+
+    #region MarginLeft
+    [Theory(DisplayName = "【正常系】MarginLeft:左余白が有効な場合、値が維持されること")]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(25)]
+    [InlineData(1000)]
+    public void MarginLeft_ValidValue_ShouldKeepValue(double validMarginLeft)
+    {
+        var settings = new PageSettings();
+        settings.MarginLeft.Value = validMarginLeft;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.MarginLeft.Value, validMarginLeft);
+    }
+
+    [Theory(DisplayName = "【異常系】MarginLeft:左余白が無効な場合、デフォルト値に復元されること")]
+    [InlineData(-1)]
+    [InlineData(1001)]
+    public void MarginLeft_InvalidValue_ShouldFallbackToDefault(double invalidMarginLeft)
+    {
+        var settings = new PageSettings();
+        settings.MarginLeft.Value = invalidMarginLeft;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.MarginLeft.Value, Defaults.MarginLeft);
+    }
+    #endregion
+
+    #region MarginTop
+    [Theory(DisplayName = "【正常系】MarginTop:上余白が有効な場合、値が維持されること")]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(25)]
+    [InlineData(1000)]
+    public void MarginTop_ValidValue_ShouldKeepValue(double validMarginTop)
+    {
+        var settings = new PageSettings();
+        settings.MarginTop.Value = validMarginTop;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.MarginTop.Value, validMarginTop);
+    }
+
+    [Theory(DisplayName = "【異常系】MarginTop:上余白が無効な場合、デフォルト値に復元されること")]
+    [InlineData(-1)]
+    [InlineData(1001)]
+    public void MarginTop_InvalidValue_ShouldFallbackToDefault(double invalidMarginTop)
+    {
+        var settings = new PageSettings();
+        settings.MarginTop.Value = invalidMarginTop;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.MarginTop.Value, Defaults.MarginTop);
+    }
+    #endregion
+
+    #region MarginRight
+    [Theory(DisplayName = "【正常系】MarginRight:右余白が有効な場合、値が維持されること")]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(25)]
+    [InlineData(1000)]
+    public void MarginRight_ValidValue_ShouldKeepValue(double validMarginRight)
+    {
+        var settings = new PageSettings();
+        settings.MarginRight.Value = validMarginRight;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.MarginRight.Value, validMarginRight);
+    }
+
+    [Theory(DisplayName = "【異常系】MarginRight:右余白が無効な場合、デフォルト値に復元されること")]
+    [InlineData(-1)]
+    [InlineData(1001)]
+    public void MarginRight_InvalidValue_ShouldFallbackToDefault(double invalidMarginRight)
+    {
+        var settings = new PageSettings();
+        settings.MarginRight.Value = invalidMarginRight;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.MarginRight.Value, Defaults.MarginRight);
+    }
+    #endregion
+
+    #region MarginBottom
+    [Theory(DisplayName = "【正常系】MarginBottom:下余白が有効な場合、値が維持されること")]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(25)]
+    [InlineData(1000)]
+    public void MarginBottom_ValidValue_ShouldKeepValue(double validMarginBottom)
+    {
+        var settings = new PageSettings();
+        settings.MarginBottom.Value = validMarginBottom;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.MarginBottom.Value, validMarginBottom);
+    }
+
+    [Theory(DisplayName = "【異常系】MarginBottom:下余白が無効な場合、デフォルト値に復元されること")]
+    [InlineData(-1)]
+    [InlineData(1001)]
+    public void MarginBottom_InvalidValue_ShouldFallbackToDefault(double invalidMarginBottom)
+    {
+        var settings = new PageSettings();
+        settings.MarginBottom.Value = invalidMarginBottom;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.MarginBottom.Value, Defaults.MarginBottom);
+    }
+    #endregion
 }
