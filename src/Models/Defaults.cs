@@ -36,6 +36,8 @@ public record Defaults
     }
     public static string[] FontStyleNames => ["Regular", "Normal", "Medium"];
     public static int FontSize => 12;
+    public const int FontSizeMin = 1;
+    public const int FontSizeMax = 999;
     public static int ZoomLevel => 100;
     public static int ZoomStep => 10;
     public const int ZoomMax = 500;

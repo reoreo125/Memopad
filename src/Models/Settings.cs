@@ -22,7 +22,7 @@ public class Settings
     [JsonProperty, FontStyleNameValidator, FallbackValueFromMethod(nameof(Defaults.GetFontStyleName), nameof(FontFamilyName))]
     public ReactiveProperty<string> FontStyleName { get; } = new(Defaults.GetFontStyleName(Defaults.FontFamilyName));
 
-    [JsonProperty, Range(1, 999), FallbackValue(nameof(Defaults.FontSize))]
+    [JsonProperty, Range(Defaults.FontSizeMin, Defaults.FontSizeMax), FallbackValue(nameof(Defaults.FontSize))]
     public ReactiveProperty<int> FontSize { get; } = new(Defaults.FontSize);
 
     [JsonProperty, FallbackValue(nameof(Defaults.IsWrapping))]
