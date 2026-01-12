@@ -39,7 +39,7 @@ public class StatusBarViewModel : BindableBase, IDisposable
             .Select(_ => $"{EditorService.Document.Row.Value}行、{EditorService.Document.Column.Value}列")
             .ToBindableReactiveProperty(Defaults.PositionText);
         ZoomLevelText = SettingsService.Settings.ZoomLevel
-            .Select(value => $"{(int)(value * 100)}%")
+            .Select(value => $"{value}%")
             .ToBindableReactiveProperty(Defaults.ZoomLevelText);
         LineEndingText = EditorService.Document.LineEnding
             .Select(value => CreateLineEndingText(value))

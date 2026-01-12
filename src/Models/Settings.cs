@@ -31,8 +31,8 @@ public class Settings
     [JsonProperty, FallbackValue(nameof(Defaults.ShowStatusBar))]
     public ReactiveProperty<bool> ShowStatusBar { get; } = new(Defaults.ShowStatusBar);
 
-    [JsonProperty, Range(0.1d, 5.0d), FallbackValue(nameof(Defaults.ZoomLevel))]
-    public ReactiveProperty<double> ZoomLevel { get; } = new(Defaults.ZoomLevel);
+    [JsonProperty, Range(Defaults.ZoomMin, Defaults.ZoomMax), FallbackValue(nameof(Defaults.ZoomLevel))]
+    public ReactiveProperty<int> ZoomLevel { get; } = new(Defaults.ZoomLevel);
 
     // PageSettings
     [JsonProperty]

@@ -36,10 +36,10 @@ public record Defaults
     }
     public static string[] FontStyleNames => ["Regular", "Normal", "Medium"];
     public static int FontSize => 12;
-    public static double ZoomLevel => 1.0;
-    public static double ZoomStep => 0.1;
-    public static double ZoomMax => 5.0;
-    public static double ZoomMin => 0.1;
+    public static int ZoomLevel => 100;
+    public static int ZoomStep => 10;
+    public const int ZoomMax = 500;
+    public const int ZoomMin = 10;
     public static string ZoomLevelText => "100%";
     public static TextWrapping TextWrapping => TextWrapping.NoWrap;
     public static bool IsWrapping => false;

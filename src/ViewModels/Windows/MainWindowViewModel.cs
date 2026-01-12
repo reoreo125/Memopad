@@ -90,7 +90,7 @@ public partial class MainWindowViewModel : BindableBase, IDisposable
         FontSize = Observable.Merge(
                 SettingsService.Settings.ZoomLevel.AsUnitObservable(),
                 SettingsService.Settings.FontSize.AsUnitObservable())
-            .Select(value => SettingsService.Settings.FontSize.Value * SettingsService.Settings.ZoomLevel.Value)
+            .Select(value => SettingsService.Settings.FontSize.Value * (SettingsService.Settings.ZoomLevel.Value / 100.0d))
             .ToBindableReactiveProperty(Defaults.FontSize);
         TextWrapping = SettingsService.Settings.IsWordWrap
             .Select(value => value ? System.Windows.TextWrapping.Wrap : System.Windows.TextWrapping.NoWrap)
