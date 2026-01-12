@@ -1,5 +1,4 @@
 using System.Printing;
-using System.Windows.Controls;
 using Reoreo125.Memopad.Models;
 
 namespace Reoreo125.Memopad.Tests;
@@ -218,6 +217,68 @@ public class PageSettingsTests
         settingsService.Validate(settings);
 
         Assert.Equal(settings.MarginBottom.Value, Defaults.MarginBottom);
+    }
+    #endregion
+
+    #region Header
+    [Theory(DisplayName = "【正常系】Header:ヘッダーが有効な場合、値が維持されること")]
+    [InlineData("")]
+    [InlineData("TestHeader")]
+    [InlineData(@"c:\")]
+    public void Header_ValidValue_ShouldKeepValue(string validHeader)
+    {
+        var settings = new PageSettings();
+        settings.Header.Value = validHeader;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.Header.Value, validHeader);
+    }
+
+    [Theory(DisplayName = "【異常系】Header:ヘッダーが無効な場合、デフォルト値に復元されること")]
+    [InlineData("\n")]
+    [InlineData("TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest")]
+    public void Header_InvalidValue_ShouldFallbackToDefault(string invalidHeader)
+    {
+        var settings = new PageSettings();
+        settings.Header.Value = invalidHeader;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.Header.Value, Defaults.Header);
+    }
+    #endregion
+
+    #region Footer
+    [Theory(DisplayName = "【正常系】Footer:フッターが有効な場合、値が維持されること")]
+    [InlineData("")]
+    [InlineData("TestFooter")]
+    [InlineData(@"c:\")]
+    public void Footer_ValidValue_ShouldKeepValue(string validFooter)
+    {
+        var settings = new PageSettings();
+        settings.Footer.Value = validFooter;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.Footer.Value, validFooter);
+    }
+
+    [Theory(DisplayName = "【異常系】Footer:フッターが無効な場合、デフォルト値に復元されること")]
+    [InlineData("\n")]
+    [InlineData("TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest")]
+    public void Footer_InvalidValue_ShouldFallbackToDefault(string invalidFooter)
+    {
+        var settings = new PageSettings();
+        settings.Footer.Value = invalidFooter;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.Footer.Value, Defaults.Footer);
     }
     #endregion
 }
