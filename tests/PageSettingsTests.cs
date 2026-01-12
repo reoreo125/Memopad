@@ -1,4 +1,5 @@
 using System.Printing;
+using System.Windows.Controls;
 using Reoreo125.Memopad.Models;
 
 namespace Reoreo125.Memopad.Tests;
@@ -61,6 +62,34 @@ public class PageSettingsTests
         settingsService.Validate(settings);
 
         Assert.Equal(settings.InputBin.Value, Defaults.InputBin);
+    }
+    #endregion
+
+    #region Orientation
+    [Theory(DisplayName = "【正常系】Orientation:有効なページ方向の場合、値が維持されること")]
+    [InlineData(PageOrientation.Portrait)]
+    [InlineData(PageOrientation.Landscape)]
+    public void Orientation_ValidValue_ShouldKeepValue(PageOrientation validPageOrientation)
+    {
+        var settings = new PageSettings();
+        settings.Orientation.Value = validPageOrientation;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.Orientation.Value, validPageOrientation);
+    }
+
+    [Fact(DisplayName = "【異常系】Orientation:無効なページ方向の場合、デフォルト値に復元されること")]
+    public void Orientation_InvalidValue_ShouldFallbackToDefault()
+    {
+        var settings = new PageSettings();
+        settings.Orientation.Value = (PageOrientation)99999;
+
+        var settingsService = new SettingsService();
+        settingsService.Validate(settings);
+
+        Assert.Equal(settings.Orientation.Value, Defaults.PageOrientation);
     }
     #endregion
 }
