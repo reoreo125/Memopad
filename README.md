@@ -18,7 +18,7 @@ Prismによるクリーンアーキテクチャと、R3 (ReactiveProperty) に�
 |R3|[MIT](https://github.com/Cysharp/R3/blob/main/LICENSE)|<https://github.com/Cysharp/R3>| 
 |R3Extension.WPF|^|^
 |UTF.Unknown|[Mozilla Public License version 1.1](https://github.com/CharsetDetector/UTF-unknown/blob/master/license/MPL-1.1.txt)|<https://github.com/CharsetDetector/UTF-unknown>|
-
+|xunit|[License](https://github.com/xunit/xunit/blob/main/LICENSE)|<https://github.com/xunit/xunit>|
 
 ## 動作/開発環境
 * .NET 10 (WPF)
