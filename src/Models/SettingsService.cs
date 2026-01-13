@@ -24,7 +24,7 @@ public class SettingsService : ISettingsService, IDisposable
     {
         // 実行ファイルと同じディレクトリに「実行名.settings」というパスを作成
         var exeName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\'));
-        var assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+        var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
         _settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{assemblyName}.settings");
 
         Settings = Load();
@@ -36,7 +36,7 @@ public class SettingsService : ISettingsService, IDisposable
             .AddTo(ref _disposableCollection);
     }
 
-    Settings Load()
+    internal Settings Load()
     {
         try
         {

@@ -1,3 +1,4 @@
+using System.Reflection;
 using Newtonsoft.Json;
 using Reoreo125.Memopad.Models;
 using Reoreo125.Memopad.Models.Converters;
@@ -32,5 +33,31 @@ public class SerializationTests
         Assert.NotNull(restored.Page);
         Assert.Equal(original.Page.MarginLeft.Value, restored.Page.MarginLeft.Value);
         Assert.Equal(original.Page.PaperSizeName.Value, restored.Page.PaperSizeName.Value);
+    }
+    [Fact(DisplayName = "【正常系】設定をファイルから読み出して、全ての値が一致すること")]
+    public void Settings_Serialization_ShouldLoadAllValues()
+    {
+        var settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Memopad.settings");
+        var json = "{\r\n  \"LastOpenedFolderPath\": \"C:\\\\Users\\\\reore\\\\Documents\",\r\n  \"FontFamilyName\": \"Consolas\",\r\n  \"FontStyleName\": \"Regular\",\r\n  \"FontSize\": 24,\r\n  \"IsWordWrap\": false,\r\n  \"ShowStatusBar\": true,\r\n  \"ZoomLevel\": 110,\r\n  \"Page\": {\r\n    \"PaperSizeName\": 8,\r\n    \"InputBin\": 1,\r\n    \"Orientation\": 2,\r\n    \"MarginLeft\": 20.0,\r\n    \"MarginTop\": 25.0,\r\n    \"MarginRight\": 20.0,\r\n    \"MarginBottom\": 25.0,\r\n    \"Header\": \"TestHeader\",\r\n    \"Footer\": \"Page &p\"\r\n  }\r\n}";
+        File.WriteAllText(settingsPath, json);
+
+        var service = new SettingsService();
+        service.Load();
+
+        Assert.Equal(24, service.Settings.FontSize.Value);
+        Assert.Equal(110, service.Settings.ZoomLevel.Value);
+        Assert.Equal("TestHeader", service.Settings.Page.Header.Value);
+    }
+    [Fact(DisplayName = "【異常系】設定をファイルから読み出してJSONが壊れている場合、デフォルト設定が生成されること")]
+    public void Settings_BrokenJson_ShouldReturnDefaultSettings()
+    {
+        var settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Memopad.settings");
+        var brokenJson = "{ \"FontSize\": \"NotANumber\" ...";
+        File.WriteAllText(settingsPath, brokenJson);
+
+        var service = new SettingsService();
+        service.Load();
+
+        Assert.Equal(Defaults.FontSize, service.Settings.FontSize.Value);
     }
 }
