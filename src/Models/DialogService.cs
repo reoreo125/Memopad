@@ -24,6 +24,7 @@ public interface IDialogService
     public IDialogResult? ShowFont();
     public IDialogResult? ShowFontNotFound(string message);
     public void ShowFileLoadError();
+    public void ShowFileSaveError();
 }
 public class DialogService : IDialogService
 {
@@ -171,5 +172,9 @@ public class DialogService : IDialogService
     public void ShowFileLoadError()
     {
         MessageBox.Show("ファイルの読み込みに失敗しました。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+    public void ShowFileSaveError()
+    {
+        MessageBox.Show("ファイルの書き込みに失敗しました。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
     }
 }

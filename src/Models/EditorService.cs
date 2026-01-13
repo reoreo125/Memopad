@@ -134,7 +134,7 @@ public sealed class EditorService : IEditorService
 
         if (result.IsSuccess is false)
         {
-            DialogService.ShowFileLoadError();
+            DialogService.ShowFileSaveError();
             return;
         }
 
