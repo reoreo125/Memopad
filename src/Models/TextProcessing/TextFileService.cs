@@ -122,7 +122,7 @@ public class TextFileService : ITextFileService
         }
         return lineEnding;
     }
-    private static string NormalizeLineEndingsToCRLF(string text)
+    internal static string NormalizeLineEndingsToCRLF(string text)
     {
         // 内部用に改行コードを CRLF に統一する処理
         var sb = new StringBuilder();
