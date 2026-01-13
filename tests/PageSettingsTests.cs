@@ -1,10 +1,37 @@
 using System.Printing;
+using R3;
 using Reoreo125.Memopad.Models;
 
 namespace Reoreo125.Memopad.Tests;
 
 public class PageSettingsTests
 {
+    #region Changed
+    [Fact(DisplayName = "【正常系】Changed:プロパティがどれか一つでも変更されると通知されること")]
+    public void Changed_AnyPropertyChanged_ShouldNotify()
+    {
+        var pageSettings = new PageSettings();
+        var result = false;
+        using (pageSettings.Changed.Subscribe(_ => result = true))
+        {
+            pageSettings.MarginLeft.Value = Defaults.MarginLeft + 2;
+        }
+
+        Assert.True(result);
+    }
+    [Fact(DisplayName = "【正常系】Changed:プロパティが同じ値で変更されると通知すること")]
+    public void Changed_AnyPropertyChangedSameValue_ShouldNotify()
+    {
+        var pageSettings = new PageSettings();
+        var result = false;
+        using (pageSettings.Changed.Subscribe(_ => result = true))
+        {
+            pageSettings.MarginLeft.Value = Defaults.MarginLeft;
+        }
+
+        Assert.True(result);
+    }
+    #endregion
 
     #region PaperSizeName
     [Theory(DisplayName = "【正常系】PaperSizeName:有効な用紙サイズの場合、値が維持されること")]

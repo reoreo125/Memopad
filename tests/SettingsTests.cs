@@ -1,9 +1,37 @@
+using R3;
 using Reoreo125.Memopad.Models;
 
 namespace Reoreo125.Memopad.Tests;
 
 public class SettingsTests
 {
+    #region Changed
+    [Fact(DisplayName = "【正常系】Changed:プロパティがどれか一つでも変更されると通知されること")]
+    public void Changed_AnyPropertyChanged_ShouldNotify()
+    {
+        var settings = new Settings();
+        var result = false;
+        using (settings.Changed.Subscribe(_ => result = true))
+        {
+            settings.FontSize.Value = Defaults.FontSize + 2;
+        }
+
+        Assert.True(result);
+    }
+    [Fact(DisplayName = "【正常系】Changed:プロパティが同じ値で変更されると通知すること")]
+    public void Changed_AnyPropertyChangedSameValue_ShouldNotify()
+    {
+        var settings = new Settings();
+        var result = false;
+        using (settings.Changed.Subscribe(_ => result = true))
+        {
+            settings.FontSize.Value = Defaults.FontSize;
+        }
+
+        Assert.True(result);
+    }
+    #endregion
+
     #region LastOpenedFolderPath
     [Theory(DisplayName = "【正常系】LastOpenedFolderPath:最後に開いたフォルダパスが有効な場合、値が維持されること")]
     [InlineData(@"c:\")]
