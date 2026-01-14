@@ -1,12 +1,20 @@
 using Newtonsoft.Json;
 using R3;
 using Reoreo125.Memopad.Models.Converters;
+using Reoreo125.Memopad.Views.Converters;
+using System.Globalization;
+using System.Printing;
+using System.Windows.Data;
 using Xunit;
 
 namespace Reoreo125.Memopad.Tests;
 
 public class ConverterTests
 {
+    public class Holder<T>
+    {
+        public ReactiveProperty<T> Target { get; set; } = new();
+    }
     private readonly JsonSerializerSettings _settings = new()
     {
         Converters = new[] { new ReactivePropertyConverter() },
@@ -40,18 +48,22 @@ public class ConverterTests
         Assert.NotNull(rp);
         Assert.Equal(expectedValue, rp.Value);
     }
-    
+
     [Theory(DisplayName = "【正常系】JSONから既存のReactivePropertyインスタンスのValueを更新すること")]
     [InlineData("\"new string\"", "old string", "new string")]
     [InlineData("999", 111, 999)]
     [InlineData("false", true, false)]
     public void ReactivePropertyConverter_ReadJson_PopulatesExistingInstance_Test<T>(string json, T initialValue, T expectedValue)
     {
-        var rp = new ReactiveProperty<T>(initialValue);
+        var holder = new Holder<T>();
+        holder.Target.Value = initialValue;
 
-        JsonConvert.PopulateObject(json, rp, _settings);
+        var originalInstance = holder.Target;
 
-        Assert.Equal(expectedValue, rp.Value);
+        JsonConvert.PopulateObject($"{{\"Target\": {json}}}", holder, _settings);
+
+        Assert.Same(originalInstance, holder.Target);
+        Assert.Equal(expectedValue, holder.Target.Value);
     }
 
     [Fact(DisplayName = "【正常系】ReactiveProperty型とBindableReactiveProperty型を正しく変換可能と判断すること")]
@@ -63,6 +75,59 @@ public class ConverterTests
         Assert.True(converter.CanConvert(typeof(BindableReactiveProperty<int>)));
         Assert.False(converter.CanConvert(typeof(string)));
         Assert.False(converter.CanConvert(typeof(int)));
+    }
+    #endregion
+
+    #region InverseBoolConverter
+    [Theory(DisplayName = "【正常系】InverseBoolConverter.Convert: bool値を反転させること")]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    public void InverseBoolConverter_Convert_ShouldInverseValue(bool input, bool expected)
+    {
+        var converter = new InverseBoolConverter();
+        var result = converter.Convert(input, typeof(bool), null!, CultureInfo.CurrentCulture);
+        Assert.Equal(expected, result);
+    }
+
+    [Theory(DisplayName = "【正常系】InverseBoolConverter.ConvertBack: bool値を反転させること")]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    public void InverseBoolConverter_ConvertBack_ShouldInverseValue(bool input, bool expected)
+    {
+        var converter = new InverseBoolConverter();
+        var result = converter.ConvertBack(input, typeof(bool), null!, CultureInfo.CurrentCulture);
+        Assert.Equal(expected, result);
+    }
+    #endregion
+
+    #region PageOrientationToBoolConverter
+    [Theory(DisplayName = "【正常系】PageOrientationToBoolConverter.Convert: valueとparameterが一致すればtrueを返す")]
+    [InlineData(PageOrientation.Portrait, PageOrientation.Portrait, true)]
+    [InlineData(PageOrientation.Portrait, PageOrientation.Landscape, false)]
+    [InlineData(PageOrientation.Landscape, PageOrientation.Portrait, false)]
+    [InlineData(PageOrientation.Landscape, PageOrientation.Landscape, true)]
+    public void PageOrientationToBoolConverter_Convert_ShouldReturnTrueIfValueEqualsParameter(PageOrientation value, PageOrientation parameter, bool expected)
+    {
+        var converter = new PageOrientationToBoolConverter();
+        var result = converter.Convert(value, typeof(bool), parameter, CultureInfo.CurrentCulture);
+        Assert.Equal(expected, result);
+    }
+
+    [Fact(DisplayName = "【正常系】PageOrientationToBoolConverter.ConvertBack: trueならparameterを返す")]
+    public void PageOrientationToBoolConverter_ConvertBack_ShouldReturnParameterIfTrue()
+    {
+        var converter = new PageOrientationToBoolConverter();
+        var parameter = PageOrientation.Portrait;
+        var result = converter.ConvertBack(true, typeof(PageOrientation), parameter, CultureInfo.CurrentCulture);
+        Assert.Equal(parameter, result);
+    }
+
+    [Fact(DisplayName = "【正常系】PageOrientationToBoolConverter.ConvertBack: falseならBinding.DoNothingを返す")]
+    public void PageOrientationToBoolConverter_ConvertBack_ShouldReturnDoNothingIfFalse()
+    {
+        var converter = new PageOrientationToBoolConverter();
+        var result = converter.ConvertBack(false, typeof(PageOrientation), PageOrientation.Portrait, CultureInfo.CurrentCulture);
+        Assert.Equal(Binding.DoNothing, result);
     }
     #endregion
 }
