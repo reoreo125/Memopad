@@ -1,5 +1,5 @@
 using Reoreo125.Memopad.Models;
-using System.IO;
+using Reoreo125.Memopad.Models.TextProcessing;
 
 namespace Reoreo125.Memopad.Tests.Unit.Models;
 
@@ -35,7 +35,7 @@ public class EditorDocumentTests
         doc.FilePath.Value = "C:\\test.txt";
         doc.Encoding.Value = System.Text.Encoding.ASCII;
         doc.HasBom.Value = !Defaults.HasBOM;
-        doc.LineEnding.Value = Models.TextProcessing.LineEnding.CRLF;
+        doc.LineEnding.Value = LineEnding.CRLF;
 
         doc.Reset();
 

@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Printing;
-using System.Windows.Media;
-using R3;
 using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 
 namespace Reoreo125.Memopad.Models.Validators;

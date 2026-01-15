@@ -1,5 +1,4 @@
 using System.IO;
-using System.Windows;
 using R3;
 using Reoreo125.Memopad.Models.TextProcessing;
 

@@ -5,7 +5,6 @@ using Reoreo125.Memopad.Views.Converters;
 using System.Globalization;
 using System.Printing;
 using System.Windows.Data;
-using Xunit;
 
 namespace Reoreo125.Memopad.Tests.Unit.Converters;
 
