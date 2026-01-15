@@ -94,7 +94,7 @@ public class TextFileService : ITextFileService
         }
 
     }
-    private static LineEnding DetectLineEnding(string filePath, Encoding encoding)
+    internal static LineEnding DetectLineEnding(string filePath, Encoding encoding)
     {
         // 改行コードの検出
         LineEnding lineEnding = LineEnding.Unknown;
