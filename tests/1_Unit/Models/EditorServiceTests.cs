@@ -6,7 +6,7 @@ using Reoreo125.Memopad.Models;
 using Reoreo125.Memopad.Models.TextProcessing;
 using IDialogService = Reoreo125.Memopad.Models.IDialogService;
 
-namespace Reoreo125.Memopad.Tests;
+namespace Reoreo125.Memopad.Tests.Unit.Models;
 
 public class EditorServiceTests
 {

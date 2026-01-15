@@ -2,7 +2,7 @@ using System.Printing;
 using R3;
 using Reoreo125.Memopad.Models;
 
-namespace Reoreo125.Memopad.Tests;
+namespace Reoreo125.Memopad.Tests.Unit.Models;
 
 public class PageSettingsTests
 {

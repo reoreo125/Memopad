@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using Reoreo125.Memopad.Models;
 using Reoreo125.Memopad.Models.TextProcessing;
 
-namespace Reoreo125.Memopad.Tests;
+namespace Reoreo125.Memopad.Tests.Unit.Models;
 
 public class SettingsServiceTests
 {

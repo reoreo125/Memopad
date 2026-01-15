@@ -1,7 +1,7 @@
 using Reoreo125.Memopad.Models;
 using System.IO;
 
-namespace Reoreo125.Memopad.Tests;
+namespace Reoreo125.Memopad.Tests.Unit.Models;
 
 public class EditorDocumentTests
 {

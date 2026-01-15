@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Text;
 using Reoreo125.Memopad.Models.TextProcessing;
 
-namespace Reoreo125.Memopad.Tests;
+namespace Reoreo125.Memopad.Tests.Unit.Models.TextProcessing;
 
 public class TextFileServiceTests
 {
