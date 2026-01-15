@@ -128,4 +128,220 @@ public class EditorServiceTests
         dialogService.Received(1).ShowFileSaveError();
     }
     #endregion
+
+    #region Cut
+    [Fact(DisplayName = "【正常系】Cut:RequestCutが呼び出されること")]
+    public void Cut_ShouldNotifyRequestCut()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        bool result = false;
+        using (editorService.RequestCut.Subscribe(_ => result = true))
+        {
+            editorService.Cut();
+        }
+        Assert.True(result);
+    }
+    #endregion
+
+    #region Paste
+    [Fact(DisplayName = "【正常系】Paste:RequestPasteが呼び出されること")]
+    public void Paste_ShouldNotifyRequestPaste()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        bool result = false;
+        using (editorService.RequestPaste.Subscribe(_ => result = true))
+        {
+            editorService.Paste();
+        }
+        Assert.True(result);
+    }
+    #endregion
+
+    #region Delete
+    [Fact(DisplayName = "【正常系】Delete:RequestDeleteが呼び出されること")]
+    public void Delete_ShouldNotifyRequestDelete()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        bool result = false;
+        using (editorService.RequestDelete.Subscribe(_ => result = true))
+        {
+            editorService.Delete();
+        }
+        Assert.True(result);
+    }
+    #endregion
+
+    #region Insert
+    [Fact(DisplayName = "【正常系】Insert:RequestInsertが呼び出されること")]
+    public void Insert_ShouldNotifyRequestInsert()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        string result = string.Empty;
+        using (editorService.RequestInsert.Subscribe(text => result = text))
+        {
+            editorService.Insert("test");
+        }
+        Assert.Equal("test", result);
+    }
+    #endregion
+
+    #region Undo
+    [Fact(DisplayName = "【正常系】Undo:RequestUndoが呼び出されること")]
+    public void Undo_ShouldNotifyRequestUndo()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        bool result = false;
+        using (editorService.RequestUndo.Subscribe(_ => result = true))
+        {
+            editorService.Undo();
+        }
+        Assert.True(result);
+    }
+    #endregion
+
+    #region Redo
+    [Fact(DisplayName = "【正常系】Redo:RequestRedoが呼び出されること")]
+    public void Redo_ShouldNotifyRequestRedo()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        bool result = false;
+        using (editorService.RequestRedo.Subscribe(_ => result = true))
+        {
+            editorService.Redo();
+        }
+        Assert.True(result);
+    }
+    #endregion
+
+    #region FindNext
+    [Fact(DisplayName = "【正常系】FindNext:RequestFindが呼び出されること")]
+    public void FindNext_ShouldNotifyRequestFind()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        FindEventArgs? result = null;
+        using (editorService.RequestFind.Subscribe(args => result = args))
+        {
+            editorService.FindNext();
+        }
+        Assert.NotNull(result);
+    }
+    #endregion
+
+    #region FindPrev
+    [Fact(DisplayName = "【正常系】FindPrev:RequestFindが呼び出されること")]
+    public void FindPrev_ShouldNotifyRequestFind()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        FindEventArgs? result = null;
+        using (editorService.RequestFind.Subscribe(args => result = args))
+        {
+            editorService.FindPrev();
+        }
+        Assert.NotNull(result);
+    }
+    #endregion
+
+    #region SelectAll
+    [Fact(DisplayName = "【正常系】SelectAll:RequestSelectAllが呼び出されること")]
+    public void SelectAll_ShouldNotifyRequestSelectAll()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        bool result = false;
+        using (editorService.RequestSelectAll.Subscribe(_ => result = true))
+        {
+            editorService.SelectAll();
+        }
+        Assert.True(result);
+    }
+    #endregion
+
+    #region GoToLine
+    [Fact(DisplayName = "【正常系】GoToLine:RequestGoToLineが呼び出されること")]
+    public void GoToLine_ShouldNotifyRequestGoToLine()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        GoToLineEventArgs? result = null;
+        using (editorService.RequestGoToLine.Subscribe(args => result = args))
+        {
+            editorService.GoToLine(1);
+        }
+        Assert.NotNull(result);
+    }
+    #endregion
+
+    #region ReplaceNext
+    [Fact(DisplayName = "【正常系】ReplaceNext:RequestReplaceNextが呼び出されること")]
+    public void ReplaceNext_ShouldNotifyRequestReplaceNext()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        ReplaceNextEventArgs? result = null;
+        using (editorService.RequestReplaceNext.Subscribe(args => result = args))
+        {
+            editorService.ReplaceNext();
+        }
+        Assert.NotNull(result);
+    }
+    #endregion
+
+    #region ReplaceAll
+    [Fact(DisplayName = "【正常系】ReplaceAll:RequestReplaceAllが呼び出されること")]
+    public void ReplaceAll_ShouldNotifyRequestReplaceAll()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        ReplaceAllEventArgs? result = null;
+        using (editorService.RequestReplaceAll.Subscribe(args => result = args))
+        {
+            editorService.ReplaceAll();
+        }
+        Assert.NotNull(result);
+    }
+    #endregion
 }
