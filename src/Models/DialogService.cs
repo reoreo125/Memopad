@@ -31,7 +31,7 @@ public class DialogService : IDialogService
     [Dependency]
     public IPrismDialogService? PrismDialogService { get; set; }
     [Dependency]
-    public ISettingsService? SettingsService { get; set;  }
+    public ISettingsService? SettingsService { get; set; }
 
     public IDialogResult? ConfirmSave(string fileNameWithoutExtension)
     {
@@ -52,7 +52,7 @@ public class DialogService : IDialogService
     public IDialogResult? ShowOpenFile(string folderPath)
     {
         if (string.IsNullOrEmpty(folderPath)) folderPath = Defaults.LastOpenedFolderPath;
-        
+
         var openFileDialog = new OpenFileDialog
         {
             Title = "ファイルを開く",
@@ -167,19 +167,19 @@ public class DialogService : IDialogService
         return result;
     }
 
-    // ShowWithoutParameters
-    public IDialogResult? ShowFind() => ShowWithoutParameters(typeof(FindDialog));
+    // ShowModelessWithoutParameters
+    public IDialogResult? ShowFind() => ShowModelessWithoutParameters(typeof(FindDialog));
+    public IDialogResult? ShowReplace() => ShowModelessWithoutParameters(typeof(ReplaceDialog));
 
     // ShowDialogWithoutParameters
-    public IDialogResult? ShowLineOutOfBounds() => ShowDialogWithoutParameters(typeof(LineOutOfBoundsDialog));
-    public IDialogResult? ShowReplace() => ShowWithoutParameters(typeof(ReplaceDialog));
-    public IDialogResult? ShowAbout() => ShowDialogWithoutParameters(typeof(AboutDialog));
-    public IDialogResult? ShowPageSettings() => ShowDialogWithoutParameters(typeof(PageSettingsDialog));
-    public IDialogResult? ShowFont() => ShowDialogWithoutParameters(typeof(FontDialog));
-    public IDialogResult? ShowFileLoadError() => ShowDialogWithoutParameters(typeof(FileLoadErrorDialog));
-    public IDialogResult? ShowFileSaveError() => ShowDialogWithoutParameters(typeof(FileSaveErrorDialog));
+    public IDialogResult? ShowLineOutOfBounds() => ShowModalWithoutParameters(typeof(LineOutOfBoundsDialog));
+    public IDialogResult? ShowAbout() => ShowModalWithoutParameters(typeof(AboutDialog));
+    public IDialogResult? ShowPageSettings() => ShowModalWithoutParameters(typeof(PageSettingsDialog));
+    public IDialogResult? ShowFont() => ShowModalWithoutParameters(typeof(FontDialog));
+    public IDialogResult? ShowFileLoadError() => ShowModalWithoutParameters(typeof(FileLoadErrorDialog));
+    public IDialogResult? ShowFileSaveError() => ShowModalWithoutParameters(typeof(FileSaveErrorDialog));
 
-    private IDialogResult? ShowDialogWithoutParameters(Type dialogType)
+    private IDialogResult? ShowModalWithoutParameters(Type dialogType)
     {
         IDialogResult? result = null;
         PrismDialogService.ShowDialog(
@@ -189,8 +189,13 @@ public class DialogService : IDialogService
 
         return result;
     }
-    private IDialogResult? ShowWithoutParameters(Type dialogType)
+    private IDialogResult? ShowModelessWithoutParameters(Type dialogType)
     {
+        var existingWindow = Application.Current.Windows
+            .Cast<Window>()
+            .FirstOrDefault(w => w.GetType().Namespace?.StartsWith("Prism.Dialogs") is true);
+        if (existingWindow is not null) existingWindow.Close();
+        
         IDialogResult? result = null;
         PrismDialogService.Show(
             dialogType.Name,

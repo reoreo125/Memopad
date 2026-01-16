@@ -15,7 +15,6 @@ public class DialogServiceTests
     public void ConfirmSave_ShouldShowDialog()
     {
         var prismDialogService = Substitute.For<IPrismDialogService>();
-        var settingsService = Substitute.For<ISettingsService>();
 
         var expectedResult = new DialogResult(ButtonResult.OK);
         prismDialogService.WhenForAnyArgs(x => x.ShowDialog(default, default, default))
@@ -28,7 +27,6 @@ public class DialogServiceTests
         var dialogService = new DialogService
         {
             PrismDialogService = prismDialogService,
-            SettingsService = settingsService
         };
 
         var actualResult = dialogService.ConfirmSave("TestText");
