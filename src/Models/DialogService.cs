@@ -23,8 +23,8 @@ public interface IDialogService
     public IDialogResult? ShowPageSettings();
     public IDialogResult? ShowFont();
     public IDialogResult? ShowFontNotFound(string message);
-    public void ShowFileLoadError();
-    public void ShowFileSaveError();
+    public IDialogResult? ShowFileLoadError();
+    public IDialogResult? ShowFileSaveError();
 }
 public class DialogService : IDialogService
 {
@@ -197,12 +197,28 @@ public class DialogService : IDialogService
 
         return result;
     }
-    public void ShowFileLoadError()
+    public IDialogResult? ShowFileLoadError()
     {
         MessageBox.Show("ファイルの読み込みに失敗しました。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+
+        var dialogResult = new DialogResult
+        {
+            Parameters = new DialogParameters(),
+            Result = ButtonResult.OK
+        };
+
+        return dialogResult;
     }
-    public void ShowFileSaveError()
+    public IDialogResult? ShowFileSaveError()
     {
         MessageBox.Show("ファイルの書き込みに失敗しました。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+
+        var dialogResult = new DialogResult
+        {
+            Parameters = new DialogParameters(),
+            Result = ButtonResult.OK
+        };
+
+        return dialogResult;
     }
 }
