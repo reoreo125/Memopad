@@ -63,6 +63,8 @@ public partial class App : PrismApplication
         containerRegistry.RegisterDialog<PageSettingsDialog, PageSettingsDialogViewModel>();
         containerRegistry.RegisterDialog<FontDialog, FontDialogViewModel>();
         containerRegistry.RegisterDialog<FontNotFoundDialog, FontNotFoundDialogViewModel>();
+        containerRegistry.RegisterDialog<FileLoadErrorDialog, FileLoadErrorDialogViewModel>();
+        containerRegistry.RegisterDialog<FileSaveErrorDialog, FileSaveErrorDialogViewModel>();
     }
 
     protected override Window CreateShell() => Container.Resolve<MainWindow>();

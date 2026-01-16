@@ -176,7 +176,9 @@ public class DialogService : IDialogService
     public IDialogResult? ShowAbout() => ShowDialogWithoutParameters(typeof(AboutDialog));
     public IDialogResult? ShowPageSettings() => ShowDialogWithoutParameters(typeof(PageSettingsDialog));
     public IDialogResult? ShowFont() => ShowDialogWithoutParameters(typeof(FontDialog));
-    
+    public IDialogResult? ShowFileLoadError() => ShowDialogWithoutParameters(typeof(FileLoadErrorDialog));
+    public IDialogResult? ShowFileSaveError() => ShowDialogWithoutParameters(typeof(FileSaveErrorDialog));
+
     private IDialogResult? ShowDialogWithoutParameters(Type dialogType)
     {
         IDialogResult? result = null;
@@ -196,29 +198,5 @@ public class DialogService : IDialogService
             _result => result = _result);
 
         return result;
-    }
-    public IDialogResult? ShowFileLoadError()
-    {
-        MessageBox.Show("ファイルの読み込みに失敗しました。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
-
-        var dialogResult = new DialogResult
-        {
-            Parameters = new DialogParameters(),
-            Result = ButtonResult.OK
-        };
-
-        return dialogResult;
-    }
-    public IDialogResult? ShowFileSaveError()
-    {
-        MessageBox.Show("ファイルの書き込みに失敗しました。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
-
-        var dialogResult = new DialogResult
-        {
-            Parameters = new DialogParameters(),
-            Result = ButtonResult.OK
-        };
-
-        return dialogResult;
     }
 }
