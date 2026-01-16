@@ -1,12 +1,11 @@
 using System.Windows.Controls;
 
-namespace Reoreo125.Memopad.Views.Dialogs
+namespace Reoreo125.Memopad.Views.Dialogs;
+
+public partial class SaveConfirmDialog : UserControl
 {
-    public partial class SaveConfirmDialog : UserControl
+    public SaveConfirmDialog()
     {
-        public SaveConfirmDialog()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

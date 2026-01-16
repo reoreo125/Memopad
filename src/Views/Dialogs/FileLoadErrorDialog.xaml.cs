@@ -1,12 +1,11 @@
 using System.Windows.Controls;
 
-namespace Reoreo125.Memopad.Views.Dialogs
+namespace Reoreo125.Memopad.Views.Dialogs;
+
+public partial class FileLoadErrorDialog : UserControl
 {
-    public partial class FileLoadErrorDialog : UserControl
+    public FileLoadErrorDialog()
     {
-        public FileLoadErrorDialog()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

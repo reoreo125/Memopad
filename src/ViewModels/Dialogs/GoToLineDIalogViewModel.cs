@@ -2,7 +2,7 @@ using R3;
 using Reoreo125.Memopad.Models;
 using IDialogService = Reoreo125.Memopad.Models.IDialogService;
 
-namespace Reoreo125.Memopad.ViewModels.Windows;
+namespace Reoreo125.Memopad.ViewModels.Dialogs;
 
 public class GoToLineDIalogViewModel : BindableBase, IDialogAware
 {

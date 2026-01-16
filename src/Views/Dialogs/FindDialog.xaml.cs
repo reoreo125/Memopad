@@ -1,12 +1,11 @@
 using System.Windows.Controls;
 
-namespace Reoreo125.Memopad.Views.Dialogs
+namespace Reoreo125.Memopad.Views.Dialogs;
+
+public partial class FindDialog : UserControl
 {
-    public partial class FindDialog : UserControl
+    public FindDialog()
     {
-        public FindDialog()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

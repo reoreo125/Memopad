@@ -1,12 +1,11 @@
 using System.Windows.Controls;
 
-namespace Reoreo125.Memopad.Views.Dialogs
+namespace Reoreo125.Memopad.Views.Dialogs;
+
+public partial class ReplaceDialog : UserControl
 {
-    public partial class ReplaceDialog : UserControl
+    public ReplaceDialog()
     {
-        public ReplaceDialog()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -1,12 +1,11 @@
 using System.Windows.Controls;
 
-namespace Reoreo125.Memopad.Views.Dialogs
+namespace Reoreo125.Memopad.Views.Dialogs;
+
+public partial class PageSettingsDialog : UserControl
 {
-    public partial class PageSettingsDialog : UserControl
+    public PageSettingsDialog()
     {
-        public PageSettingsDialog()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

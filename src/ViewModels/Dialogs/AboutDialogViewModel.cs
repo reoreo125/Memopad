@@ -1,6 +1,6 @@
 using Reoreo125.Memopad.Models;
 
-namespace Reoreo125.Memopad.ViewModels.Windows;
+namespace Reoreo125.Memopad.ViewModels.Dialogs;
 
 public class AboutDialogViewModel : BindableBase, IDialogAware
 {
