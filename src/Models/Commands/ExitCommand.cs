@@ -41,10 +41,12 @@ public class ExitCommand : CommandBase, IExitCommand
 
         if (save && string.IsNullOrEmpty(EditorService.Document.FilePath.Value))
         {
-            var saveFilePath = DialogService.ShowSaveFile();
-            if (saveFilePath is null) return;
+            var saveFiledialogResult = DialogService.ShowSaveFile();
 
-            EditorService.Document.FilePath.Value = saveFilePath;
+            if (saveFiledialogResult is null) return;
+            if (saveFiledialogResult.Result is not ButtonResult.OK) return;
+
+            EditorService.Document.FilePath.Value = saveFiledialogResult.Parameters.GetValue<string>("filename");
         }
 
         if (save) EditorService.SaveText(EditorService.Document.FilePath.Value);

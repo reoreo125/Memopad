@@ -11,9 +11,9 @@ namespace Reoreo125.Memopad.Models;
 public interface IDialogService
 {
     public IDialogResult? ConfirmSave(string fileNameWithoutExtension);
-    public string? ShowOpenFile(string folderPath);
-    public string? ShowSaveFile();
-    public  (bool?, PrintDialog) ShowPrint();
+    public IDialogResult? ShowOpenFile(string folderPath);
+    public IDialogResult? ShowSaveFile();
+    public IDialogResult? ShowPrint();
     public IDialogResult? ShowFind();
     public IDialogResult? ShowNotFound(string searchText);
     public IDialogResult? ShowAbout();
@@ -49,10 +49,10 @@ public class DialogService : IDialogService
 
         return result;
     }
-    public string? ShowOpenFile(string folderPath)
+    public IDialogResult? ShowOpenFile(string folderPath)
     {
-        if (string.IsNullOrEmpty(folderPath)) folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
+        if (string.IsNullOrEmpty(folderPath)) folderPath = Defaults.LastOpenedFolderPath;
+        
         var openFileDialog = new OpenFileDialog
         {
             Title = "ファイルを開く",
@@ -60,12 +60,20 @@ public class DialogService : IDialogService
             InitialDirectory = folderPath
         };
 
-        var result = openFileDialog.ShowDialog();
-        if (result is false) return null;
+        var resultBool = openFileDialog.ShowDialog();
 
-        return openFileDialog.FileName;
+        var dialogResult = new DialogResult
+        {
+            Parameters = new DialogParameters()
+            {
+                { "filename", openFileDialog.FileName }
+            },
+            Result = resultBool is true ? ButtonResult.OK : ButtonResult.Cancel
+        };
+
+        return dialogResult;
     }
-    public string? ShowSaveFile()
+    public IDialogResult? ShowSaveFile()
     {
         var saveFileDialog = new SaveFileDialog
         {
@@ -74,12 +82,21 @@ public class DialogService : IDialogService
             DefaultExt = "txt",
             InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         };
-        var result = saveFileDialog.ShowDialog();
-        if (result is false) return null;
 
-        return saveFileDialog.FileName;
+        var resultBool = saveFileDialog.ShowDialog();
+
+        var dialogResult = new DialogResult
+        {
+            Parameters = new DialogParameters()
+            {
+                { "filename", saveFileDialog.FileName }
+            },
+            Result = resultBool is true ? ButtonResult.OK : ButtonResult.Cancel
+        };
+
+        return dialogResult;
     }
-    public (bool?, PrintDialog) ShowPrint()
+    public IDialogResult? ShowPrint()
     {
         if (SettingsService is null) throw new Exception(nameof(SettingsService));
 
@@ -91,7 +108,18 @@ public class DialogService : IDialogService
         ticket.InputBin = SettingsService.Settings.Page.InputBin.Value;
         printDialog.PrintTicket = ticket;
 
-        return (printDialog.ShowDialog(), printDialog);
+        var resultBool = printDialog.ShowDialog();
+
+        var dialogResult = new DialogResult
+        {
+            Parameters = new DialogParameters()
+            {
+                { "printdialog", printDialog }
+            },
+            Result = resultBool is true ? ButtonResult.OK : ButtonResult.Cancel
+        };
+
+        return dialogResult;
     }
 
     public IDialogResult? ShowNotFound(string searchText)

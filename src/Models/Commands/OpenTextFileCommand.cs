@@ -43,17 +43,21 @@ public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
 
         if(save && string.IsNullOrEmpty(EditorService.Document.FilePath.Value))
         {
-            var saveFilePath = MemopadDialogService.ShowSaveFile();
-            if (saveFilePath is null) return;
+            var saveFiledialogResult = MemopadDialogService.ShowSaveFile();
 
-            EditorService.Document.FilePath.Value = saveFilePath;
+            if (saveFiledialogResult is null) return;
+            if (saveFiledialogResult.Result is not ButtonResult.OK) return;
+
+            EditorService.Document.FilePath.Value = saveFiledialogResult.Parameters.GetValue<string>("filename");
         }
 
         var lastOpenedFolderPath = SettingsService.Settings.LastOpenedFolderPath.Value;
-        string? openFilePath = MemopadDialogService.ShowOpenFile(lastOpenedFolderPath);
-        if (openFilePath is null) return;
+        var openFilePathResult = MemopadDialogService.ShowOpenFile(lastOpenedFolderPath);
+
+        if (openFilePathResult is null) return;
+        if (openFilePathResult.Result is not ButtonResult.OK) return;
 
         if (save) EditorService.SaveText(EditorService.Document.FilePath.Value);
-        EditorService.LoadText(openFilePath);
+        EditorService.LoadText(openFilePathResult.Parameters.GetValue<string>("filename"));
     }
 }

@@ -17,9 +17,11 @@ public class SaveAsTextFileCommand : CommandBase, ISaveAsTextFileCommand
         if (EditorService is null) throw new Exception(nameof(EditorService));
         if (DialogService is null) throw new Exception(nameof(DialogService));
 
-        var saveFilePath = DialogService.ShowSaveFile();
-        if (string.IsNullOrEmpty(saveFilePath)) return;
+        var saveFiledialogResult = DialogService.ShowSaveFile();
 
-        EditorService.SaveText(saveFilePath);
+        if (saveFiledialogResult is null) return;
+        if (saveFiledialogResult.Result is not ButtonResult.OK) return;
+
+        EditorService.SaveText(saveFiledialogResult.Parameters.GetValue<string>("filename"));
     }
 }
