@@ -6,7 +6,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Reoreo125.Memopad.ViewModels.Windows"
         xmlns:prism="http://prismlibrary.com/"
-        prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
         Height="200" Width="400">
     <prism:Dialog.WindowStyle>

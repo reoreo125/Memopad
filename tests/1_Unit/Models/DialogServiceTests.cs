@@ -29,7 +29,7 @@ public class DialogServiceTests
             PrismDialogService = prismDialogService,
         };
 
-        var actualResult = dialogService.ConfirmSave("TestText");
+        var actualResult = dialogService.ShowConfirmSave("TestText");
 
         Assert.NotNull(actualResult);
         Assert.Equal(expectedResult, actualResult);

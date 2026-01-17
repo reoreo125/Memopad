@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:Reoreo125.Memopad.Views.Dialogs"
              xmlns:converters="clr-namespace:Reoreo125.Memopad.Views.Converters"
              xmlns:prism="http://prismlibrary.com/"
-             prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
     <prism:Dialog.WindowStyle>
         <Style TargetType="Window">

@@ -27,7 +27,7 @@ public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
         var save = false;
         if (EditorService.Document.IsDirty.CurrentValue)
         {
-            IDialogResult?  result = MemopadDialogService.ConfirmSave(EditorService.Document.FileNameWithoutExtension.CurrentValue);
+            IDialogResult?  result = MemopadDialogService.ShowConfirmSave(EditorService.Document.FileNameWithoutExtension.CurrentValue);
             if (result is null) return;
 
             if (result.Result is ButtonResult.Yes)

@@ -10,7 +10,7 @@ namespace Reoreo125.Memopad.Models;
 
 public interface IDialogService
 {
-    public IDialogResult? ConfirmSave(string fileNameWithoutExtension);
+    public IDialogResult? ShowConfirmSave(string fileNameWithoutExtension);
     public IDialogResult? ShowOpenFile(string folderPath);
     public IDialogResult? ShowSaveFile();
     public IDialogResult? ShowPrint();
@@ -33,17 +33,16 @@ public class DialogService : IDialogService
     [Dependency]
     public ISettingsService? SettingsService { get; set; }
 
-    public IDialogResult? ConfirmSave(string fileNameWithoutExtension)
+    public IDialogResult? ShowConfirmSave(string fileNameWithoutExtension)
     {
         var parameters = new DialogParameters
         {
-            { "title", "Memopad" },
             { "message", $"{fileNameWithoutExtension} への変更内容を保存しますか？" }
         };
 
         IDialogResult? result = null;
         PrismDialogService.ShowDialog(
-            nameof(SaveConfirmDialog),
+            nameof(ConfirmSaveDialog),
             parameters,
             _result => result = _result);
 
@@ -126,7 +125,6 @@ public class DialogService : IDialogService
     {
         var parameters = new DialogParameters
         {
-            { "title", "Memopad" },
             { "message", $"\"{searchText}\" が見つかりません。" }
         };
 

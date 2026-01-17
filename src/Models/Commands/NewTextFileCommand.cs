@@ -23,7 +23,7 @@ public class NewTextFileCommand : CommandBase, INewTextFileCommand
         var save = false;
         if (EditorService.Document.IsDirty.CurrentValue)
         {
-            IDialogResult? result = DialogService.ConfirmSave(EditorService.Document.FileNameWithoutExtension.CurrentValue);
+            IDialogResult? result = DialogService.ShowConfirmSave(EditorService.Document.FileNameWithoutExtension.CurrentValue);
             if (result is null) return;
 
             if (result.Result is ButtonResult.Yes)

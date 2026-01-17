@@ -1,8 +1,10 @@
+using Reoreo125.Memopad.Models;
+
 namespace Reoreo125.Memopad.ViewModels.Dialogs;
 
-public class SaveConfirmDialogViewModel : BindableBase, IDialogAware
+public class ConfirmSaveDialogViewModel : BindableBase, IDialogAware
 {
-    public string? Title { get; set; }
+    public string? Title => $"{Defaults.ApplicationName}";
     public string? Message { get; set; }
 
     public DialogCloseListener RequestClose { get; }
@@ -14,7 +16,6 @@ public class SaveConfirmDialogViewModel : BindableBase, IDialogAware
 
     public void OnDialogOpened(IDialogParameters parameters)
     {
-        Title = parameters.GetValue<string>("title");
         Message = parameters.GetValue<string>("message");
     }
     public bool CanCloseDialog() => true;
