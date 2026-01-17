@@ -120,4 +120,19 @@ public class MainWindowViewModelTests
         
         viewModel.Dispose();
     }
+
+    [Fact(DisplayName = "【正常系】SettingsServiceのFontFamilyNameがViewModelのFontFamilyに反映されること")]
+    public void FontFamily_ShouldReflectSettingsFontFamilyName()
+    {
+        SettingsService.Settings.FontFamilyName.Returns(new ReactiveProperty<string>("Arial"));
+
+        var viewModel = new MainWindowViewModel(EditorService, SettingsService);
+
+        Assert.Equal("Arial", viewModel.FontFamily.Value);
+
+        SettingsService.Settings.FontFamilyName.Value = "MS UI Gothic";
+        Assert.Equal("MS UI Gothic", viewModel.FontFamily.Value);
+        
+        viewModel.Dispose();
+    }
 }
