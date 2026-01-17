@@ -10,12 +10,12 @@ namespace Reoreo125.Memopad.Models;
 
 public interface ISettingsService
 {
-    public Settings Settings { get; }
+    public ISettings Settings { get; }
     public string SettingsPath { get; }
 }
 public class SettingsService : ISettingsService, IDisposable
 {
-    public Settings Settings { get; }
+    public ISettings Settings { get; }
     public string SettingsPath => _settingsPath;
     private readonly string _settingsPath;
 

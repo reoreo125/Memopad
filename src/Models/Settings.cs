@@ -6,8 +6,22 @@ using Reoreo125.Memopad.Models.Validators;
 
 namespace Reoreo125.Memopad.Models;
 
+public interface ISettings
+{
+    public Observable<Unit> Changed { get; }
+
+    public ReactiveProperty<string> LastOpenedFolderPath { get; }
+    public ReactiveProperty<string> FontFamilyName { get; }
+    public ReactiveProperty<string> FontStyleName { get; }
+    public ReactiveProperty<int> FontSize { get; }
+    public ReactiveProperty<bool> IsWordWrap { get; }
+    public ReactiveProperty<bool> ShowStatusBar { get; }
+    public ReactiveProperty<int> ZoomLevel { get; }
+
+    public PageSettings Page { get; }
+}
 [JsonObject(MemberSerialization.OptIn)]
-public class Settings
+public class Settings : ISettings
 {
     [JsonIgnore]
     public Observable<Unit> Changed { get; }
@@ -53,8 +67,24 @@ public class Settings
             .Merge(Page.Changed);
     }
 }
+
+public interface IPageSettings
+{
+    public Observable<Unit> Changed { get; }
+
+    public ReactiveProperty<PageMediaSizeName> PaperSizeName { get; }
+    public ReactiveProperty<InputBin> InputBin { get; }
+    public ReactiveProperty<PageOrientation> Orientation { get; }
+    public ReactiveProperty<double> MarginLeft { get; }
+    public ReactiveProperty<double> MarginTop { get; }
+    public ReactiveProperty<double> MarginRight { get; }
+    public ReactiveProperty<double> MarginBottom { get; }
+    public ReactiveProperty<string> Header { get; }
+    public ReactiveProperty<string> Footer { get; }
+}
+
 [JsonObject(MemberSerialization.OptIn)]
-public class PageSettings
+public class PageSettings : IPageSettings
 {
     [JsonIgnore]
     public Observable<Unit> Changed { get; }

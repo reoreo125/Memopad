@@ -22,7 +22,7 @@ public interface IEditorService : IDisposable
     public Observable<ReplaceNextEventArgs> RequestReplaceNext { get; }
     public Observable<ReplaceAllEventArgs> RequestReplaceAll { get; }
 
-    public EditorDocument Document { get; }
+    public IEditorDocument Document { get; }
 
     public void Reset();
     public void LoadText(string filePath);
@@ -76,7 +76,7 @@ public sealed class EditorService : IEditorService
     private readonly Subject<ReplaceAllEventArgs> _requestReplaceAllSubject = new();
     public Observable<ReplaceAllEventArgs> RequestReplaceAll => _requestReplaceAllSubject;
 
-    public EditorDocument Document { get; }
+    public IEditorDocument Document { get; }
 
     private ITextFileService TextFileService { get; }
     private ISettingsService SettingsService { get; }

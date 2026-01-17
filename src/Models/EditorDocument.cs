@@ -5,7 +5,39 @@ using Reoreo125.Memopad.Models.TextProcessing;
 
 namespace Reoreo125.Memopad.Models;
 
-public class EditorDocument : IDisposable
+public interface IEditorDocument
+{
+    public ReactiveProperty<string> Text { get; }
+    public ReactiveProperty<string> BaseText { get; }
+    public ReactiveProperty<string> FilePath { get; }
+
+    public ReactiveProperty<Encoding> Encoding { get; }
+    public ReactiveProperty<bool> HasBom { get; }
+    public ReactiveProperty<LineEnding> LineEnding { get; }
+
+    // --- 表示用データ (Derived State) ---
+    public ReadOnlyReactiveProperty<string> FileName { get; }
+    public ReadOnlyReactiveProperty<string> FileNameWithoutExtension { get; }
+    public ReadOnlyReactiveProperty<string> Title { get; }
+    public ReadOnlyReactiveProperty<bool> IsDirty { get; }
+
+    // --- コンテキスト (Editor State) ---
+    public ReactiveProperty<bool> CanUndo { get; }
+    public ReactiveProperty<bool> CanRedo { get; }
+    public ReactiveProperty<int> CaretIndex { get; }
+    public ReactiveProperty<string> SelectedText { get; }
+    public ReactiveProperty<int> SelectionLength { get; }
+    public ReactiveProperty<int> Row { get; }
+    public ReactiveProperty<int> Column { get; }
+
+    public ReactiveProperty<string> SearchText { get; }
+    public ReactiveProperty<string> ReplaceText { get; }
+    public ReactiveProperty<bool> MatchCase { get; }
+    public ReactiveProperty<bool> WrapAround { get; }
+
+    public void Reset();
+}
+public class EditorDocument : IEditorDocument, IDisposable
 {
     // --- 根幹データ (Primary State) ---
     public ReactiveProperty<string> Text { get; } = new(string.Empty);
