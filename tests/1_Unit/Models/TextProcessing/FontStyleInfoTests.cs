@@ -5,6 +5,7 @@ namespace Reoreo125.Memopad.Tests.Unit.Models.TextProcessing;
 
 public class FontStyleInfoTests
 {
+    #region FromFontFamily
     [Fact(DisplayName = "【正常系】存在するフォントファミリー名から正しいスタイル情報を取得できること")]
     public void FromFontFamily_WithValidFont_ShouldReturnCorrectStyles()
     {
@@ -38,4 +39,5 @@ public class FontStyleInfoTests
         Assert.NotNull(styles);
         Assert.Empty(styles);
     }
+    #endregion
 }

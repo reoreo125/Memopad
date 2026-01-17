@@ -21,7 +21,7 @@ public record FontStyleInfo(string Name, FontStyle Style, FontWeight Weight)
                 tf.Style,
                 tf.Weight))
             .OrderBy(x => x.Weight.ToOpenTypeWeight())
-            .Distinct(); // 重複排除
+            .Distinct();
         return result;
     }
 }
