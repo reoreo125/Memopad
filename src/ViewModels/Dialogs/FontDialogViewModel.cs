@@ -107,8 +107,8 @@ public class FontDialogViewModel : BindableBase, IDialogAware, IDisposable
                     }
                     else
                     {
-                        var styleInfo = styles.FirstOrDefault(value => value.Name == SettingsService.Settings.FontStyleName.Value);
-                        ListBoxFontStyleInfo.Value = styleInfo;
+                        ListBoxFontStyleInfo.Value = styles.FirstOrDefault(v => v.Name == SettingsService.Settings.FontStyleName.Value)
+                                                     ?? styles.FirstOrDefault(item => Defaults.FontStyleNames.Contains(item.Name));
                     }
                 })
                 .AddTo(ref _disposableCollection);
