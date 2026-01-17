@@ -11,12 +11,13 @@ public record FontStyleInfo(string Name, FontStyle Style, FontWeight Weight)
         if (string.IsNullOrEmpty(fontName)) return Enumerable.Empty<FontStyleInfo>();
 
         var family = new FontFamily(fontName);
-        return family.GetTypefaces()
+        var result = family.GetTypefaces()
             .Select(tf => new FontStyleInfo(
-                tf.FaceNames.Values.FirstOrDefault() ?? "Regular",
+                tf.FaceNames.FirstOrDefault().Value ?? "Regular",
                 tf.Style,
                 tf.Weight))
             .OrderBy(x => x.Weight.ToOpenTypeWeight())
             .Distinct(); // 重複排除
+        return result;
     }
 }

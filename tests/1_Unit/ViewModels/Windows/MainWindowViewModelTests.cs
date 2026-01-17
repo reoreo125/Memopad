@@ -93,4 +93,31 @@ public class MainWindowViewModelTests
         
         viewModel.Dispose();
     }
+
+    [Fact(DisplayName = "【正常系】SettingsServiceのFontStyleName変更時にViewModelのFontStyle/Weightが更新されること")]
+    public void FontStyleAndWeight_ShouldUpdate_OnSettingsChange()
+    {
+        SettingsService.Settings.FontFamilyName.Returns(new ReactiveProperty<string>(Defaults.FontFamilyName));
+        var styleName = Defaults.GetFontStyleName(SettingsService.Settings.FontFamilyName.Value);
+        SettingsService.Settings.FontStyleName.Returns(new ReactiveProperty<string>(styleName));
+
+        var viewModel = new MainWindowViewModel(EditorService, SettingsService);
+
+        Assert.Equal(FontStyles.Normal, viewModel.FontStyle.Value);
+        Assert.Equal(FontWeights.Normal, viewModel.FontWeight.Value);
+
+        SettingsService.Settings.FontStyleName.Value = "Bold";
+        Assert.Equal(FontStyles.Normal, viewModel.FontStyle.Value);
+        Assert.Equal(FontWeights.Bold, viewModel.FontWeight.Value);
+
+        SettingsService.Settings.FontStyleName.Value = "Italic";
+        Assert.Equal(FontStyles.Italic, viewModel.FontStyle.Value);
+        Assert.Equal(FontWeights.Normal, viewModel.FontWeight.Value);
+
+        SettingsService.Settings.FontStyleName.Value = "Bold Italic";
+        Assert.Equal(FontStyles.Italic, viewModel.FontStyle.Value);
+        Assert.Equal(FontWeights.Bold, viewModel.FontWeight.Value);
+        
+        viewModel.Dispose();
+    }
 }
