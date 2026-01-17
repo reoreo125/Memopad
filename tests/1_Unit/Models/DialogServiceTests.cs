@@ -5,8 +5,17 @@ using DialogService = Reoreo125.Memopad.Models.DialogService;
 
 namespace Reoreo125.Memopad.Tests.Unit.Models;
 
+[Collection("DisableTestParallelization")]
 public class DialogServiceTests
 {
+    public DialogServiceTests()
+    {
+        if (Application.Current is null)
+        {
+            new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+        }
+    }
+
     #region ShowConfirmSave
     [Fact(DisplayName = "【正常系】ShowConfirmSave: ダイアログが表示されること")]
     public void ShowConfirmSave_ShouldShowDialog()
@@ -238,11 +247,6 @@ public class DialogServiceTests
     [Fact(DisplayName = "【正常系】ShowFind: ダイアログが表示されること")]
     public void ShowFind_ShouldShowDialog()
     {
-        if (Application.Current == null)
-        {
-            new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-        }
-
         var prismDialogService = Substitute.For<IPrismDialogService>();
         var expectedResult = new DialogResult(ButtonResult.OK);
         prismDialogService.WhenForAnyArgs(x => x.Show(default, default, default))
@@ -265,11 +269,6 @@ public class DialogServiceTests
     [Fact(DisplayName = "【正常系】ShowReplace: ダイアログが表示されること")]
     public void ShowReplace_ShouldShowDialog()
     {
-        if (Application.Current == null)
-        {
-            new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-        }
-
         var prismDialogService = Substitute.For<IPrismDialogService>();
         var expectedResult = new DialogResult(ButtonResult.OK);
         prismDialogService.WhenForAnyArgs(x => x.Show(default, default, default))

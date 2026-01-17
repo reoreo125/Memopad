@@ -2,63 +2,71 @@ using NSubstitute;
 using R3;
 using Reoreo125.Memopad.Models;
 using Reoreo125.Memopad.Models.Commands;
+using System.Windows;
 using IDialogService = Reoreo125.Memopad.Models.IDialogService;
 
 namespace Reoreo125.Memopad.Tests.Unit.Models.Commands;
 
-public class NewTextFileCommandTests
+[Collection("DisableTestParallelization")]
+public class ExitCommandTests
 {
     IEditorService EditorService { get; set; }
     IDialogService DialogService { get; set; }
+    ISaveAsTextFileCommand SaveAsTextFileCommand { get; set; }
     IEditorDocument Document { get; set; }
-    ISaveTextFileCommand SaveTextFileCommand { get; set; }
-    public NewTextFileCommandTests()
+
+    public ExitCommandTests()
     {
+        if (Application.Current is null)
+        {
+            new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+        }
+
         EditorService = Substitute.For<IEditorService>();
         DialogService = Substitute.For<IDialogService>();
+        SaveAsTextFileCommand = Substitute.For<ISaveAsTextFileCommand>();
 
         Document = Substitute.For<IEditorDocument>();
+        Document.IsDirty.Returns(new ReactiveProperty<bool>(false));
+        Document.FilePath.Returns(new ReactiveProperty<string>(""));
+        Document.FileNameWithoutExtension.Returns(new ReactiveProperty<string>("Untitled"));
+        
         EditorService.Document.Returns(Document);
-
-        SaveTextFileCommand = Substitute.For<SaveTextFileCommand>();
     }
-
-    [Fact(DisplayName = "【正常系】未保存の変更がない場合、ConfirmSaveを呼び出さずにResetが呼ばれること")]
-    public void NewTextFileCommand_NoDirty_ShouldCallReset()
+    [Fact(DisplayName = "【正常系】Execute:未保存の変更がない場合、ConfirmSaveを呼び出さないこと")]
+    public void Execute_NoDirty_ShouldNotCallConfirmSave()
     {
         Document.IsDirty.Returns(new ReactiveProperty<bool>(false));
 
-        var command = new NewTextFileCommand
+        var command = new ExitCommand
         {
             EditorService = EditorService,
             DialogService = DialogService,
-            SaveTextFileCommand = SaveTextFileCommand
+            SaveAsTextFileCommand = SaveAsTextFileCommand
         };
 
         command.Execute(null);
 
         DialogService.DidNotReceiveWithAnyArgs().ShowConfirmSave(string.Empty);
-        EditorService.Received(1).Reset();
         EditorService.DidNotReceiveWithAnyArgs().SaveText(string.Empty);
     }
     
-    [Fact(DisplayName = "【正常系】未保存の変更があり、ConfirmSaveでYesを選択した場合、ShowSaveFileとSaveTextとResetが呼ばれること")]
-    public void NewTextFileCommand_DirtyAndConfirmYes_ShouldCallShowSaveFileSaveTextAndReset()
+    [Fact(DisplayName = "【正常系】Execute:未保存の変更があり、ConfirmSaveでYesを選択した場合、ShowSaveFileとSaveTextが呼ばれること")]
+    public void Execute_DirtyAndConfirmYes_ShouldCallShowSaveFileAndSaveText()
     {
         Document.IsDirty.Returns(new ReactiveProperty<bool>(true));
-        Document.FilePath.Returns(new ReactiveProperty<string>(string.Empty));
-        Document.FileNameWithoutExtension.Returns(new ReactiveProperty<string>("newfile"));
+        Document.FilePath.Returns(new ReactiveProperty<string>(""));
 
         DialogService.ShowConfirmSave(Arg.Any<string>()).Returns(new DialogResult(ButtonResult.Yes));
         var saveDialogResult = new DialogResult(ButtonResult.OK);
         saveDialogResult.Parameters.Add("filename", @"C:\temp\newfile.txt");
         DialogService.ShowSaveFile().Returns(saveDialogResult);
 
-        var command = new NewTextFileCommand
+        var command = new ExitCommand
         {
             EditorService = EditorService,
             DialogService = DialogService,
-            SaveTextFileCommand = SaveTextFileCommand
+            SaveAsTextFileCommand = SaveAsTextFileCommand
         };
 
         command.Execute(null);
@@ -66,22 +74,20 @@ public class NewTextFileCommandTests
         DialogService.Received(1).ShowConfirmSave(Arg.Any<string>());
         DialogService.Received(1).ShowSaveFile();
         EditorService.Received(1).SaveText(@"C:\temp\newfile.txt");
-        EditorService.Received(1).Reset();
     }
     
-    [Fact(DisplayName = "【正常系】未保存の変更があり、ConfirmSaveでNoを選択した場合、SaveTextを呼び出さずにResetが呼ばれること")]
-    public void NewTextFileCommand_DirtyAndConfirmNo_ShouldCallResetWithoutSaving()
+    [Fact(DisplayName = "【正常系】Execute:未保存の変更があり、ConfirmSaveでNoを選択した場合、SaveTextを呼び出さないこと")]
+    public void Execute_DirtyAndConfirmNo_ShouldNotCallSaveText()
     {
         Document.IsDirty.Returns(new ReactiveProperty<bool>(true));
-        Document.FileNameWithoutExtension.Returns(new ReactiveProperty<string>("newfile"));
 
         DialogService.ShowConfirmSave(Arg.Any<string>()).Returns(new DialogResult(ButtonResult.No));
 
-        var command = new NewTextFileCommand
+        var command = new ExitCommand
         {
             EditorService = EditorService,
             DialogService = DialogService,
-            SaveTextFileCommand = SaveTextFileCommand
+            SaveAsTextFileCommand = SaveAsTextFileCommand
         };
 
         command.Execute(null);
@@ -89,22 +95,20 @@ public class NewTextFileCommandTests
         DialogService.Received(1).ShowConfirmSave(Arg.Any<string>());
         EditorService.DidNotReceiveWithAnyArgs().SaveText(string.Empty);
         DialogService.DidNotReceiveWithAnyArgs().ShowSaveFile();
-        EditorService.Received(1).Reset();
     }
     
-    [Fact(DisplayName = "【正常系】未保存の変更があり、ConfirmSaveでCancelを選択した場合、何もせずに終了すること")]
-    public void NewTextFileCommand_DirtyAndConfirmCancel_ShouldExitWithoutAnyAction()
+    [Fact(DisplayName = "【正常系】Execute:未保存の変更があり、ConfirmSaveでCancelを選択した場合、何もせずに終了すること")]
+    public void Execute_DirtyAndConfirmCancel_ShouldExitWithoutAnyAction()
     {
         Document.IsDirty.Returns(new ReactiveProperty<bool>(true));
-        Document.FileNameWithoutExtension.Returns(new ReactiveProperty<string>("newfile"));
 
         DialogService.ShowConfirmSave(Arg.Any<string>()).Returns(new DialogResult(ButtonResult.Cancel));
 
-        var command = new NewTextFileCommand
+        var command = new ExitCommand
         {
             EditorService = EditorService,
             DialogService = DialogService,
-            SaveTextFileCommand = SaveTextFileCommand
+            SaveAsTextFileCommand = SaveAsTextFileCommand
         };
 
         command.Execute(null);
@@ -112,24 +116,22 @@ public class NewTextFileCommandTests
         DialogService.Received(1).ShowConfirmSave(Arg.Any<string>());
         EditorService.DidNotReceiveWithAnyArgs().SaveText(string.Empty);
         DialogService.DidNotReceiveWithAnyArgs().ShowSaveFile();
-        EditorService.DidNotReceiveWithAnyArgs().Reset();
     }
-
-    [Fact(DisplayName = "【正常系】未保存の変更があり、SaveFileでCancelを選択した場合、SaveTextとResetを呼び出さずに終了すること")]
-    public void Execute_DirtyAndSaveFileCancel_ShouldExitWithoutSaveTextAndReset()
+    
+    [Fact(DisplayName = "【正常系】Execute:未保存の変更があり、SaveFileでCancelを選択した場合、SaveTextを呼び出さずに終了すること")]
+    public void Execute_DirtyAndSaveFileCancel_ShouldExitWithoutSaveText()
     {
         Document.IsDirty.Returns(new ReactiveProperty<bool>(true));
-        Document.FilePath.Returns(new ReactiveProperty<string>(string.Empty));
-        Document.FileNameWithoutExtension.Returns(new ReactiveProperty<string>("newfile"));
+        Document.FilePath.Returns(new ReactiveProperty<string>(""));
 
         DialogService.ShowConfirmSave(Arg.Any<string>()).Returns(new DialogResult(ButtonResult.Yes));
         DialogService.ShowSaveFile().Returns(new DialogResult(ButtonResult.Cancel));
 
-        var command = new NewTextFileCommand
+        var command = new ExitCommand
         {
             EditorService = EditorService,
             DialogService = DialogService,
-            SaveTextFileCommand = SaveTextFileCommand
+            SaveAsTextFileCommand = SaveAsTextFileCommand
         };
 
         command.Execute(null);
@@ -137,6 +139,5 @@ public class NewTextFileCommandTests
         DialogService.Received(1).ShowConfirmSave(Arg.Any<string>());
         DialogService.Received(1).ShowSaveFile();
         EditorService.DidNotReceiveWithAnyArgs().SaveText(string.Empty);
-        EditorService.DidNotReceiveWithAnyArgs().Reset();
     }
 }
