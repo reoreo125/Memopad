@@ -23,7 +23,7 @@ public class FontDialogViewModel : BindableBase, IDialogAware, IDisposable
             DialogService.ShowFontNotFound("その名前のフォントはありません。\nフォント一覧からフォントを選んでください。");
             return;
         }
-        if (FontStyles.Select(value => value.Name).Contains(FontStyleInfo.Value.Name) is not true)
+        if (FontStyleInfo.Value is null || FontStyles.Select(value => value.Name).Contains(FontStyleInfo.Value.Name) is not true)
         {
             DialogService.ShowFontNotFound("そのスタイルでは、このフォントを利用できません。\nスタイル一覧からスタイルを選んでください。");
             return;
@@ -39,9 +39,9 @@ public class FontDialogViewModel : BindableBase, IDialogAware, IDisposable
     public List<string> FontNames { get; }
     public BindableReactiveProperty<string> ListBoxFontName { get; }
 
-    public BindableReactiveProperty<FontStyleInfo> FontStyleInfo { get; }
+    public BindableReactiveProperty<FontStyleInfo?> FontStyleInfo { get; }
     public ObservableCollection<FontStyleInfo> FontStyles { get; }
-    public BindableReactiveProperty<FontStyleInfo> ListBoxFontStyleInfo { get; }
+    public BindableReactiveProperty<FontStyleInfo?> ListBoxFontStyleInfo { get; }
 
     public BindableReactiveProperty<string> Size { get; }
     public BindableReactiveProperty<string?> ListBoxSize { get; }
@@ -108,7 +108,6 @@ public class FontDialogViewModel : BindableBase, IDialogAware, IDisposable
                     else
                     {
                         var styleInfo = styles.FirstOrDefault(value => value.Name == SettingsService.Settings.FontStyleName.Value);
-                        if (styleInfo is null) styleInfo = styles.First();
                         ListBoxFontStyleInfo.Value = styleInfo;
                     }
                 })
