@@ -8,10 +8,10 @@ namespace Reoreo125.Memopad.Models.TextProcessing;
 public class Paginator : DocumentPaginator
 {
     private readonly DocumentPaginator _basePaginator;
-    private readonly PageSettings _settings;
+    private readonly IPageSettings _settings;
     private readonly string _filePath;
 
-    public Paginator(DocumentPaginator basePaginator, PageSettings settings, string filePath)
+    public Paginator(DocumentPaginator basePaginator, IPageSettings settings, string filePath)
     {
         _basePaginator = basePaginator;
         _settings = settings;

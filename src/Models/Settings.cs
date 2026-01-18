@@ -18,7 +18,7 @@ public interface ISettings
     public ReactiveProperty<bool> ShowStatusBar { get; }
     public ReactiveProperty<int> ZoomLevel { get; }
 
-    public PageSettings Page { get; }
+    public IPageSettings Page { get; }
 }
 [JsonObject(MemberSerialization.OptIn)]
 public class Settings : ISettings
@@ -49,7 +49,7 @@ public class Settings : ISettings
 
     // PageSettings
     [JsonProperty]
-    public PageSettings Page { get; } = new();
+    public IPageSettings Page { get; } = new PageSettings();
 
     [JsonConstructor]
     public Settings()

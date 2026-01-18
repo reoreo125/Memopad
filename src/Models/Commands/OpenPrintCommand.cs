@@ -32,7 +32,7 @@ public class OpenPrintCommand : CommandBase, IOpenPrintCommand
         if (printdialogResult.Result is not ButtonResult.OK) return;
 
         var dialog = printdialogResult.Parameters.GetValue<PrintDialog>("printdialog");
-        FlowDocument doc = new FlowDocument();
+        FlowDocument doc = new();
 
         double mmToDpi = 96.0 / 25.4;
         doc.PagePadding = new Thickness(

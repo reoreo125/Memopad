@@ -129,7 +129,7 @@ public class SettingsService : ISettingsService, IDisposable
                 }
             }
             // PageSettings などのネストされた「設定クラス」の場合、さらに再帰させる
-            else if (prop.PropertyType.IsClass)
+            else if (prop.PropertyType.IsClass || prop.PropertyType.IsInterface)
             {
                 var nestedObject = prop.GetValue(target);
                 if (nestedObject != null)
