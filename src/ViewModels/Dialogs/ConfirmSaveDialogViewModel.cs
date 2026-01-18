@@ -9,7 +9,6 @@ public class ConfirmSaveDialogViewModel : BindableBase, IDialogAware
 
     public DialogCloseListener RequestClose { get; }
 
-    // 各コマンド
     public DelegateCommand SaveCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Yes)));
     public DelegateCommand DontSaveCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.No)));
     public DelegateCommand CancelCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));

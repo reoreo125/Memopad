@@ -6,7 +6,7 @@ namespace Reoreo125.Memopad.ViewModels.Dialogs;
 
 public class GoToLineDialogViewModel : BindableBase, IDialogAware
 {
-    public string? Title => $"行へ移動";
+    public string? Title => "行へ移動";
     public DialogCloseListener RequestClose { get; }
 
     public DelegateCommand GoCommand => new(() =>

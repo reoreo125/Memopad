@@ -10,7 +10,6 @@ public class FindDialogViewModel : BindableBase, IDialogAware, IDisposable
 
     public DialogCloseListener RequestClose { get; }
 
-    // 各コマンド
     public DelegateCommand FindCommand => new(() =>
     {
         if (IsSearchUp.Value) FindPrevCommand!.Execute(null);

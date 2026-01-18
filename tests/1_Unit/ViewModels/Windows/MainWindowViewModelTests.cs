@@ -3,7 +3,6 @@ using R3;
 using Reoreo125.Memopad.Models;
 using Reoreo125.Memopad.ViewModels.Windows;
 using System.Windows;
-using System.Threading.Tasks;
 
 namespace Reoreo125.Memopad.Tests.Unit.ViewModels.Windows;
 
@@ -87,7 +86,7 @@ public class MainWindowViewModelTests
         Assert.Equal("Initial Content", EditorService.Document.Text.Value);
 
         // デバウンス期間（500ms）より長く待つ
-        await Task.Delay(Defaults.TextBoxDebounce + 50);
+        await Task.Delay(Defaults.TextBoxDebounce + 50, TestContext.Current.CancellationToken);
 
         Assert.Equal("updated", EditorService.Document.Text.Value);
         

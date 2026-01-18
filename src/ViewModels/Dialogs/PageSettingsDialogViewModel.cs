@@ -13,7 +13,6 @@ public class PageSettingsDialogViewModel : BindableBase, IDialogAware, IDisposab
     public DelegateCommand CancelCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
     public DelegateCommand OkCommand => new(() =>
     {
-        // OKクリックで保存
         SettingsService.Settings.Page.PaperSizeName.Value = PageSizeName.Value;
         SettingsService.Settings.Page.InputBin.Value = InputBin.Value;
         SettingsService.Settings.Page.Orientation.Value = Orientation.Value;
