@@ -15,6 +15,6 @@ public class OpenFontCommand : CommandBase, IOpenFontCommand
     {
         if (DialogService is null) throw new Exception(nameof(DialogService));
 
-        var result = DialogService.ShowFont();
+        DialogService.ShowFont();
     }
 }

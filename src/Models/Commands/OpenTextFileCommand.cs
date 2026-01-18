@@ -14,8 +14,7 @@ public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
     public IDialogService? MemopadDialogService { get; set; }
     [Dependency]
     public ISettingsService? SettingsService { get; set; }
-    //[Dependency]
-    //public SaveTextFileCommand? SaveTextFileCommand { get; set; }
+
     public override bool CanExecute(object? parameter) => true;
 
     public override void Execute(object? parameter)

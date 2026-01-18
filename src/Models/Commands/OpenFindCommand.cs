@@ -15,6 +15,6 @@ public class OpenFindCommand : CommandBase, IOpenFindCommand
     {
         if (DialogService is null) throw new Exception(nameof(DialogService));
 
-        var result = DialogService.ShowFind();
+        DialogService.ShowFind();
     }
 }

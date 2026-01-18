@@ -14,6 +14,6 @@ public class OpenPageSettingsCommand : CommandBase, IOpenPageSettingsCommand
     {
         if (DialogService is null) throw new Exception(nameof(DialogService));
 
-        var result = DialogService.ShowPageSettings();
+        DialogService.ShowPageSettings();
     }
 }

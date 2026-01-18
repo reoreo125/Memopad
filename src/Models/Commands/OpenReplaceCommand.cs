@@ -15,6 +15,6 @@ public class OpenReplaceCommand : CommandBase, IOpenReplaceCommand
     {
         if (DialogService is null) throw new Exception(nameof(DialogService));
 
-        var result = DialogService.ShowReplace();
+        DialogService.ShowReplace();
     }
 }

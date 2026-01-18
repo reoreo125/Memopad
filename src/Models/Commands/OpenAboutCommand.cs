@@ -14,6 +14,6 @@ public class OpenAboutCommand : CommandBase, IOpenAboutCommand
     {
         if (DialogService is null) throw new Exception(nameof(DialogService));
 
-        var result = DialogService.ShowAbout();
+        DialogService.ShowAbout();
     }
 }
