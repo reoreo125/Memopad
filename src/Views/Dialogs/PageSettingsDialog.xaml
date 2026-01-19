@@ -8,6 +8,8 @@
              xmlns:converters="clr-namespace:Reoreo125.Memopad.Views.Converters"
              xmlns:sp="clr-namespace:System.Printing;assembly=ReachFramework"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviors="clr-namespace:Reoreo125.Memopad.Views.Behaviors"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -88,25 +90,41 @@
                                     <Label Content="左(_L):"/>
                                     <TextBox Height="22"
                                              VerticalContentAlignment="Center"
-                                             Text="{Binding MarginLeft.Value}"/>
+                                             Text="{Binding MarginLeft.Value}">
+                                        <i:Interaction.Behaviors>
+                                            <behaviors:NumericInputBehavior />
+                                        </i:Interaction.Behaviors>
+                                    </TextBox>
                                 </DockPanel>
                                 <DockPanel VerticalAlignment="Center">
                                     <Label Content="右(_R):"/>
                                     <TextBox Height="22"
                                              VerticalContentAlignment="Center"
-                                             Text="{Binding MarginRight.Value}"/>
+                                             Text="{Binding MarginRight.Value}">
+                                        <i:Interaction.Behaviors>
+                                            <behaviors:NumericInputBehavior />
+                                        </i:Interaction.Behaviors>
+                                    </TextBox>
                                 </DockPanel>
                                 <DockPanel VerticalAlignment="Center">
                                     <Label Content="上(_T):"/>
                                     <TextBox Height="22"
                                              VerticalContentAlignment="Center"
-                                             Text="{Binding MarginTop.Value}"/>
+                                             Text="{Binding MarginTop.Value}">
+                                        <i:Interaction.Behaviors>
+                                            <behaviors:NumericInputBehavior />
+                                        </i:Interaction.Behaviors>
+                                    </TextBox>
                                 </DockPanel>
                                 <DockPanel VerticalAlignment="Center">
                                     <Label Content="下(_B):"/>
                                     <TextBox Height="22"
                                              VerticalContentAlignment="Center"
-                                             Text="{Binding MarginBottom.Value}"/>
+                                             Text="{Binding MarginBottom.Value}">
+                                        <i:Interaction.Behaviors>
+                                            <behaviors:NumericInputBehavior />
+                                        </i:Interaction.Behaviors>
+                                    </TextBox>
                                 </DockPanel>
                             </UniformGrid>
                         </GroupBox>

@@ -1,4 +1,7 @@
 using System.Printing;
+using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Input;
 using R3;
 using Reoreo125.Memopad.Models;
 
@@ -151,6 +154,7 @@ public class PageSettingsDialogViewModel : BindableBase, IDialogAware, IDisposab
             })
             .AddTo(ref _disposableCollection);
     }
+
     public void OnDialogOpened(IDialogParameters parameters) { }
     public bool CanCloseDialog() => true;
     public void OnDialogClosed() { }

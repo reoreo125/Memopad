@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:Reoreo125.Memopad.Views.Dialogs"
              xmlns:converters="clr-namespace:Reoreo125.Memopad.Views.Converters"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviors="clr-namespace:Reoreo125.Memopad.Views.Behaviors"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
     <prism:Dialog.WindowStyle>
@@ -42,10 +44,11 @@
                              Height="22"
                              VerticalContentAlignment="Center"
                              Text="{Binding Size.Value, UpdateSourceTrigger=PropertyChanged}"
-                             PreviewTextInput="NumberOnly_PreviewTextInput"
-                             PreviewKeyDown="NumberOnly_PreviewKeyDown"
-                             InputMethod.IsInputMethodEnabled="False"
-                             MaxLength="3"/>
+                             MaxLength="3">
+                        <i:Interaction.Behaviors>
+                            <behaviors:NumericInputBehavior />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
                     <ListBox Height="118"
                              ItemsSource="{Binding PresetSizes}" 
                              SelectedItem="{Binding ListBoxSize.Value}"

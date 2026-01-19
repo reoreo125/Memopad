@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="1_Unit\ViewModels\Dialogs\" />
     <Folder Include="1_Unit\ViewModels\Windows\" />
     <Folder Include="2_Integration\" />
   </ItemGroup>
