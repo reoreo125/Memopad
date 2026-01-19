@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Input;
 using R3;
 using Reoreo125.Memopad.Models;
+using IDialogService = Reoreo125.Memopad.Models.IDialogService;
 
 namespace Reoreo125.Memopad.ViewModels.Dialogs;
 
@@ -16,6 +17,16 @@ public class PageSettingsDialogViewModel : BindableBase, IDialogAware, IDisposab
     public DelegateCommand CancelCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
     public DelegateCommand OkCommand => new(() =>
     {
+        // TODO: 暫定でDefaults.MarginMaxで制限。将来的にプリンターの最大余白を取得して設定する。
+        if(Defaults.MarginMax < MarginLeft.Value ||
+           Defaults.MarginMax < MarginRight.Value ||
+           Defaults.MarginMax < MarginTop.Value ||
+           Defaults.MarginMax < MarginBottom.Value)
+        {
+            DialogService.ShowWarning($"{Title}", $"余白が重なるか、または用紙をはみ出します。\n余白サイズを入力し直してください。");
+            return;
+        }
+
         SettingsService.Settings.Page.PaperSizeName.Value = PageSizeName.Value;
         SettingsService.Settings.Page.InputBin.Value = InputBin.Value;
         SettingsService.Settings.Page.Orientation.Value = Orientation.Value;
@@ -90,13 +101,16 @@ public class PageSettingsDialogViewModel : BindableBase, IDialogAware, IDisposab
     private readonly IEditorService _editorService;
     protected ISettingsService SettingsService => _settingsService;
     private readonly ISettingsService _settingsService;
+    public IDialogService DialogService => _dialogService;
+    private readonly IDialogService _dialogService;
 
     private DisposableBag _disposableCollection = new();
 
-    public PageSettingsDialogViewModel(IEditorService editorService, ISettingsService settingsService)
+    public PageSettingsDialogViewModel(IEditorService editorService, ISettingsService settingsService, IDialogService dialogService)
     {
         _editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
         _settingsService = settingsService ?? throw new ArgumentNullException(nameof(SettingsService));
+        _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
 
         PageSizeName = new(SettingsService.Settings.Page.PaperSizeName.Value);
 

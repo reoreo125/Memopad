@@ -22,7 +22,7 @@ public class ReplaceAllCommand : CommandBase, IReplaceAllCommand
 
         if(result is false)
         {
-            DialogService.ShowNotFound(EditorService.Document.SearchText.Value);
+            DialogService.ShowInformation($"{Defaults.ApplicationName}", $"\"{EditorService.Document.SearchText.Value}\" が見つかりません。");
         }
     }
 }

@@ -43,8 +43,8 @@ public class ReplaceNextCommandTests
         Assert.True(canExecute);
     }
 
-    [Fact(DisplayName = "【正常系】Execute: ReplaceNextがtrueを返す場合、ShowNotFoundは呼ばれないこと")]
-    public void Execute_ReplaceNextReturnsTrue_ShouldNotCallShowNotFound()
+    [Fact(DisplayName = "【正常系】Execute: ReplaceNextがtrueを返す場合、ShowInformationは呼ばれないこと")]
+    public void Execute_ReplaceNextReturnsTrue_ShouldNotCallShowInformation()
     {
         EditorService.ReplaceNext().Returns(true);
         var command = new ReplaceNextCommand { DialogService = DialogService, EditorService = EditorService };
@@ -52,11 +52,11 @@ public class ReplaceNextCommandTests
         command.Execute(null);
 
         EditorService.Received(1).ReplaceNext();
-        DialogService.DidNotReceiveWithAnyArgs().ShowNotFound(string.Empty);
+        DialogService.DidNotReceiveWithAnyArgs().ShowInformation(string.Empty, string.Empty);
     }
     
-    [Fact(DisplayName = "【正常系】Execute: ReplaceNextがfalseを返す場合、ShowNotFoundが呼ばれること")]
-    public void Execute_ReplaceNextReturnsFalse_ShouldCallShowNotFound()
+    [Fact(DisplayName = "【正常系】Execute: ReplaceNextがfalseを返す場合、ShowInformationが呼ばれること")]
+    public void Execute_ReplaceNextReturnsFalse_ShouldCallShowInformation()
     {
         Document.SearchText.Value = "test";
         EditorService.ReplaceNext().Returns(false);
@@ -65,6 +65,6 @@ public class ReplaceNextCommandTests
         command.Execute(null);
 
         EditorService.Received(1).ReplaceNext();
-        DialogService.Received(1).ShowNotFound("test");
+        DialogService.Received(1).ShowInformation("Memopad", $"\"{Document.SearchText.Value}\" が見つかりません。");
     }
 }

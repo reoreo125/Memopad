@@ -17,15 +17,14 @@ public class FontDialogViewModel : BindableBase, IDialogAware, IDisposable
     public DelegateCommand CancelCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
     public DelegateCommand OkCommand => new(() =>
     {
-        // もし選択したフォント名がフォントリストになかったらダイアログを出してOKさせない
         if(FontNames.Contains(FontName.Value) is not true)
         {
-            DialogService.ShowFontNotFound("その名前のフォントはありません。\nフォント一覧からフォントを選んでください。");
+            DialogService.ShowInformation($"{Title}", "その名前のフォントはありません。\nフォント一覧からフォントを選んでください。");
             return;
         }
         if (FontStyleInfo.Value is null || FontStyles.Select(value => value.Name).Contains(FontStyleInfo.Value.Name) is not true)
         {
-            DialogService.ShowFontNotFound("そのスタイルでは、このフォントを利用できません。\nスタイル一覧からスタイルを選んでください。");
+            DialogService.ShowInformation($"{Title}", "そのスタイルでは、このフォントを利用できません。\nスタイル一覧からスタイルを選んでください。");
             return;
         }
         SettingsService.Settings.FontFamilyName.Value = FontName.Value;

@@ -14,7 +14,7 @@ public class GoToLineDialogViewModel : BindableBase, IDialogAware
         var result = EditorService.GoToLine(LineIndex.Value);
         if(result is false)
         {
-            DialogService.ShowLineOutOfBounds();
+            DialogService.ShowInformation($"{Defaults.ApplicationName} - 行に移動", "指定した行番号は行の総数を超えています");
             return;
         }
 

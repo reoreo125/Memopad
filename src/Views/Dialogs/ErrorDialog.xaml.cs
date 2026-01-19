@@ -2,9 +2,9 @@ using System.Windows.Controls;
 
 namespace Reoreo125.Memopad.Views.Dialogs;
 
-public partial class FontNotFoundDialog : UserControl
+public partial class ErrorDialog : UserControl
 {
-    public FontNotFoundDialog()
+    public ErrorDialog()
     {
         InitializeComponent();
     }

@@ -85,7 +85,7 @@ public class EditorServiceTests
         }
 
         Assert.False(notificationResult);
-        dialogService.Received(1).ShowFileLoadError();
+        dialogService.Received(1).ShowError(Defaults.ApplicationName, "ファイルの読み込みに失敗しました。");
         Assert.Equal("Old Content", editorService.Document.Text.Value);
     }
     #endregion
@@ -124,7 +124,7 @@ public class EditorServiceTests
 
         editorService.SaveText(saveResult.FilePath);
 
-        dialogService.Received(1).ShowFileSaveError();
+        dialogService.Received(1).ShowError(Defaults.ApplicationName, "ファイルの書き込みに失敗しました。");
     }
     #endregion
 

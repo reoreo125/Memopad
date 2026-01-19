@@ -43,8 +43,8 @@ public class FindNextCommandTests
         Assert.True(canExecute);
     }
 
-    [Fact(DisplayName = "【正常系】Execute: FindNextがtrueを返す場合、ShowNotFoundは呼ばれないこと")]
-    public void Execute_FindNextReturnsTrue_ShouldNotCallShowNotFound()
+    [Fact(DisplayName = "【正常系】Execute: FindNextがtrueを返す場合、ShowInformationは呼ばれないこと")]
+    public void Execute_FindNextReturnsTrue_ShouldNotCallShowInformation()
     {
         EditorService.FindNext().Returns(true);
         var command = new FindNextCommand { DialogService = DialogService, EditorService = EditorService };
@@ -52,11 +52,11 @@ public class FindNextCommandTests
         command.Execute(null);
 
         EditorService.Received(1).FindNext();
-        DialogService.DidNotReceiveWithAnyArgs().ShowNotFound(string.Empty);
+        DialogService.DidNotReceiveWithAnyArgs().ShowInformation(string.Empty, string.Empty);
     }
     
-    [Fact(DisplayName = "【正常系】Execute: FindNextがfalseを返す場合、ShowNotFoundが呼ばれること")]
-    public void Execute_FindNextReturnsFalse_ShouldCallShowNotFound()
+    [Fact(DisplayName = "【正常系】Execute: FindNextがfalseを返す場合、ShowInformationが呼ばれること")]
+    public void Execute_FindNextReturnsFalse_ShouldCallShowInformation()
     {
         Document.SearchText.Value = "test";
         EditorService.FindNext().Returns(false);
@@ -65,6 +65,6 @@ public class FindNextCommandTests
         command.Execute(null);
 
         EditorService.Received(1).FindNext();
-        DialogService.Received(1).ShowNotFound("test");
+        DialogService.Received(1).ShowInformation("Memopad", $"\"{Document.SearchText.Value}\" が見つかりません。");
     }
 }

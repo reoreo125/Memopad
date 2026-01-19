@@ -102,7 +102,7 @@ public sealed class EditorService : IEditorService
 
         if (result.IsSuccess is false)
         {
-            DialogService.ShowFileLoadError();
+            DialogService.ShowError(Defaults.ApplicationName, "ファイルの読み込みに失敗しました。");
             return;
         }
 
@@ -133,7 +133,7 @@ public sealed class EditorService : IEditorService
 
         if (result.IsSuccess is false)
         {
-            DialogService.ShowFileSaveError();
+            DialogService.ShowError(Defaults.ApplicationName, "ファイルの書き込みに失敗しました。");
             return;
         }
 

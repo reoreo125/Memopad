@@ -1,18 +1,20 @@
-using R3;
+using Reoreo125.Memopad.Models;
 
 namespace Reoreo125.Memopad.ViewModels.Dialogs;
 
-public class FontNotFoundDialogViewModel : BindableBase, IDialogAware
+public class InformationDialogViewModel : BindableBase, IDialogAware
 {
-    public string? Title => "フォント";
-    public BindableReactiveProperty<string> Message { get; } = new();
+    public string? Title { get; set; }
+    public string? Message { get; set; }
+
     public DialogCloseListener RequestClose { get; }
 
     public DelegateCommand OkCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK)));
 
     public void OnDialogOpened(IDialogParameters parameters)
     {
-        Message.Value = parameters.GetValue<string>("message");
+        Title = parameters.GetValue<string>("title");
+        Message = parameters.GetValue<string>("message");
     }
     public bool CanCloseDialog() => true;
     public void OnDialogClosed() { }

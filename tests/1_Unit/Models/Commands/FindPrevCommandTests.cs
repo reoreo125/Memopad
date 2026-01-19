@@ -43,8 +43,8 @@ public class FindPrevCommandTests
         Assert.True(canExecute);
     }
 
-    [Fact(DisplayName = "【正常系】Execute: FindPrevがtrueを返す場合、ShowNotFoundは呼ばれないこと")]
-    public void Execute_FindPrevReturnsTrue_ShouldNotCallShowNotFound()
+    [Fact(DisplayName = "【正常系】Execute: FindPrevがtrueを返す場合、ShowInformationは呼ばれないこと")]
+    public void Execute_FindPrevReturnsTrue_ShouldNotCallShowInformation()
     {
         EditorService.FindPrev().Returns(true);
         var command = new FindPrevCommand { DialogService = DialogService, EditorService = EditorService };
@@ -52,11 +52,11 @@ public class FindPrevCommandTests
         command.Execute(null);
 
         EditorService.Received(1).FindPrev();
-        DialogService.DidNotReceiveWithAnyArgs().ShowNotFound(string.Empty);
+        DialogService.DidNotReceiveWithAnyArgs().ShowInformation(string.Empty, string.Empty);
     }
     
-    [Fact(DisplayName = "【正常系】Execute: FindPrevがfalseを返す場合、ShowNotFoundが呼ばれること")]
-    public void Execute_FindPrevReturnsFalse_ShouldCallShowNotFound()
+    [Fact(DisplayName = "【正常系】Execute: FindPrevがfalseを返す場合、ShowInformationが呼ばれること")]
+    public void Execute_FindPrevReturnsFalse_ShouldCallShowInformation()
     {
         Document.SearchText.Value = "test";
         EditorService.FindPrev().Returns(false);
@@ -65,6 +65,6 @@ public class FindPrevCommandTests
         command.Execute(null);
 
         EditorService.Received(1).FindPrev();
-        DialogService.Received(1).ShowNotFound("test");
+        DialogService.Received(1).ShowInformation("Memopad", $"\"{Document.SearchText.Value}\" が見つかりません。");
     }
 }

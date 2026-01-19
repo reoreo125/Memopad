@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using Reoreo125.Memopad.Views.Dialogs;
-using Reoreo125.Memopad.Views.Windows;
 using IPrismDialogService = Prism.Dialogs.IDialogService;
 using PrismDialogService = Prism.Dialogs.DialogService;
 namespace Reoreo125.Memopad.Models;
@@ -15,16 +14,15 @@ public interface IDialogService
     public IDialogResult? ShowSaveFile();
     public IDialogResult? ShowPrint();
     public IDialogResult? ShowFind();
-    public IDialogResult? ShowNotFound(string searchText);
     public IDialogResult? ShowAbout();
     public IDialogResult? ShowGoToLine(int currentLineIndex);
-    public IDialogResult? ShowLineOutOfBounds();
     public IDialogResult? ShowReplace();
     public IDialogResult? ShowPageSettings();
     public IDialogResult? ShowFont();
-    public IDialogResult? ShowFontNotFound(string message);
-    public IDialogResult? ShowFileLoadError();
-    public IDialogResult? ShowFileSaveError();
+
+    public IDialogResult? ShowInformation(string title, string message);
+    public IDialogResult? ShowWarning(string title, string message);
+    public IDialogResult? ShowError(string title, string message);
 }
 public class DialogService : IDialogService
 {
@@ -121,21 +119,6 @@ public class DialogService : IDialogService
         return dialogResult;
     }
 
-    public IDialogResult? ShowNotFound(string searchText)
-    {
-        var parameters = new DialogParameters
-        {
-            { "message", $"\"{searchText}\" が見つかりません。" }
-        };
-
-        IDialogResult? result = null;
-        PrismDialogService.ShowDialog(
-            nameof(NotFoundDialog),
-            parameters,
-            _result => result = _result);
-
-        return result;
-    }
     public IDialogResult? ShowGoToLine(int currentLineIndex)
     {
         var parameters = new DialogParameters
@@ -150,32 +133,20 @@ public class DialogService : IDialogService
 
         return result;
     }
-    public IDialogResult? ShowFontNotFound(string message)
-    {
-        var parameters = new DialogParameters
-        {
-            { "message", message },
-        };
-        IDialogResult? result = null;
-        PrismDialogService.ShowDialog(
-            nameof(FontNotFoundDialog),
-            parameters,
-            _result => result = _result);
-
-        return result;
-    }
 
     // ShowModelessWithoutParameters
     public IDialogResult? ShowFind() => ShowModelessWithoutParameters(typeof(FindDialog));
     public IDialogResult? ShowReplace() => ShowModelessWithoutParameters(typeof(ReplaceDialog));
 
     // ShowDialogWithoutParameters
-    public IDialogResult? ShowLineOutOfBounds() => ShowModalWithoutParameters(typeof(LineOutOfBoundsDialog));
     public IDialogResult? ShowAbout() => ShowModalWithoutParameters(typeof(AboutDialog));
     public IDialogResult? ShowPageSettings() => ShowModalWithoutParameters(typeof(PageSettingsDialog));
     public IDialogResult? ShowFont() => ShowModalWithoutParameters(typeof(FontDialog));
-    public IDialogResult? ShowFileLoadError() => ShowModalWithoutParameters(typeof(FileLoadErrorDialog));
-    public IDialogResult? ShowFileSaveError() => ShowModalWithoutParameters(typeof(FileSaveErrorDialog));
+
+    //ShowModalWithTitleAndMessage
+    public IDialogResult? ShowInformation(string title, string message) => ShowModalWithTitleAndMessage(typeof(InformationDialog), title, message);
+    public IDialogResult? ShowWarning(string title, string message) => ShowModalWithTitleAndMessage(typeof(WarningDialog), title, message);
+    public IDialogResult? ShowError(string title, string message) => ShowModalWithTitleAndMessage(typeof(ErrorDialog), title, message);
 
     private IDialogResult? ShowModalWithoutParameters(Type dialogType)
     {
@@ -200,6 +171,20 @@ public class DialogService : IDialogService
             new DialogParameters(),
             _result => result = _result);
 
+        return result;
+    }
+    public IDialogResult? ShowModalWithTitleAndMessage(Type dialogType, string title, string message)
+    {
+        var parameters = new DialogParameters
+        {
+            { "title", title },
+            { "message", message }
+        };
+        IDialogResult? result = null;
+        PrismDialogService.ShowDialog(
+            dialogType.Name,
+            parameters,
+            _result => result = _result);
         return result;
     }
 }

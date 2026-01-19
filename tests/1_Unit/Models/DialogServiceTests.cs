@@ -45,28 +45,6 @@ public class DialogServiceTests
     }
     #endregion
 
-    #region ShowNotFound
-    [Fact(DisplayName = "【正常系】ShowNotFound: ダイアログが表示されること")]
-    public void ShowNotFound_ShouldShowDialog()
-    {
-        var prismDialogService = Substitute.For<IPrismDialogService>();
-        var expectedResult = new DialogResult(ButtonResult.OK);
-        prismDialogService.WhenForAnyArgs(x => x.ShowDialog(default, default, default))
-            .Do(callInfo =>
-            {
-                var callback = callInfo.ArgAt<dynamic>(2);
-                callback?.Invoke(expectedResult);
-            });
-
-        var dialogService = new DialogService { PrismDialogService = prismDialogService };
-        var actualResult = dialogService.ShowNotFound("test");
-
-        prismDialogService.ReceivedWithAnyArgs(1).ShowDialog(default, default, default);
-        Assert.NotNull(actualResult);
-        Assert.Equal(expectedResult, actualResult);
-    }
-    #endregion
-
     #region ShowGoToLine
     [Fact(DisplayName = "【正常系】ShowGoToLine: ダイアログが表示されること")]
     public void ShowGoToLine_ShouldShowDialog()
@@ -82,50 +60,6 @@ public class DialogServiceTests
 
         var dialogService = new DialogService { PrismDialogService = prismDialogService };
         var actualResult = dialogService.ShowGoToLine(1);
-
-        prismDialogService.ReceivedWithAnyArgs(1).ShowDialog(default, default, default);
-        Assert.NotNull(actualResult);
-        Assert.Equal(expectedResult, actualResult);
-    }
-    #endregion
-
-    #region ShowFontNotFound
-    [Fact(DisplayName = "【正常系】ShowFontNotFound: ダイアログが表示されること")]
-    public void ShowFontNotFound_ShouldShowDialog()
-    {
-        var prismDialogService = Substitute.For<IPrismDialogService>();
-        var expectedResult = new DialogResult(ButtonResult.OK);
-        prismDialogService.WhenForAnyArgs(x => x.ShowDialog(default, default, default))
-            .Do(callInfo =>
-            {
-                var callback = callInfo.ArgAt<dynamic>(2);
-                callback?.Invoke(expectedResult);
-            });
-
-        var dialogService = new DialogService { PrismDialogService = prismDialogService };
-        var actualResult = dialogService.ShowFontNotFound("test");
-
-        prismDialogService.ReceivedWithAnyArgs(1).ShowDialog(default, default, default);
-        Assert.NotNull(actualResult);
-        Assert.Equal(expectedResult, actualResult);
-    }
-    #endregion
-
-    #region ShowLineOutOfBounds
-    [Fact(DisplayName = "【正常系】ShowLineOutOfBounds: ダイアログが表示されること")]
-    public void ShowLineOutOfBounds_ShouldShowDialog()
-    {
-        var prismDialogService = Substitute.For<IPrismDialogService>();
-        var expectedResult = new DialogResult(ButtonResult.OK);
-        prismDialogService.WhenForAnyArgs(x => x.ShowDialog(default, default, default))
-            .Do(callInfo =>
-            {
-                var callback = callInfo.ArgAt<dynamic>(2);
-                callback?.Invoke(expectedResult);
-            });
-
-        var dialogService = new DialogService { PrismDialogService = prismDialogService };
-        var actualResult = dialogService.ShowLineOutOfBounds();
 
         prismDialogService.ReceivedWithAnyArgs(1).ShowDialog(default, default, default);
         Assert.NotNull(actualResult);
@@ -192,50 +126,6 @@ public class DialogServiceTests
 
         var dialogService = new DialogService { PrismDialogService = prismDialogService };
         var actualResult = dialogService.ShowFont();
-
-        prismDialogService.ReceivedWithAnyArgs(1).ShowDialog(default, default, default);
-        Assert.NotNull(actualResult);
-        Assert.Equal(expectedResult, actualResult);
-    }
-    #endregion
-
-    #region ShowFileLoadError
-    [Fact(DisplayName = "【正常系】ShowFileLoadError: ダイアログが表示されること")]
-    public void ShowFileLoadError_ShouldShowDialog()
-    {
-        var prismDialogService = Substitute.For<IPrismDialogService>();
-        var expectedResult = new DialogResult(ButtonResult.OK);
-        prismDialogService.WhenForAnyArgs(x => x.ShowDialog(default, default, default))
-            .Do(callInfo =>
-            {
-                var callback = callInfo.ArgAt<dynamic>(2);
-                callback?.Invoke(expectedResult);
-            });
-
-        var dialogService = new DialogService { PrismDialogService = prismDialogService };
-        var actualResult = dialogService.ShowFileLoadError();
-
-        prismDialogService.ReceivedWithAnyArgs(1).ShowDialog(default, default, default);
-        Assert.NotNull(actualResult);
-        Assert.Equal(expectedResult, actualResult);
-    }
-    #endregion
-
-    #region ShowFileSaveError
-    [Fact(DisplayName = "【正常系】ShowFileSaveError: ダイアログが表示されること")]
-    public void ShowFileSaveError_ShouldShowDialog()
-    {
-        var prismDialogService = Substitute.For<IPrismDialogService>();
-        var expectedResult = new DialogResult(ButtonResult.OK);
-        prismDialogService.WhenForAnyArgs(x => x.ShowDialog(default, default, default))
-            .Do(callInfo =>
-            {
-                var callback = callInfo.ArgAt<dynamic>(2);
-                callback?.Invoke(expectedResult);
-            });
-
-        var dialogService = new DialogService { PrismDialogService = prismDialogService };
-        var actualResult = dialogService.ShowFileSaveError();
 
         prismDialogService.ReceivedWithAnyArgs(1).ShowDialog(default, default, default);
         Assert.NotNull(actualResult);
