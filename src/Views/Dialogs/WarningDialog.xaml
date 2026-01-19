@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Reoreo125.Memopad.Views.Dialogs"
              xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="410"
+             d:DesignWidth="410"
              MaxWidth="410">
     <prism:Dialog.WindowStyle>
         <Style TargetType="Window">
@@ -27,14 +27,17 @@
                         Command="{Binding OkCommand}" />
                 </StackPanel>
             </StatusBarItem>
-
         </StatusBar>
-        <Grid Margin="10">
+        <StackPanel Orientation="Horizontal" Margin="10">
+            <Image Source="{Binding IconSource}" 
+                   Width="32" 
+                   Height="32" 
+                   Margin="10"/>
             <TextBlock Margin="0,20,0,20"
                        FontSize="12"
                        TextWrapping="Wrap"
+                       MaxWidth="320"
                        Text="{Binding Message}" />
-        </Grid>
+        </StackPanel>
     </DockPanel>
-
 </UserControl>
