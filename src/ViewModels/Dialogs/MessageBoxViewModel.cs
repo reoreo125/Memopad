@@ -7,7 +7,20 @@ using System.Windows.Media.Imaging;
 
 namespace Reoreo125.Memopad.ViewModels.Dialogs;
 
-public class InformationDialogViewModel : BindableBase, IDialogAware, IDisposable
+public class InformationDialogViewModel : MessageBoxViewModelBase
+{
+    public InformationDialogViewModel() : base(SystemIcons.Information) {}
+}
+public class ErrorDialogViewModel : MessageBoxViewModelBase
+{
+    public ErrorDialogViewModel() : base(SystemIcons.Error) { }
+}
+public class WarningDialogViewModel : MessageBoxViewModelBase
+{
+    public WarningDialogViewModel() : base(SystemIcons.Warning) { }
+}
+
+public abstract class MessageBoxViewModelBase : BindableBase, IDialogAware, IDisposable
 {
     [DllImport("user32.dll", SetLastError = true)]
     private static extern bool DestroyIcon(IntPtr hIcon);
@@ -21,25 +34,29 @@ public class InformationDialogViewModel : BindableBase, IDialogAware, IDisposabl
 
     public DelegateCommand OkCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK)));
 
-    public InformationDialogViewModel()
+    protected MessageBoxViewModelBase(Icon icon)
     {
-        _iconHandle = SystemIcons.Information.Handle;
+        if (icon == null) throw new ArgumentNullException(nameof(icon));
+        _iconHandle = icon.Handle;
         IconSource = Imaging.CreateBitmapSourceFromHIcon(
             _iconHandle,
             Int32Rect.Empty,
             BitmapSizeOptions.FromEmptyOptions());
     }
 
-    public void OnDialogOpened(IDialogParameters parameters)
+    public virtual void OnDialogOpened(IDialogParameters parameters)
     {
         Title = parameters.GetValue<string>("title");
         Message = parameters.GetValue<string>("message");
     }
-    public bool CanCloseDialog() => true;
-    public void OnDialogClosed()
+
+    public virtual bool CanCloseDialog() => true;
+
+    public virtual void OnDialogClosed()
     {
         Dispose();
     }
+
     public void Dispose()
     {
         if (_iconHandle != IntPtr.Zero)
