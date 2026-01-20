@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:Reoreo125.Memopad"
              xmlns:prism="http://prismlibrary.com/">
     <prism:PrismApplication.Resources>
-
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Views/Dialogs/MessageBoxDialogResource.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </prism:PrismApplication.Resources>
 </prism:PrismApplication>
