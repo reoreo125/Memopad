@@ -214,3 +214,18 @@ public class TextFileService : ITextFileService
     };
 
 }
+
+public record TextFileSaveResult(
+    bool IsSuccess,
+    string FilePath
+);
+
+public record TextFileLoadResult(
+    bool IsSuccess,
+    string FilePath,
+
+    string Content,
+    Encoding Encoding,
+    bool HasBOM,
+    LineEnding LineEnding
+);
