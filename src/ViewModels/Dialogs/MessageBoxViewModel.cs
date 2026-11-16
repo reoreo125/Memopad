@@ -1,5 +1,4 @@
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -20,15 +19,18 @@ public class WarningDialogViewModel : MessageBoxViewModelBase
     public WarningDialogViewModel() : base(SystemIcons.Warning) { }
 }
 
-public abstract class MessageBoxViewModelBase : BindableBase, IDialogAware, IDisposable
+public abstract class MessageBoxViewModelBase : BindableBase, IDialogAware
 {
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool DestroyIcon(IntPtr hIcon);
+    public string? Title { get => _title; set => SetProperty(ref _title, value); }
+    private string? _title;
 
-    public string? Title { get; set; }
-    public string? Message { get; set; }
-    public ImageSource? IconSource { get; set; }
-    private IntPtr _iconHandle = IntPtr.Zero;
+    public string? Message { get => _message; set => SetProperty(ref _message, value); }
+    private string? _message;
+
+    /// <summary>
+    /// 表示するアイコン。コンストラクタで確定するため読み取り専用。
+    /// </summary>
+    public ImageSource? IconSource { get; }
 
     public DialogCloseListener RequestClose { get; }
 
@@ -36,10 +38,13 @@ public abstract class MessageBoxViewModelBase : BindableBase, IDialogAware, IDis
 
     protected MessageBoxViewModelBase(Icon icon)
     {
-        if (icon == null) throw new ArgumentNullException(nameof(icon));
-        _iconHandle = icon.Handle;
+        ArgumentNullException.ThrowIfNull(icon);
+
+        // CreateBitmapSourceFromHIcon はアイコンのビットマップを即時にコピーする。
+        // 引数のアイコン（SystemIcons の共有インスタンス）のハンドルは所有していないため
+        // DestroyIcon での破棄は行わない（破棄すると共有ハンドルが無効化される）。
         IconSource = Imaging.CreateBitmapSourceFromHIcon(
-            _iconHandle,
+            icon.Handle,
             Int32Rect.Empty,
             BitmapSizeOptions.FromEmptyOptions());
 
@@ -54,18 +59,5 @@ public abstract class MessageBoxViewModelBase : BindableBase, IDialogAware, IDis
 
     public virtual bool CanCloseDialog() => true;
 
-    public virtual void OnDialogClosed()
-    {
-        Dispose();
-    }
-
-    public void Dispose()
-    {
-        if (_iconHandle != IntPtr.Zero)
-        {
-            DestroyIcon(_iconHandle);
-            _iconHandle = IntPtr.Zero;
-        }
-        GC.SuppressFinalize(this);
-    }
+    public virtual void OnDialogClosed() { }
 }
