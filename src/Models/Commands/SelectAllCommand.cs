@@ -9,7 +9,7 @@ public class SelectAllCommand : CommandBase, ISelectAllCommand
     [Dependency]
     public IEditorService? EditorService { get; set; }
 
-    public override bool CanExecute(object? parameter) => !string.IsNullOrEmpty(EditorService!.Document.Text.Value);
+    public override bool CanExecute(object? parameter) => EditorService is not null && !string.IsNullOrEmpty(EditorService.Document.Text.Value);
 
     public override void Execute(object? parameter)
     {

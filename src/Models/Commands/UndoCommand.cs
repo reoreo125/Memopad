@@ -9,7 +9,7 @@ public class UndoCommand : CommandBase, IUndoCommand
     [Dependency]
     public IEditorService? EditorService { get; set; }
 
-    public override bool CanExecute(object? parameter) => EditorService!.Document.CanUndo.Value;
+    public override bool CanExecute(object? parameter) => EditorService is not null && EditorService.Document.CanUndo.Value;
 
     public override void Execute(object? parameter)
     {

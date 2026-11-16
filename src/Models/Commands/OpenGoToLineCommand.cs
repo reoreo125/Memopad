@@ -13,7 +13,7 @@ public class OpenGoToLineCommand : CommandBase, IOpenGoToLineCommand
     [Dependency]
     public ISettingsService? SettingsService { get; set; }
 
-    public override bool CanExecute(object? parameter) => !SettingsService!.Settings.IsWordWrap.Value;
+    public override bool CanExecute(object? parameter) => SettingsService is not null && !SettingsService.Settings.IsWordWrap.Value;
 
     public override void Execute(object? parameter)
     {

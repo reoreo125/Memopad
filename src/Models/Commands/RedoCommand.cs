@@ -9,7 +9,7 @@ public class RedoCommand : CommandBase, IRedoCommand
     [Dependency]
     public IEditorService? EditorService { get; set; }
 
-    public override bool CanExecute(object? parameter) => EditorService!.Document.CanRedo.Value;
+    public override bool CanExecute(object? parameter) => EditorService is not null && EditorService.Document.CanRedo.Value;
 
     public override void Execute(object? parameter)
     {

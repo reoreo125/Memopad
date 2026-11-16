@@ -11,7 +11,7 @@ public class FindNextCommand : CommandBase, IFindNextCommand
     [Dependency]
     public IEditorService? EditorService { get; set; }
 
-    public override bool CanExecute(object? parameter) => !string.IsNullOrEmpty(EditorService!.Document.SearchText.Value);
+    public override bool CanExecute(object? parameter) => EditorService is not null && !string.IsNullOrEmpty(EditorService.Document.SearchText.Value);
 
     public override void Execute(object? parameter)
     {
