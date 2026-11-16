@@ -24,4 +24,19 @@ public record FontStyleInfo(string Name, FontStyle Style, FontWeight Weight)
             .Distinct();
         return result;
     }
+
+    /// <summary>
+    /// フォントファミリとスタイル名から対応するスタイル情報を解決する。
+    /// スタイル名が一致しない場合やフォントが存在しない場合でも例外とせず、既定のスタイルへフォールバックする。
+    /// </summary>
+    /// <param name="fontName">フォントファミリ名。</param>
+    /// <param name="styleName">スタイル名。</param>
+    public static FontStyleInfo Resolve(string fontName, string styleName)
+    {
+        var styles = FromFontFamily(fontName);
+        return styles.FirstOrDefault(value => value.Name == styleName)
+            ?? styles.FirstOrDefault(value => Defaults.FontStyleNames.Contains(value.Name))
+            ?? styles.FirstOrDefault()
+            ?? new FontStyleInfo("Regular", FontStyles.Normal, FontWeights.Normal);
+    }
 }

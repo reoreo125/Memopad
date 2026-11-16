@@ -81,11 +81,17 @@ public partial class MainWindowViewModel : BindableBase, IDisposable
         Text = new BindableReactiveProperty<string>(string.Empty);
         FontFamily = SettingsService.Settings.FontFamilyName
             .ToBindableReactiveProperty(Defaults.FontFamilyName);
-        FontStyle = SettingsService.Settings.FontStyleName
-            .Select(name => FontStyleInfo.FromFontFamily(FontFamily.Value).First(value => value.Name == name).Style)
+        FontStyle = Observable.CombineLatest(
+                SettingsService.Settings.FontFamilyName,
+                SettingsService.Settings.FontStyleName,
+                FontStyleInfo.Resolve)
+            .Select(info => info.Style)
             .ToBindableReactiveProperty();
-        FontWeight = SettingsService.Settings.FontStyleName
-            .Select(name => FontStyleInfo.FromFontFamily(FontFamily.Value).First(value => value.Name == name).Weight)
+        FontWeight = Observable.CombineLatest(
+                SettingsService.Settings.FontFamilyName,
+                SettingsService.Settings.FontStyleName,
+                FontStyleInfo.Resolve)
+            .Select(info => info.Weight)
             .ToBindableReactiveProperty();
         FontSize = Observable.Merge(
                 SettingsService.Settings.ZoomLevel.AsUnitObservable(),
@@ -106,6 +112,7 @@ public partial class MainWindowViewModel : BindableBase, IDisposable
             .AddTo(ref _disposableCollection);
         #endregion
     }
+
     public void Dispose()
     {
         _disposableCollection.Dispose();

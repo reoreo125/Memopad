@@ -64,11 +64,8 @@ public class FontDialogViewModel : BindableBase, IDialogAware, IDisposable
 
         // FontStyle
         FontStyles = new();
-        var styles = Models.TextProcessing.FontStyleInfo.FromFontFamily(FontName.Value);
         FontStyleInfo = new();
-        var styleInfo = styles.FirstOrDefault(value => value.Name == SettingsService.Settings.FontStyleName.Value);
-        if (styleInfo is null) styleInfo = styles.First();
-        FontStyleInfo.Value = styleInfo;
+        FontStyleInfo.Value = Models.TextProcessing.FontStyleInfo.Resolve(FontName.Value, SettingsService.Settings.FontStyleName.Value);
         ListBoxFontStyleInfo = new();
         
         FontName.Subscribe(name =>
@@ -166,7 +163,6 @@ public class FontDialogViewModel : BindableBase, IDialogAware, IDisposable
             }
             SettingsService.Settings.FontFamilyName.Value = FontName.Value;
             SettingsService.Settings.FontStyleName.Value = FontStyleInfo.Value.Name;
-            SettingsService.Settings.FontStyleName.ForceNotify();
             SettingsService.Settings.FontSize.Value = string.IsNullOrWhiteSpace(Size.Value) ? Defaults.FontSize : Convert.ToInt32(Size.Value);
 
             RequestClose.Invoke(new DialogResult(ButtonResult.OK));
