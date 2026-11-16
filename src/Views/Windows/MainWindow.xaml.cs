@@ -278,12 +278,10 @@ public partial class MainWindow : Window, IDisposable
         {
             int caretIndex = textBox.CaretIndex;
 
-            string textUntilCaret = textBox.Text.Substring(0, caretIndex);
-
-            int line = textUntilCaret.Count(c => c == '\n') + 1;
-
-            int lastNewLineIndex = textUntilCaret.LastIndexOf('\n');
-            int column = caretIndex - lastNewLineIndex;
+            // 行/列はTextBoxのAPIから算出する（Substringでの全体走査を避ける）
+            int lineIndex = textBox.GetLineIndexFromCharacterIndex(caretIndex);
+            int line = lineIndex + 1;
+            int column = caretIndex - textBox.GetCharacterIndexFromLineIndex(lineIndex) + 1;
 
             if (DataContext is MainWindowViewModel vm)
             {
