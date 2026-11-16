@@ -160,6 +160,8 @@ public class SettingsService : ISettingsService, IDisposable
 
     public void Dispose()
     {
+        // Debounceにより終了までに発火しない変更を取りこぼさないよう、破棄時に必ず最新の設定を書き出す
+        Save();
         _disposableCollection.Dispose();
     }
 }

@@ -25,6 +25,14 @@ public partial class App : PrismApplication
         WpfProviderInitializer.SetDefaultObservableSystem(ex => Trace.WriteLine($"R3 UnhandledException:{ex}"));
     }
 
+    protected override void OnExit(ExitEventArgs e)
+    {
+        // Debounce保存は終了までに発火しないことがあるため、Dispose経由で最新の設定を確実に書き出す
+        (Container.Resolve<ISettingsService>() as IDisposable)?.Dispose();
+
+        base.OnExit(e);
+    }
+
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
         // Services
