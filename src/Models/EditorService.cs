@@ -97,7 +97,6 @@ public sealed class EditorService : IEditorService
 
     public void LoadText(string filePath)
     {
-        if (TextFileService is null) throw new Exception("TextFileService");
         var result = TextFileService.Load(filePath);
 
         if (result.IsSuccess is false)
@@ -127,8 +126,6 @@ public sealed class EditorService : IEditorService
     public void SaveText() => SaveText(Document.FilePath.Value);
     public void SaveText(string filePath)
     {
-        if (TextFileService is null) throw new Exception(nameof(TextFileService));
-
         var result = TextFileService.Save(filePath, Document.Text.Value, Document.Encoding.Value, Document.HasBom.Value, Document.LineEnding.Value);
 
         if (result.IsSuccess is false)
