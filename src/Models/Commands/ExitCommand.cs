@@ -24,7 +24,9 @@ public class ExitCommand : CommandBase, IExitCommand
 
         if (CommandHelper.TryConfirmSave(EditorService, DialogService, out var save) is false) return;
 
-        if (save) EditorService.SaveText(EditorService.Document.FilePath.Value);
+        // 保存に失敗した場合は終了せずに処理を中断する（編集中の内容を保持する）
+        if (save && EditorService.SaveText(EditorService.Document.FilePath.Value) is false) return;
+
         Application.Current.Shutdown();
     }
 }

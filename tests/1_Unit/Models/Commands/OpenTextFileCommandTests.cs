@@ -84,6 +84,9 @@ public class OpenTextFileCommandTests
         openDialogResult.Parameters.Add("filename", @"C:\\temp\\existingfile.txt");
         MemopadDialogService.ShowOpenFile(Arg.Any<string>()).Returns(openDialogResult);
 
+        // 保存が成功したケースを想定
+        EditorService.SaveText(Arg.Any<string>()).Returns(true);
+
         var command = new OpenTextFileCommand
         {
             EditorService = EditorService,

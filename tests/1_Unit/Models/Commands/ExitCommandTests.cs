@@ -62,6 +62,9 @@ public class ExitCommandTests
         saveDialogResult.Parameters.Add("filename", @"C:\temp\newfile.txt");
         DialogService.ShowSaveFile().Returns(saveDialogResult);
 
+        // 保存が成功したケースを想定
+        EditorService.SaveText(Arg.Any<string>()).Returns(true);
+
         var command = new ExitCommand
         {
             EditorService = EditorService,

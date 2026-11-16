@@ -26,8 +26,8 @@ public interface IEditorService : IDisposable
 
     public void Reset();
     public void LoadText(string filePath);
-    public void SaveText();
-    public void SaveText(string filePath);
+    public bool SaveText();
+    public bool SaveText(string filePath);
     public void Cut();
     public void Copy();
     public void Paste();
@@ -123,19 +123,20 @@ public sealed class EditorService : IEditorService
         Document.CanRedo.Value = false;
         Document.CanUndo.Value = false;
     }
-    public void SaveText() => SaveText(Document.FilePath.Value);
-    public void SaveText(string filePath)
+    public bool SaveText() => SaveText(Document.FilePath.Value);
+    public bool SaveText(string filePath)
     {
         var result = TextFileService.Save(filePath, Document.Text.Value, Document.Encoding.Value, Document.HasBom.Value, Document.LineEnding.Value);
 
         if (result.IsSuccess is false)
         {
             DialogService.ShowError(Defaults.ApplicationName, "ファイルの書き込みに失敗しました。");
-            return;
+            return false;
         }
 
         Document.FilePath.Value = result.FilePath;
         Document.BaseText.Value = Document.Text.Value;
+        return true;
     }
     public void Reset()
     {

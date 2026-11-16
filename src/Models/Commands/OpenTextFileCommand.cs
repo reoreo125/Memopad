@@ -31,7 +31,9 @@ public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
         if (openFilePathResult is null) return;
         if (openFilePathResult.Result is not ButtonResult.OK) return;
 
-        if (save) EditorService.SaveText(EditorService.Document.FilePath.Value);
+        // 保存に失敗した場合はファイルを開かずに処理を中断する（編集中の内容を保持する）
+        if (save && EditorService.SaveText(EditorService.Document.FilePath.Value) is false) return;
+
         EditorService.LoadText(openFilePathResult.Parameters.GetValue<string>("filename"));
     }
 }
