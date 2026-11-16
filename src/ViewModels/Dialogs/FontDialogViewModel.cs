@@ -163,7 +163,7 @@ public class FontDialogViewModel : BindableBase, IDialogAware, IDisposable
             }
             SettingsService.Settings.FontFamilyName.Value = FontName.Value;
             SettingsService.Settings.FontStyleName.Value = FontStyleInfo.Value.Name;
-            SettingsService.Settings.FontSize.Value = string.IsNullOrWhiteSpace(Size.Value) ? Defaults.FontSize : Convert.ToInt32(Size.Value);
+            SettingsService.Settings.FontSize.Value = int.TryParse(Size.Value, out int size) ? size : Defaults.FontSize;
 
             RequestClose.Invoke(new DialogResult(ButtonResult.OK));
         });
