@@ -35,7 +35,7 @@ public class GoToLineDialogViewModel : BindableBase, IDialogAware
                 return;
             }
 
-            RequestClose.Invoke(new DialogResult(ButtonResult.Cancel));
+            RequestClose.Invoke(new DialogResult(ButtonResult.OK));
         });
         CancelCommand = new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
     }
