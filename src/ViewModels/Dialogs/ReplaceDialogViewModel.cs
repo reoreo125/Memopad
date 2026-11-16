@@ -16,7 +16,7 @@ public class ReplaceDialogViewModel : BindableBase, IDialogAware, IDisposable
     public IReplaceNextCommand? ReplaceNextCommand { get; set; }
     [Dependency]
     public IReplaceAllCommand? ReplaceAllCommand { get; set; }
-    public DelegateCommand CancelCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
+    public DelegateCommand CancelCommand { get; }
 
     public BindableReactiveProperty<string> SearchText { get; }
     public BindableReactiveProperty<string> ReplaceText { get; }
@@ -77,6 +77,8 @@ public class ReplaceDialogViewModel : BindableBase, IDialogAware, IDisposable
             .AddTo(ref _disposableCollection);
 
         #endregion
+
+        CancelCommand = new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
     }
     public void OnDialogOpened(IDialogParameters parameters)
     {

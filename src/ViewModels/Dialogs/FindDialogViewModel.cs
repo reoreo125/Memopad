@@ -10,12 +10,8 @@ public class FindDialogViewModel : BindableBase, IDialogAware, IDisposable
 
     public DialogCloseListener RequestClose { get; }
 
-    public DelegateCommand FindCommand => new(() =>
-    {
-        if (IsSearchUp.Value) FindPrevCommand!.Execute(null);
-        else                  FindNextCommand!.Execute(null);
-    });
-    public DelegateCommand CancelCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
+    public DelegateCommand FindCommand { get; }
+    public DelegateCommand CancelCommand { get; }
 
     [Dependency]
     public IFindNextCommand? FindNextCommand { get; set; }
@@ -67,6 +63,13 @@ public class FindDialogViewModel : BindableBase, IDialogAware, IDisposable
                   .AddTo(ref _disposableCollection);
 
         #endregion
+
+        FindCommand = new(() =>
+        {
+            if (IsSearchUp.Value) FindPrevCommand!.Execute(null);
+            else                  FindNextCommand!.Execute(null);
+        });
+        CancelCommand = new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
     }
     public void OnDialogOpened(IDialogParameters parameters)
     {

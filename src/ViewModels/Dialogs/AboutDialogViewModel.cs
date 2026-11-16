@@ -9,7 +9,12 @@ public class AboutDialogViewModel : BindableBase, IDialogAware
     public string VersionText => Defaults.VersionText;
     public DialogCloseListener RequestClose { get; }
 
-    public DelegateCommand OkCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK)));
+    public DelegateCommand OkCommand { get; }
+
+    public AboutDialogViewModel()
+    {
+        OkCommand = new DelegateCommand(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK)));
+    }
 
     public void OnDialogOpened(IDialogParameters parameters) {}
     public bool CanCloseDialog() => true;

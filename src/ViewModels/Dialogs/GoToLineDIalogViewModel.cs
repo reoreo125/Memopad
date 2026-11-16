@@ -9,18 +9,8 @@ public class GoToLineDialogViewModel : BindableBase, IDialogAware
     public string? Title => "行へ移動";
     public DialogCloseListener RequestClose { get; }
 
-    public DelegateCommand GoCommand => new(() =>
-    {
-        var result = EditorService.GoToLine(LineIndex.Value);
-        if(result is false)
-        {
-            DialogService.ShowInformation($"{Defaults.ApplicationName} - 行に移動", "指定した行番号は行の総数を超えています");
-            return;
-        }
-
-        RequestClose.Invoke(new DialogResult(ButtonResult.Cancel));
-    });
-    public DelegateCommand CancelCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
+    public DelegateCommand GoCommand { get; }
+    public DelegateCommand CancelCommand { get; }
 
     public BindableReactiveProperty<int> LineIndex { get; }
 
@@ -35,6 +25,19 @@ public class GoToLineDialogViewModel : BindableBase, IDialogAware
         _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
 
         LineIndex = new();
+
+        GoCommand = new(() =>
+        {
+            var result = EditorService.GoToLine(LineIndex.Value);
+            if(result is false)
+            {
+                DialogService.ShowInformation($"{Defaults.ApplicationName} - 行に移動", "指定した行番号は行の総数を超えています");
+                return;
+            }
+
+            RequestClose.Invoke(new DialogResult(ButtonResult.Cancel));
+        });
+        CancelCommand = new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
     }
 
     public void OnDialogOpened(IDialogParameters parameters)

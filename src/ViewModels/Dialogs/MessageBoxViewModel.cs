@@ -32,7 +32,7 @@ public abstract class MessageBoxViewModelBase : BindableBase, IDialogAware, IDis
 
     public DialogCloseListener RequestClose { get; }
 
-    public DelegateCommand OkCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK)));
+    public DelegateCommand OkCommand { get; }
 
     protected MessageBoxViewModelBase(Icon icon)
     {
@@ -42,6 +42,8 @@ public abstract class MessageBoxViewModelBase : BindableBase, IDialogAware, IDis
             _iconHandle,
             Int32Rect.Empty,
             BitmapSizeOptions.FromEmptyOptions());
+
+        OkCommand = new DelegateCommand(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK)));
     }
 
     public virtual void OnDialogOpened(IDialogParameters parameters)

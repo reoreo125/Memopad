@@ -14,30 +14,8 @@ public class PageSettingsDialogViewModel : BindableBase, IDialogAware, IDisposab
 
     public DialogCloseListener RequestClose { get; }
 
-    public DelegateCommand CancelCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
-    public DelegateCommand OkCommand => new(() =>
-    {
-        // TODO: 暫定でDefaults.MarginMaxで制限。将来的にプリンターの最大余白を取得して設定する。
-        if(Defaults.MarginMax < MarginLeft.Value ||
-           Defaults.MarginMax < MarginRight.Value ||
-           Defaults.MarginMax < MarginTop.Value ||
-           Defaults.MarginMax < MarginBottom.Value)
-        {
-            DialogService.ShowWarning($"{Title}", $"余白が重なるか、または用紙をはみ出します。\n余白サイズを入力し直してください。");
-            return;
-        }
-
-        SettingsService.Settings.Page.PaperSizeName.Value = PageSizeName.Value;
-        SettingsService.Settings.Page.InputBin.Value = InputBin.Value;
-        SettingsService.Settings.Page.Orientation.Value = Orientation.Value;
-        SettingsService.Settings.Page.MarginLeft.Value = MarginLeft.Value;
-        SettingsService.Settings.Page.MarginRight.Value = MarginRight.Value;
-        SettingsService.Settings.Page.MarginTop.Value = MarginTop.Value;
-        SettingsService.Settings.Page.MarginBottom.Value = MarginBottom.Value;
-        SettingsService.Settings.Page.Header.Value = Header.Value;
-        SettingsService.Settings.Page.Footer.Value = Footer.Value;
-        RequestClose.Invoke(new DialogResult(ButtonResult.OK));
-    });
+    public DelegateCommand CancelCommand { get; }
+    public DelegateCommand OkCommand { get; }
 
     public BindableReactiveProperty<PageMediaSizeName> PageSizeName { get; }
     public BindableReactiveProperty<InputBin> InputBin { get; }
@@ -167,6 +145,31 @@ public class PageSettingsDialogViewModel : BindableBase, IDialogAware, IDisposab
                 MarginBottom.Value = tempRight;
             })
             .AddTo(ref _disposableCollection);
+
+        CancelCommand = new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
+        OkCommand = new(() =>
+        {
+            // TODO: 暫定でDefaults.MarginMaxで制限。将来的にプリンターの最大余白を取得して設定する。
+            if(Defaults.MarginMax < MarginLeft.Value ||
+               Defaults.MarginMax < MarginRight.Value ||
+               Defaults.MarginMax < MarginTop.Value ||
+               Defaults.MarginMax < MarginBottom.Value)
+            {
+                DialogService.ShowWarning($"{Title}", $"余白が重なるか、または用紙をはみ出します。\n余白サイズを入力し直してください。");
+                return;
+            }
+
+            SettingsService.Settings.Page.PaperSizeName.Value = PageSizeName.Value;
+            SettingsService.Settings.Page.InputBin.Value = InputBin.Value;
+            SettingsService.Settings.Page.Orientation.Value = Orientation.Value;
+            SettingsService.Settings.Page.MarginLeft.Value = MarginLeft.Value;
+            SettingsService.Settings.Page.MarginRight.Value = MarginRight.Value;
+            SettingsService.Settings.Page.MarginTop.Value = MarginTop.Value;
+            SettingsService.Settings.Page.MarginBottom.Value = MarginBottom.Value;
+            SettingsService.Settings.Page.Header.Value = Header.Value;
+            SettingsService.Settings.Page.Footer.Value = Footer.Value;
+            RequestClose.Invoke(new DialogResult(ButtonResult.OK));
+        });
     }
 
     public void OnDialogOpened(IDialogParameters parameters) { }

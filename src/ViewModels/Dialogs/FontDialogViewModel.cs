@@ -14,26 +14,8 @@ public class FontDialogViewModel : BindableBase, IDialogAware, IDisposable
 
     public DialogCloseListener RequestClose { get; }
 
-    public DelegateCommand CancelCommand => new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
-    public DelegateCommand OkCommand => new(() =>
-    {
-        if(FontNames.Contains(FontName.Value) is not true)
-        {
-            DialogService.ShowInformation($"{Title}", "その名前のフォントはありません。\nフォント一覧からフォントを選んでください。");
-            return;
-        }
-        if (FontStyleInfo.Value is null || FontStyles.Select(value => value.Name).Contains(FontStyleInfo.Value.Name) is not true)
-        {
-            DialogService.ShowInformation($"{Title}", "そのスタイルでは、このフォントを利用できません。\nスタイル一覧からスタイルを選んでください。");
-            return;
-        }
-        SettingsService.Settings.FontFamilyName.Value = FontName.Value;
-        SettingsService.Settings.FontStyleName.Value = FontStyleInfo.Value.Name;
-        SettingsService.Settings.FontStyleName.ForceNotify();
-        SettingsService.Settings.FontSize.Value = string.IsNullOrWhiteSpace(Size.Value) ? Defaults.FontSize : Convert.ToInt32(Size.Value);
-
-        RequestClose.Invoke(new DialogResult(ButtonResult.OK));
-    });
+    public DelegateCommand CancelCommand { get; }
+    public DelegateCommand OkCommand { get; }
 
     public BindableReactiveProperty<string> FontName { get; }
     public List<string> FontNames { get; }
@@ -168,6 +150,27 @@ public class FontDialogViewModel : BindableBase, IDialogAware, IDisposable
             })
             .AddTo(ref _disposableCollection);
         // ---
+
+        CancelCommand = new(() => RequestClose.Invoke(new DialogResult(ButtonResult.Cancel)));
+        OkCommand = new(() =>
+        {
+            if(FontNames.Contains(FontName.Value) is not true)
+            {
+                DialogService.ShowInformation($"{Title}", "その名前のフォントはありません。\nフォント一覧からフォントを選んでください。");
+                return;
+            }
+            if (FontStyleInfo.Value is null || FontStyles.Select(value => value.Name).Contains(FontStyleInfo.Value.Name) is not true)
+            {
+                DialogService.ShowInformation($"{Title}", "そのスタイルでは、このフォントを利用できません。\nスタイル一覧からスタイルを選んでください。");
+                return;
+            }
+            SettingsService.Settings.FontFamilyName.Value = FontName.Value;
+            SettingsService.Settings.FontStyleName.Value = FontStyleInfo.Value.Name;
+            SettingsService.Settings.FontStyleName.ForceNotify();
+            SettingsService.Settings.FontSize.Value = string.IsNullOrWhiteSpace(Size.Value) ? Defaults.FontSize : Convert.ToInt32(Size.Value);
+
+            RequestClose.Invoke(new DialogResult(ButtonResult.OK));
+        });
     }
     private bool IsFontSupportCharacterSet(string fontName, CharacterSet set)
     {
