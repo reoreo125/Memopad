@@ -20,32 +20,7 @@ public class NewTextFileCommand : CommandBase, INewTextFileCommand
         if (DialogService is null) throw new Exception(nameof(DialogService));
         if (SaveTextFileCommand is null) throw new Exception(nameof(SaveTextFileCommand));
 
-        var save = false;
-        if (EditorService.Document.IsDirty.CurrentValue)
-        {
-            IDialogResult? result = DialogService.ShowConfirmSave(EditorService.Document.FileNameWithoutExtension.CurrentValue);
-            if (result is null) return;
-
-            if (result.Result is ButtonResult.Yes)
-            {
-                save = true;
-            }
-            else if (result.Result is ButtonResult.No) { }
-            else
-            {
-                return;
-            }
-        }
-
-        if (save && string.IsNullOrEmpty(EditorService.Document.FilePath.Value))
-        {
-            var saveFiledialogResult = DialogService.ShowSaveFile();
-
-            if (saveFiledialogResult is null) return;
-            if (saveFiledialogResult.Result is not ButtonResult.OK) return;
-
-            EditorService.Document.FilePath.Value = saveFiledialogResult.Parameters.GetValue<string>("filename");
-        }
+        if (CommandHelper.TryConfirmSave(EditorService, DialogService, out var save) is false) return;
 
         if (save) EditorService.SaveText(EditorService.Document.FilePath.Value);
         EditorService.Reset();
