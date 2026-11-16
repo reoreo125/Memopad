@@ -5,6 +5,7 @@ using Microsoft.Win32;
 using Reoreo125.Memopad.Views.Dialogs;
 using IPrismDialogService = Prism.Dialogs.IDialogService;
 using PrismDialogService = Prism.Dialogs.DialogService;
+using PrismDialogWindow = Prism.Dialogs.DialogWindow;
 namespace Reoreo125.Memopad.Models;
 
 public interface IDialogService
@@ -160,11 +161,23 @@ public class DialogService : IDialogService
     }
     private IDialogResult? ShowModelessWithoutParameters(Type dialogType)
     {
+        // 同じダイアログが既に開いている場合は閉じずに前面へ出す
         var existingWindow = Application.Current.Windows
             .Cast<Window>()
-            .FirstOrDefault(w => w.GetType().Namespace?.StartsWith("Prism.Dialogs") is true);
-        if (existingWindow is not null) existingWindow.Close();
-        
+            .FirstOrDefault(w => w is PrismDialogWindow && w.Content?.GetType().Name == dialogType.Name);
+        if (existingWindow is not null)
+        {
+            if (existingWindow.WindowState == WindowState.Minimized) existingWindow.WindowState = WindowState.Normal;
+            existingWindow.Activate();
+            return null;
+        }
+
+        // 別種のモードレスダイアログ（検索/置換の反対側）が開いている場合は閉じてから新規表示する
+        var otherWindow = Application.Current.Windows
+            .Cast<Window>()
+            .FirstOrDefault(w => w is PrismDialogWindow);
+        otherWindow?.Close();
+
         IDialogResult? result = null;
         PrismDialogService.Show(
             dialogType.Name,
