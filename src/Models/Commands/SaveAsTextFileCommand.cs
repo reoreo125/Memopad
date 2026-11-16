@@ -14,8 +14,8 @@ public class SaveAsTextFileCommand : CommandBase, ISaveAsTextFileCommand
 
     public override void Execute(object? parameter)
     {
-        if (EditorService is null) throw new Exception(nameof(EditorService));
-        if (DialogService is null) throw new Exception(nameof(DialogService));
+        RequireInjected(EditorService);
+        RequireInjected(DialogService);
 
         var saveFiledialogResult = DialogService.ShowSaveFile();
 

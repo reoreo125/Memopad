@@ -13,7 +13,7 @@ public class OpenFindCommand : CommandBase, IOpenFindCommand
 
     public override void Execute(object? parameter)
     {
-        if (DialogService is null) throw new Exception(nameof(DialogService));
+        RequireInjected(DialogService);
 
         DialogService.ShowFind();
     }

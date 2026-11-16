@@ -60,7 +60,10 @@ public partial class App : PrismApplication
             var interfaceName = $"I{type.Name}";
             var serviceInterface = type.GetInterfaces().FirstOrDefault(i => i.Name == interfaceName);
 
-            if (serviceInterface is null) throw new Exception();
+            if (serviceInterface is null)
+            {
+                throw new InvalidOperationException($"{type.FullName} は対応するインターフェイス {interfaceName} を実装していないため登録できません。");
+            }
 
             containerRegistry.Register(serviceInterface, type);
             Debug.WriteLine($"Registered Commands : {interfaceName} -> {type.Name}");

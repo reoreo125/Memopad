@@ -15,8 +15,8 @@ public class FindNextCommand : CommandBase, IFindNextCommand
 
     public override void Execute(object? parameter)
     {
-        if (DialogService is null) throw new Exception(nameof(DialogService));
-        if (EditorService is null) throw new Exception(nameof(EditorService));
+        RequireInjected(DialogService);
+        RequireInjected(EditorService);
 
         var result = EditorService.FindNext();
 

@@ -95,7 +95,7 @@ public class DialogService : IDialogService
     }
     public IDialogResult? ShowPrint()
     {
-        if (SettingsService is null) throw new Exception(nameof(SettingsService));
+        if (SettingsService is null) throw new InvalidOperationException($"{nameof(SettingsService)} が注入されていません。DIコンテナへの登録と [Dependency] 属性の付与を確認してください。");
 
         PrintDialog printDialog = new PrintDialog();
 

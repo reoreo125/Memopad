@@ -12,7 +12,7 @@ public class ToggleWordWrapCommand : CommandBase, IToggleWordWrapCommand
 
     public override void Execute(object? parameter)
     {
-        if (SettingsService is null) throw new Exception(nameof(SettingsService));
+        RequireInjected(SettingsService);
 
         SettingsService.Settings.IsWordWrap.Value = !SettingsService.Settings.IsWordWrap.Value;
     }

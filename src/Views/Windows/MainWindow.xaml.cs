@@ -21,7 +21,10 @@ public partial class MainWindow : Window, IDisposable
     {
         InitializeComponent();
 
-        if (DataContext is not MainWindowViewModel vm) throw new Exception(nameof(DataContext));
+        if (DataContext is not MainWindowViewModel vm)
+        {
+            throw new InvalidOperationException("DataContext が MainWindowViewModel として解決できませんでした。ViewModelLocator の設定を確認してください。");
+        }
 
         vm.EditorService.RequestCut
             .Subscribe(_ => EditorBox.Cut())

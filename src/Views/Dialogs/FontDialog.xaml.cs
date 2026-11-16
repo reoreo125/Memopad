@@ -14,7 +14,10 @@ public partial class FontDialog : UserControl
     {
         InitializeComponent();
 
-        if (DataContext is not FontDialogViewModel vm) throw new Exception(nameof(DataContext));
+        if (DataContext is not FontDialogViewModel vm)
+        {
+            throw new InvalidOperationException("DataContext が FontDialogViewModel として解決できませんでした。ViewModelLocator の設定を確認してください。");
+        }
 
         vm.FontName
             .Where(name => name != null)

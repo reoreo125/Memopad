@@ -12,7 +12,7 @@ public class ToggleStatusBarCommand : CommandBase, IToggleStatusBarCommand
 
     public override void Execute(object? parameter)
     {
-        if (SettingsService is null) throw new Exception(nameof(SettingsService));
+        RequireInjected(SettingsService);
 
         SettingsService.Settings.ShowStatusBar.Value = !SettingsService.Settings.ShowStatusBar.Value;
     }

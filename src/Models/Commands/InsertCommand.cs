@@ -13,7 +13,7 @@ public class InsertCommand : CommandBase, IInsertCommand
 
     public override void Execute(object? parameter)
     {
-        if (EditorService is null) throw new Exception(nameof(EditorService));
+        RequireInjected(EditorService);
 
         if (!CanExecute(null)) return;
 

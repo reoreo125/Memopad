@@ -12,7 +12,7 @@ public class OpenAboutCommand : CommandBase, IOpenAboutCommand
 
     public override void Execute(object? parameter)
     {
-        if (DialogService is null) throw new Exception(nameof(DialogService));
+        RequireInjected(DialogService);
 
         DialogService.ShowAbout();
     }

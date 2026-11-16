@@ -15,7 +15,7 @@ public class InsertDateTimeCommand : CommandBase, IInsertDateTimeCommand
 
     public override void Execute(object? parameter)
     {
-        if(EditorService is null) throw new Exception(nameof(EditorService));
+        RequireInjected(EditorService);
 
         var now = DateTime.Now.ToString("H:mm yyyy/MM/dd");
         EditorService.Insert(now);

@@ -22,9 +22,9 @@ public class OpenPrintCommand : CommandBase, IOpenPrintCommand
 
     public override void Execute(object? parameter)
     {
-        if (DialogService is null) throw new Exception(nameof(DialogService));
-        if (EditorService is null) throw new Exception(nameof(EditorService));
-        if (SettingsService is null) throw new Exception(nameof(SettingsService));
+        RequireInjected(DialogService);
+        RequireInjected(EditorService);
+        RequireInjected(SettingsService);
 
         var printdialogResult = DialogService.ShowPrint();
 

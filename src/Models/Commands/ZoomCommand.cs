@@ -13,7 +13,7 @@ public class ZoomCommand : CommandBase, IZoomCommand
 
     public override void Execute(object? parameter)
     {
-        if(SettingsService is null) throw new Exception(nameof(SettingsService));
+        RequireInjected(SettingsService);
         if(parameter is null || parameter is not ZoomOperation) return;
 
         switch((ZoomOperation)parameter)

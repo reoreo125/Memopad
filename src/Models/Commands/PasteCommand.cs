@@ -14,7 +14,7 @@ public class PasteCommand : CommandBase, IPasteCommand
 
     public override void Execute(object? parameter)
     {
-        if (EditorService is null) throw new Exception(nameof(EditorService));
+        RequireInjected(EditorService);
 
         if (!CanExecute(null)) return;
         

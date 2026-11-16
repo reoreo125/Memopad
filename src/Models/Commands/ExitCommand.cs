@@ -18,9 +18,9 @@ public class ExitCommand : CommandBase, IExitCommand
 
     public override void Execute(object? parameter)
     {
-        if (EditorService is null) throw new Exception(nameof(EditorService));
-        if (DialogService is null) throw new Exception(nameof(DialogService));
-        if (SaveAsTextFileCommand is null) throw new Exception(nameof(SaveAsTextFileCommand));
+        RequireInjected(EditorService);
+        RequireInjected(DialogService);
+        RequireInjected(SaveAsTextFileCommand);
 
         if (CommandHelper.TryConfirmSave(EditorService, DialogService, out var save) is false) return;
 

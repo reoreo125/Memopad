@@ -17,9 +17,9 @@ public class OpenGoToLineCommand : CommandBase, IOpenGoToLineCommand
 
     public override void Execute(object? parameter)
     {
-        if (EditorService is null) throw new Exception(nameof(EditorService));
-        if (DialogService is null) throw new Exception(nameof(DialogService));
-        if (SettingsService is null) throw new Exception(nameof(SettingsService));
+        RequireInjected(EditorService);
+        RequireInjected(DialogService);
+        RequireInjected(SettingsService);
 
         if (!CanExecute(null)) return;
 

@@ -16,9 +16,9 @@ public class NewTextFileCommand : CommandBase, INewTextFileCommand
 
     public override void Execute(object? parameter)
     {
-        if (EditorService is null) throw new Exception(nameof(EditorService));
-        if (DialogService is null) throw new Exception(nameof(DialogService));
-        if (SaveTextFileCommand is null) throw new Exception(nameof(SaveTextFileCommand));
+        RequireInjected(EditorService);
+        RequireInjected(DialogService);
+        RequireInjected(SaveTextFileCommand);
 
         if (CommandHelper.TryConfirmSave(EditorService, DialogService, out var save) is false) return;
 

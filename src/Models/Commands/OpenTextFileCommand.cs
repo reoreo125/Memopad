@@ -19,9 +19,9 @@ public class OpenTextFileCommand : CommandBase, IOpenTextFileCommand
 
     public override void Execute(object? parameter)
     {
-        if (EditorService is null) throw new Exception(nameof(EditorService));
-        if (MemopadDialogService is null) throw new Exception(nameof(MemopadDialogService));
-        if (SettingsService is null) throw new Exception(nameof(SettingsService));
+        RequireInjected(EditorService);
+        RequireInjected(MemopadDialogService);
+        RequireInjected(SettingsService);
 
         if (CommandHelper.TryConfirmSave(EditorService, MemopadDialogService, out var save) is false) return;
 
