@@ -22,7 +22,7 @@ Prismによるクリーンアーキテクチャと、R3 (ReactiveProperty) に�
 |NSubstitute|[The 2-Clause BSD License](https://github.com/nsubstitute/NSubstitute/blob/main/LICENSE.txt)|<https://github.com/nsubstitute/NSubstitute>|
 
 ## 動作/開発環境
-* .NET 10 (WPF)
+* .NET 11 (WPF)
 * Windows 11
 
 ## インストール・実行方法
