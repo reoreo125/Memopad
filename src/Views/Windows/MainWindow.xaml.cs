@@ -230,16 +230,20 @@ public partial class MainWindow : Window, IDisposable
                 var regex = new System.Text.RegularExpressions.Regex(
                     System.Text.RegularExpressions.Regex.Escape(args.SearchText), options);
 
-                var matches = regex.Matches(currentText);
-                var replacedCount = matches.Count;
+                // 置換を1回の走査で行い、同時にマッチ数を数える（MatchesとReplaceの二重走査を避ける）
+                // m.Result は Regex.Replace(input, replacement) と同じ置換規則（$1 など）を適用する
+                var replacedCount = 0;
+                string newText = regex.Replace(currentText, m =>
+                {
+                    replacedCount++;
+                    return m.Result(args.ReplaceText);
+                });
 
                 if (replacedCount == 0)
                 {
                     args.IsSuccess = false;
                     return;
                 }
-
-                string newText = regex.Replace(currentText, args.ReplaceText);
 
                 EditorBox.BeginChange();
                 try
