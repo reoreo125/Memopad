@@ -69,8 +69,6 @@ public class EditorDocument : IEditorDocument, IDisposable
     public ReactiveProperty<bool> WrapAround { get; } = new(Defaults.WrapAround);
 
 
-    private DisposableBag _disposableCollection = new();
-
     public EditorDocument()
     {
         IsDirty = Text.CombineLatest(BaseText, (current, baseText) => current != baseText)
@@ -114,6 +112,5 @@ public class EditorDocument : IEditorDocument, IDisposable
     }
     public void Dispose()
     {
-        _disposableCollection.Dispose();
     }
 }

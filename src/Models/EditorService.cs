@@ -82,8 +82,6 @@ public sealed class EditorService : IEditorService
     private ISettingsService SettingsService { get; }
     private IDialogService DialogService { get; }
 
-    private DisposableBag _disposableCollection = new();
-
     public EditorService(ITextFileService textFileService,
                          ISettingsService settingsService,
                          IDialogService dialogService)
@@ -230,7 +228,6 @@ public sealed class EditorService : IEditorService
     }
     public void Dispose()
     {
-        _disposableCollection.Dispose();
     }
 }
 

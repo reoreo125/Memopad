@@ -19,8 +19,6 @@ public class StatusBarViewModel : BindableBase, IDisposable
     private readonly ISettingsService _settingsService;
 
 
-    private DisposableBag _disposableCollection = new();
-
     public StatusBarViewModel(IEditorService editorService, ISettingsService settingsService)
     {
         _editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
@@ -71,6 +69,5 @@ public class StatusBarViewModel : BindableBase, IDisposable
     }
     public void Dispose()
     {
-        _disposableCollection.Dispose();
     }
 }
