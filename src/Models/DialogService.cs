@@ -73,12 +73,17 @@ public class DialogService : IDialogService
     }
     public IDialogResult? ShowSaveFile()
     {
+        if (SettingsService is null) throw new InvalidOperationException($"{nameof(SettingsService)} が注入されていません。DIコンテナへの登録と [Dependency] 属性の付与を確認してください。");
+
+        var lastOpenedFolderPath = SettingsService.Settings.LastOpenedFolderPath.Value;
+        if (string.IsNullOrEmpty(lastOpenedFolderPath)) lastOpenedFolderPath = Defaults.LastOpenedFolderPath;
+
         var saveFileDialog = new SaveFileDialog
         {
             Title = "名前を付けて保存",
             Filter = "テキストファイル (*.txt)|*.txt|すべてのファイル (*.*)|*.*",
             DefaultExt = "txt",
-            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            InitialDirectory = lastOpenedFolderPath
         };
 
         var resultBool = saveFileDialog.ShowDialog();

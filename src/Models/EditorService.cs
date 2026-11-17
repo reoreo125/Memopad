@@ -134,6 +134,8 @@ public sealed class EditorService : IEditorService
 
         Document.FilePath.Value = result.FilePath;
         Document.BaseText.Value = Document.Text.Value;
+        // 成功したら前回保存したフォルダを記憶しておく（保存・開くダイアログの初期フォルダに使用する）
+        SettingsService.Settings.LastOpenedFolderPath.Value = Path.GetDirectoryName(result.FilePath)!;
         return true;
     }
     public void Reset()
