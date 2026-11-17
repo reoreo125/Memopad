@@ -312,10 +312,6 @@ public partial class MainWindow : Window, IDisposable
                 case < 0:
                     ZoomCommand?.Execute(ZoomOperation.Out);
                     break;
-                case 0:
-                    ZoomCommand?.Execute(ZoomOperation.Default);
-                    break;
-                default:
             }
             
             e.Handled = true;

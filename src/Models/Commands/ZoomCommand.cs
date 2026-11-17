@@ -34,7 +34,6 @@ public class ZoomCommand : CommandBase, IZoomCommand
 }
 public enum ZoomOperation
 {
-    Default,
     In,
     Out,
     Reset,
