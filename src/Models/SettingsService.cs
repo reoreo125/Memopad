@@ -23,8 +23,7 @@ public class SettingsService : ISettingsService, IDisposable
 
     public SettingsService()
     {
-        // 実行ファイルと同じディレクトリに「実行名.settings」というパスを作成
-        var exeName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\'));
+        // 実行ファイルと同じディレクトリに「アセンブリ名.settings」というパスを作成
         var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
         _settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{assemblyName}.settings");
 
