@@ -69,10 +69,10 @@ public class TextFileService : ITextFileService
             return binaryResult;
         }
 
-        // US-ASCIIはUTF-8とする。
-        if (detection.Detected.Encoding == Encoding.ASCII)
+        // US-ASCIIはUTF-8とする。（Encodingインスタンスの参照は実装依存のためCodePageで比較する）
+        if (encodingResult.Encoding.CodePage == Encoding.ASCII.CodePage)
         {
-            detection.Detected.Encoding = Encoding.UTF8;
+            encodingResult.Encoding = Encoding.UTF8;
         }
 
         try
