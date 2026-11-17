@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Windows.Input;
 
 namespace Reoreo125.Memopad.Models.Commands;
@@ -17,7 +18,7 @@ public class InsertDateTimeCommand : CommandBase, IInsertDateTimeCommand
     {
         RequireInjected(EditorService);
 
-        var now = DateTime.Now.ToString("H:mm yyyy/MM/dd");
+        var now = DateTime.Now.ToString(Defaults.DateTimeInsertFormat, CultureInfo.InvariantCulture);
         EditorService.Insert(now);
     }
 }

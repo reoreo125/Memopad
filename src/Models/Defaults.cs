@@ -19,6 +19,7 @@ public record Defaults
     public static bool HasBOM => false;
     public static string EncodingText => Encoding.WebName.ToUpper();
     public static string PositionText => "1行、1列";
+    public static string DateTimeInsertFormat => "H:mm yyyy/MM/dd";
     public static string FontFamilyName => "Consolas";
     public static string GetFontStyleName(string familyName)
     {
