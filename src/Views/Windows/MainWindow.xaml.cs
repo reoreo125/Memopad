@@ -13,7 +13,7 @@ public partial class MainWindow : Window, IDisposable
     [Dependency]
     public ZoomCommand? ZoomCommand { get; set; }
     [Dependency]
-    public ExitCommand? ExitCommand { get; set; }
+    public IExitCommand? ExitCommand { get; set; }
 
     private DisposableBag _disposableCollection = new();
 
@@ -322,18 +322,13 @@ public partial class MainWindow : Window, IDisposable
         }
     }
 
-    private bool _isclosing = false;
-    private async void MainWindow_Closing(object sender, CancelEventArgs e)
+    private void MainWindow_Closing(object sender, CancelEventArgs e)
     {
-        // 既定の動作をキャンセル
+        // 終了フロー（未保存確認→保存→Shutdown）はExitCommandに委譲するため、既定のClosingを取り消す
+        // シャットダウン起因のClosing再入では e.Cancel はWPFにより無視されるため、そのまま閉じる
+        // （ExitCommand内の終了要求済みガードにより、再入時は何も行われない）
         e.Cancel = true;
-
-        // 既に終了処理中なら何もしない（二重動作防止）
-        if (_isclosing) return;
-
-        _isclosing = true;
         ExitCommand!.Execute(null);
-        _isclosing = false;
     }
     
 

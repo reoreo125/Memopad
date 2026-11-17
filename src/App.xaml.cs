@@ -5,6 +5,7 @@ using System.Windows;
 using Prism.Ioc;
 using R3;
 using Reoreo125.Memopad.Models;
+using Reoreo125.Memopad.Models.Commands;
 using Reoreo125.Memopad.Models.TextProcessing;
 using Reoreo125.Memopad.ViewModels.Dialogs;
 using Reoreo125.Memopad.ViewModels.Windows;
@@ -73,7 +74,17 @@ public partial class App : PrismApplication
                 throw new InvalidOperationException($"{type.FullName} は対応するインターフェイス {interfaceName} を実装していないため登録できません。");
             }
 
-            containerRegistry.Register(serviceInterface, type);
+            // ExitCommandは終了要求済みを示すインスタンスフラグを持つため、
+            // メニューとウィンドウで同一インスタンスを共有できるようシングルトンとして登録する
+            if (type == typeof(ExitCommand))
+            {
+                containerRegistry.RegisterSingleton(serviceInterface, type);
+            }
+            else
+            {
+                containerRegistry.Register(serviceInterface, type);
+            }
+
             Debug.WriteLine($"Registered Commands : {interfaceName} -> {type.Name}");
 
         }
