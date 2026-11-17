@@ -72,7 +72,7 @@ public partial class MainWindowViewModel : BindableBase, IDisposable
     public MainWindowViewModel(IEditorService editorService, ISettingsService settingsService)
     {
         _editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
-        _settingsService = settingsService ?? throw new ArgumentNullException(nameof(SettingsService));
+        _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
 
         #region Model -> ViewModel -> View
 

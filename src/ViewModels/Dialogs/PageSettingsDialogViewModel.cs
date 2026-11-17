@@ -87,7 +87,7 @@ public class PageSettingsDialogViewModel : BindableBase, IDialogAware, IDisposab
     public PageSettingsDialogViewModel(IEditorService editorService, ISettingsService settingsService, IDialogService dialogService)
     {
         _editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
-        _settingsService = settingsService ?? throw new ArgumentNullException(nameof(SettingsService));
+        _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
         _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
 
         PageSizeName = new(SettingsService.Settings.Page.PaperSizeName.Value);

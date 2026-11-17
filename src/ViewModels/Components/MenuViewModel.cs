@@ -70,8 +70,8 @@ public class MenuViewModel : BindableBase
 
     public MenuViewModel(IEditorService editorService, ISettingsService settingsService)
     {
-        _editorService = editorService ?? throw new ArgumentNullException(nameof(EditorService));
-        _settingsService = settingsService ?? throw new ArgumentNullException(nameof(SettingsService));
+        _editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
+        _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
 
         #region Model -> ViewModel -> View
         ShowStatusBar = SettingsService.Settings.ShowStatusBar

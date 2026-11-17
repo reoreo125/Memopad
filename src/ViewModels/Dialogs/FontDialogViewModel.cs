@@ -45,9 +45,9 @@ public class FontDialogViewModel : BindableBase, IDialogAware, IDisposable
 
     public FontDialogViewModel(IEditorService editorService, ISettingsService settingsService, IDialogService dialogService)
     {
-        _editorService = editorService ?? throw new ArgumentNullException(nameof(EditorService));
-        _settingsService = settingsService ?? throw new ArgumentNullException(nameof(SettingsService));
-        _dialogService = dialogService ?? throw new ArgumentNullException(nameof(DialogService));
+        _editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
+        _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+        _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
 
         // FontName ---
         FontName = new(SettingsService.Settings.FontFamilyName.Value);
