@@ -170,4 +170,27 @@ public class ExitCommandTests
         DialogService.Received(2).ShowConfirmSave(Arg.Any<string>());
         EditorService.Received(2).SaveText(@"C:\temp\newfile.txt");
     }
+
+    [Fact(DisplayName = "【正常系】Execute:終了処理に進んだ後は再実行されないこと")]
+    public void Execute_AfterShutdownRequested_ShouldNotExecuteAgain()
+    {
+        Document.IsDirty.Returns(new ReactiveProperty<bool>(true));
+        Document.FileNameWithoutExtension.Returns(new ReactiveProperty<string>("Untitled"));
+
+        DialogService.ShowConfirmSave(Arg.Any<string>()).Returns(new DialogResult(ButtonResult.No));
+
+        var command = new ExitCommand
+        {
+            EditorService = EditorService,
+            DialogService = DialogService,
+            SaveAsTextFileCommand = SaveAsTextFileCommand
+        };
+
+        command.Execute(null);
+        command.Execute(null);
+
+        // 1回目で _shutdownRequested が立ち、2回目は確認ダイアログを表示せず即座に戻る
+        DialogService.Received(1).ShowConfirmSave(Arg.Any<string>());
+        EditorService.DidNotReceiveWithAnyArgs().SaveText(string.Empty);
+    }
 }
