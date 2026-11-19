@@ -43,7 +43,7 @@ public class EditorServiceTests
     public void LoadText_WhenLoadValidTextFile_ShouldNotifyRequestLoadText()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
 
@@ -71,7 +71,7 @@ public class EditorServiceTests
     public void LoadText_LoadFailed()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
         editorService.Document.Text.Value = "Old Content";
@@ -95,7 +95,7 @@ public class EditorServiceTests
     public void SaveText_WhenSaveText_ShouldUpdateProperty()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
         editorService.Document.FilePath.Value = @"C:\Users\Public\Documents\DummyPath.txt";
@@ -115,7 +115,7 @@ public class EditorServiceTests
     public void SaveText_SaveFailed()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
         editorService.Document.Text.Value = "Test Content";
@@ -126,6 +126,45 @@ public class EditorServiceTests
 
         dialogService.Received(1).ShowError(Defaults.ApplicationName, "ファイルの書き込みに失敗しました。");
     }
+
+    [Fact(DisplayName = "【正常系】SaveText:保存成功時に最後に保存したフォルダが記憶されること")]
+    public void SaveText_WhenSaveSucceeds_ShouldUpdateLastOpenedFolderPath()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        using var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        settingsService.Settings.LastOpenedFolderPath.Value = Path.GetTempPath();
+        editorService.Document.Text.Value = "Test Content";
+        var saveResult = new TextFileSaveResult(true, Path.Combine(Path.GetTempPath(), "Saved.txt"));
+        textFileService.Save(saveResult.FilePath, "Test Content", Defaults.Encoding, Defaults.HasBOM, Defaults.LineEnding).Returns(saveResult);
+
+        var result = editorService.SaveText(saveResult.FilePath);
+
+        Assert.True(result);
+        Assert.Equal(Path.GetDirectoryName(saveResult.FilePath), settingsService.Settings.LastOpenedFolderPath.Value);
+    }
+
+    [Fact(DisplayName = "【異常系】SaveText:保存失敗時に最後に保存したフォルダが更新されないこと")]
+    public void SaveText_WhenSaveFails_ShouldNotUpdateLastOpenedFolderPath()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        using var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        var initialFolderPath = Path.GetTempPath();
+        settingsService.Settings.LastOpenedFolderPath.Value = initialFolderPath;
+        editorService.Document.Text.Value = "Test Content";
+        var saveResult = new TextFileSaveResult(false, Path.Combine(initialFolderPath, "Saved.txt"));
+        textFileService.Save(saveResult.FilePath, "Test Content", Defaults.Encoding, Defaults.HasBOM, Defaults.LineEnding).Returns(saveResult);
+
+        var result = editorService.SaveText(saveResult.FilePath);
+
+        Assert.False(result);
+        Assert.Equal(initialFolderPath, settingsService.Settings.LastOpenedFolderPath.Value);
+    }
     #endregion
 
     #region Cut
@@ -133,7 +172,7 @@ public class EditorServiceTests
     public void Cut_ShouldNotifyRequestCut()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
 
@@ -146,12 +185,30 @@ public class EditorServiceTests
     }
     #endregion
 
+    #region Copy
+    [Fact(DisplayName = "【正常系】Copy:RequestCopyが呼び出されること")]
+    public void Copy_ShouldNotifyRequestCopy()
+    {
+        var textFileService = Substitute.For<ITextFileService>();
+        using var settingsService = new SettingsService();
+        var dialogService = Substitute.For<IDialogService>();
+        var editorService = new EditorService(textFileService, settingsService, dialogService);
+
+        bool result = false;
+        using (editorService.RequestCopy.Subscribe(_ => result = true))
+        {
+            editorService.Copy();
+        }
+        Assert.True(result);
+    }
+    #endregion
+
     #region Paste
     [Fact(DisplayName = "【正常系】Paste:RequestPasteが呼び出されること")]
     public void Paste_ShouldNotifyRequestPaste()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
 
@@ -169,7 +226,7 @@ public class EditorServiceTests
     public void Delete_ShouldNotifyRequestDelete()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
 
@@ -187,7 +244,7 @@ public class EditorServiceTests
     public void Insert_ShouldNotifyRequestInsert()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
 
@@ -205,7 +262,7 @@ public class EditorServiceTests
     public void Undo_ShouldNotifyRequestUndo()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
 
@@ -223,7 +280,7 @@ public class EditorServiceTests
     public void Redo_ShouldNotifyRequestRedo()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
 
@@ -241,16 +298,31 @@ public class EditorServiceTests
     public void FindNext_ShouldNotifyRequestFind()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
 
+        editorService.Document.SearchText.Value = "keyword";
+        editorService.Document.MatchCase.Value = true;
+        editorService.Document.WrapAround.Value = true;
+
         FindEventArgs? result = null;
-        using (editorService.RequestFind.Subscribe(args => result = args))
+        bool returnValue;
+        using (editorService.RequestFind.Subscribe(args =>
         {
-            editorService.FindNext();
+            result = args;
+            args.IsSuccess = true;
+        }))
+        {
+            returnValue = editorService.FindNext();
         }
-        Assert.NotNull(result);
+
+        Assert.True(returnValue);
+        var actual = Assert.IsType<FindEventArgs>(result);
+        Assert.Equal("keyword", actual.SearchText);
+        Assert.False(actual.SearchUp);
+        Assert.True(actual.MatchCase);
+        Assert.True(actual.WrapAround);
     }
     #endregion
 
@@ -259,16 +331,31 @@ public class EditorServiceTests
     public void FindPrev_ShouldNotifyRequestFind()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
 
+        editorService.Document.SearchText.Value = "keyword";
+        editorService.Document.MatchCase.Value = true;
+        editorService.Document.WrapAround.Value = true;
+
         FindEventArgs? result = null;
-        using (editorService.RequestFind.Subscribe(args => result = args))
+        bool returnValue;
+        using (editorService.RequestFind.Subscribe(args =>
         {
-            editorService.FindPrev();
+            result = args;
+            args.IsSuccess = true;
+        }))
+        {
+            returnValue = editorService.FindPrev();
         }
-        Assert.NotNull(result);
+
+        Assert.True(returnValue);
+        var actual = Assert.IsType<FindEventArgs>(result);
+        Assert.Equal("keyword", actual.SearchText);
+        Assert.True(actual.SearchUp);
+        Assert.True(actual.MatchCase);
+        Assert.True(actual.WrapAround);
     }
     #endregion
 
@@ -277,7 +364,7 @@ public class EditorServiceTests
     public void SelectAll_ShouldNotifyRequestSelectAll()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
 
@@ -295,16 +382,24 @@ public class EditorServiceTests
     public void GoToLine_ShouldNotifyRequestGoToLine()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
 
         GoToLineEventArgs? result = null;
-        using (editorService.RequestGoToLine.Subscribe(args => result = args))
+        bool returnValue;
+        using (editorService.RequestGoToLine.Subscribe(args =>
         {
-            editorService.GoToLine(1);
+            result = args;
+            args.IsSuccess = true;
+        }))
+        {
+            returnValue = editorService.GoToLine(42);
         }
-        Assert.NotNull(result);
+
+        Assert.True(returnValue);
+        var actual = Assert.IsType<GoToLineEventArgs>(result);
+        Assert.Equal(42, actual.LineIndex);
     }
     #endregion
 
@@ -313,16 +408,32 @@ public class EditorServiceTests
     public void ReplaceNext_ShouldNotifyRequestReplaceNext()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
 
+        editorService.Document.SearchText.Value = "before";
+        editorService.Document.ReplaceText.Value = "after";
+        editorService.Document.MatchCase.Value = true;
+        editorService.Document.WrapAround.Value = true;
+
         ReplaceNextEventArgs? result = null;
-        using (editorService.RequestReplaceNext.Subscribe(args => result = args))
+        bool returnValue;
+        using (editorService.RequestReplaceNext.Subscribe(args =>
         {
-            editorService.ReplaceNext();
+            result = args;
+            args.IsSuccess = true;
+        }))
+        {
+            returnValue = editorService.ReplaceNext();
         }
-        Assert.NotNull(result);
+
+        Assert.True(returnValue);
+        var actual = Assert.IsType<ReplaceNextEventArgs>(result);
+        Assert.Equal("before", actual.SearchText);
+        Assert.Equal("after", actual.ReplaceText);
+        Assert.True(actual.MatchCase);
+        Assert.True(actual.WrapAround);
     }
     #endregion
 
@@ -331,16 +442,30 @@ public class EditorServiceTests
     public void ReplaceAll_ShouldNotifyRequestReplaceAll()
     {
         var textFileService = Substitute.For<ITextFileService>();
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var dialogService = Substitute.For<IDialogService>();
         var editorService = new EditorService(textFileService, settingsService, dialogService);
 
+        editorService.Document.SearchText.Value = "before";
+        editorService.Document.ReplaceText.Value = "after";
+        editorService.Document.MatchCase.Value = true;
+
         ReplaceAllEventArgs? result = null;
-        using (editorService.RequestReplaceAll.Subscribe(args => result = args))
+        bool returnValue;
+        using (editorService.RequestReplaceAll.Subscribe(args =>
         {
-            editorService.ReplaceAll();
+            result = args;
+            args.IsSuccess = true;
+        }))
+        {
+            returnValue = editorService.ReplaceAll();
         }
-        Assert.NotNull(result);
+
+        Assert.True(returnValue);
+        var actual = Assert.IsType<ReplaceAllEventArgs>(result);
+        Assert.Equal("before", actual.SearchText);
+        Assert.Equal("after", actual.ReplaceText);
+        Assert.True(actual.MatchCase);
     }
     #endregion
 }

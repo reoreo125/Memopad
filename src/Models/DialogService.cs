@@ -73,10 +73,7 @@ public class DialogService : IDialogService
     }
     public IDialogResult? ShowSaveFile()
     {
-        if (SettingsService is null) throw new InvalidOperationException($"{nameof(SettingsService)} が注入されていません。DIコンテナへの登録と [Dependency] 属性の付与を確認してください。");
-
-        var lastOpenedFolderPath = SettingsService.Settings.LastOpenedFolderPath.Value;
-        if (string.IsNullOrEmpty(lastOpenedFolderPath)) lastOpenedFolderPath = Defaults.LastOpenedFolderPath;
+        var lastOpenedFolderPath = GetLastOpenedFolderPath();
 
         var saveFileDialog = new SaveFileDialog
         {
@@ -99,6 +96,18 @@ public class DialogService : IDialogService
 
         return dialogResult;
     }
+
+    /// <summary>
+    /// 保存ダイアログで使用する初期フォルダを取得する。設定が空の場合は既定のフォルダを返す。
+    /// </summary>
+    internal string GetLastOpenedFolderPath()
+    {
+        if (SettingsService is null) throw new InvalidOperationException($"{nameof(SettingsService)} が注入されていません。DIコンテナへの登録と [Dependency] 属性の付与を確認してください。");
+
+        var lastOpenedFolderPath = SettingsService.Settings.LastOpenedFolderPath.Value;
+        return string.IsNullOrEmpty(lastOpenedFolderPath) ? Defaults.LastOpenedFolderPath : lastOpenedFolderPath;
+    }
+
     public IDialogResult? ShowPrint()
     {
         if (SettingsService is null) throw new InvalidOperationException($"{nameof(SettingsService)} が注入されていません。DIコンテナへの登録と [Dependency] 属性の付与を確認してください。");

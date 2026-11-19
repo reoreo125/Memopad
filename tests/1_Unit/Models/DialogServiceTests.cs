@@ -1,4 +1,6 @@
 using NSubstitute;
+using R3;
+using Reoreo125.Memopad.Models;
 using System.Windows;
 using IPrismDialogService = Prism.Dialogs.IDialogService;
 using DialogService = Reoreo125.Memopad.Models.DialogService;
@@ -174,6 +176,50 @@ public class DialogServiceTests
         prismDialogService.ReceivedWithAnyArgs(1).Show(default, default, default);
         Assert.NotNull(actualResult);
         Assert.Equal(expectedResult, actualResult);
+    }
+    #endregion
+
+    #region GetLastOpenedFolderPath
+    [Fact(DisplayName = "【正常系】GetLastOpenedFolderPath:設定されたフォルダパスを返すこと")]
+    public void GetLastOpenedFolderPath_WithSetting_ShouldReturnSetting()
+    {
+        var settingsService = Substitute.For<ISettingsService>();
+        var settings = Substitute.For<ISettings>();
+        settings.LastOpenedFolderPath.Returns(new ReactiveProperty<string>(@"C:\Temp"));
+        settingsService.Settings.Returns(settings);
+
+        var dialogService = new DialogService { SettingsService = settingsService };
+
+        var actual = dialogService.GetLastOpenedFolderPath();
+
+        Assert.Equal(@"C:\Temp", actual);
+    }
+
+    [Theory(DisplayName = "【正常系】GetLastOpenedFolderPath:設定が空の場合、既定のフォルダを返すこと")]
+    [InlineData("")]
+    [InlineData(null)]
+    public void GetLastOpenedFolderPath_WhenEmpty_ShouldReturnDefault(string? folderPath)
+    {
+        var settingsService = Substitute.For<ISettingsService>();
+        var settings = Substitute.For<ISettings>();
+        settings.LastOpenedFolderPath.Returns(new ReactiveProperty<string>(folderPath!));
+        settingsService.Settings.Returns(settings);
+
+        var dialogService = new DialogService { SettingsService = settingsService };
+
+        var actual = dialogService.GetLastOpenedFolderPath();
+
+        Assert.Equal(Defaults.LastOpenedFolderPath, actual);
+    }
+
+    [Fact(DisplayName = "【異常系】GetLastOpenedFolderPath:SettingsService未注入の場合、InvalidOperationExceptionを送出すること")]
+    public void GetLastOpenedFolderPath_WithoutSettingsService_ShouldThrow()
+    {
+        var dialogService = new DialogService();
+
+        var exception = Assert.Throws<InvalidOperationException>(() => dialogService.GetLastOpenedFolderPath());
+
+        Assert.Contains("SettingsService", exception.Message);
     }
     #endregion
 }
