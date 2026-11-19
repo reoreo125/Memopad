@@ -196,4 +196,33 @@ public class OpenTextFileCommandTests
         MemopadDialogService.Received(1).ShowOpenFile(Arg.Any<string>());
         EditorService.DidNotReceiveWithAnyArgs().LoadText(string.Empty);
     }
+
+    [Fact(DisplayName = "【異常系】Execute:保存に失敗した場合、LoadTextを呼び出さずに処理を中断すること")]
+    public void Execute_DirtyAndSaveFails_ShouldNotLoadText()
+    {
+        Document.IsDirty.Returns(new ReactiveProperty<bool>(true));
+        Document.FilePath.Returns(new ReactiveProperty<string>(""));
+
+        MemopadDialogService.ShowConfirmSave(Arg.Any<string>()).Returns(new DialogResult(ButtonResult.Yes));
+        var saveDialogResult = new DialogResult(ButtonResult.OK);
+        saveDialogResult.Parameters.Add("filename", @"C:\temp\newfile.txt");
+        MemopadDialogService.ShowSaveFile().Returns(saveDialogResult);
+        var openDialogResult = new DialogResult(ButtonResult.OK);
+        openDialogResult.Parameters.Add("filename", @"C:\temp\existingfile.txt");
+        MemopadDialogService.ShowOpenFile(Arg.Any<string>()).Returns(openDialogResult);
+        EditorService.SaveText(Arg.Any<string>()).Returns(false);
+
+        var command = new OpenTextFileCommand
+        {
+            EditorService = EditorService,
+            MemopadDialogService = MemopadDialogService,
+            SettingsService = SettingsService
+        };
+
+        command.Execute(null);
+
+        EditorService.Received(1).SaveText(@"C:\temp\newfile.txt");
+        MemopadDialogService.Received(1).ShowOpenFile(Arg.Any<string>());
+        EditorService.DidNotReceiveWithAnyArgs().LoadText(string.Empty);
+    }
 }

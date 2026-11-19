@@ -142,4 +142,30 @@ public class NewTextFileCommandTests
         EditorService.DidNotReceiveWithAnyArgs().SaveText(string.Empty);
         EditorService.DidNotReceiveWithAnyArgs().Reset();
     }
+
+    [Fact(DisplayName = "【異常系】Execute:保存に失敗した場合、Resetせずに処理を中断すること")]
+    public void Execute_DirtyAndSaveFails_ShouldNotReset()
+    {
+        Document.IsDirty.Returns(new ReactiveProperty<bool>(true));
+        Document.FilePath.Returns(new ReactiveProperty<string>(string.Empty));
+        Document.FileNameWithoutExtension.Returns(new ReactiveProperty<string>("newfile"));
+
+        DialogService.ShowConfirmSave(Arg.Any<string>()).Returns(new DialogResult(ButtonResult.Yes));
+        var saveDialogResult = new DialogResult(ButtonResult.OK);
+        saveDialogResult.Parameters.Add("filename", @"C:\temp\newfile.txt");
+        DialogService.ShowSaveFile().Returns(saveDialogResult);
+        EditorService.SaveText(Arg.Any<string>()).Returns(false);
+
+        var command = new NewTextFileCommand
+        {
+            EditorService = EditorService,
+            DialogService = DialogService,
+            SaveTextFileCommand = SaveTextFileCommand
+        };
+
+        command.Execute(null);
+
+        EditorService.Received(1).SaveText(@"C:\temp\newfile.txt");
+        EditorService.DidNotReceiveWithAnyArgs().Reset();
+    }
 }

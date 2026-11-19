@@ -143,4 +143,31 @@ public class ExitCommandTests
         DialogService.Received(1).ShowSaveFile();
         EditorService.DidNotReceiveWithAnyArgs().SaveText(string.Empty);
     }
+
+    [Fact(DisplayName = "【異常系】Execute:保存に失敗した場合、終了せず再実行可能であること")]
+    public void Execute_DirtyAndSaveFails_ShouldNotRequestShutdown()
+    {
+        Document.IsDirty.Returns(new ReactiveProperty<bool>(true));
+        Document.FilePath.Returns(new ReactiveProperty<string>(""));
+
+        DialogService.ShowConfirmSave(Arg.Any<string>()).Returns(new DialogResult(ButtonResult.Yes));
+        var saveDialogResult = new DialogResult(ButtonResult.OK);
+        saveDialogResult.Parameters.Add("filename", @"C:\temp\newfile.txt");
+        DialogService.ShowSaveFile().Returns(saveDialogResult);
+        EditorService.SaveText(Arg.Any<string>()).Returns(false);
+
+        var command = new ExitCommand
+        {
+            EditorService = EditorService,
+            DialogService = DialogService,
+            SaveAsTextFileCommand = SaveAsTextFileCommand
+        };
+
+        command.Execute(null);
+        command.Execute(null);
+
+        // 保存失敗時は _shutdownRequested が立たないため、再度確認ダイアログからやり直せる
+        DialogService.Received(2).ShowConfirmSave(Arg.Any<string>());
+        EditorService.Received(2).SaveText(@"C:\temp\newfile.txt");
+    }
 }
