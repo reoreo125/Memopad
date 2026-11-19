@@ -1,3 +1,4 @@
+using System.Windows.Media;
 using R3;
 using Reoreo125.Memopad.Models;
 
@@ -41,7 +42,7 @@ public class SettingsTests
         var settings = new Settings();
         settings.LastOpenedFolderPath.Value = validPath;
 
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         settingsService.Validate(settings);
 
         Assert.Equal(settings.LastOpenedFolderPath.Value, validPath);
@@ -59,7 +60,7 @@ public class SettingsTests
         var settings = new Settings();
         settings.LastOpenedFolderPath.Value = invalidPath;
 
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         settingsService.Validate(settings);
 
         Assert.Equal(settings.LastOpenedFolderPath.Value, Defaults.LastOpenedFolderPath);
@@ -77,7 +78,7 @@ public class SettingsTests
         var settings = new Settings();
         settings.FontFamilyName.Value = validFontFamilyName;
 
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         settingsService.Validate(settings);
 
         Assert.Equal(settings.FontFamilyName.Value, validFontFamilyName);
@@ -92,7 +93,7 @@ public class SettingsTests
         var settings = new Settings();
         settings.FontFamilyName.Value = invalidFontFamilyName;
 
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         settingsService.Validate(settings);
 
         Assert.Equal(settings.FontFamilyName.Value, Defaults.FontFamilyName);
@@ -109,7 +110,7 @@ public class SettingsTests
     [InlineData("Bold Oblique")]
     public void FontStyleName_ValidValue_ShouldKeepValue(string validFontStyleName)
     {
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var settings = new Settings();
         settings.FontFamilyName.Value = "Consolas";
         settings.FontStyleName.Value = validFontStyleName;
@@ -125,7 +126,7 @@ public class SettingsTests
     [InlineData("TestStyle")]
     public void FontStyleName_InvalidValue_ShouldFallbackToDefault_1(string invalidFontStyleName)
     {
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var settings = new Settings();
         settings.FontFamilyName.Value = "Consolas";
         settings.FontStyleName.Value = invalidFontStyleName;
@@ -142,7 +143,7 @@ public class SettingsTests
     [InlineData("TestStyle")]
     public void FontStyleName_InvalidValue_ShouldFallbackToDefault_2(string invalidFontStyleName)
     {
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         var settings = new Settings();
         settings.FontFamilyName.Value = "Arial";
         settings.FontStyleName.Value = invalidFontStyleName;
@@ -153,21 +154,44 @@ public class SettingsTests
         Assert.Equal("Normal", settings.FontStyleName.Value);
     }
 
-    [Theory(DisplayName = "【異常系】FontStyleName:フォントスタイル名が無効な場合、デフォルト値(既定外)に復元されること")]
+    [Theory(DisplayName = "【異常系】FontStyleName:フォントスタイル名が無効な場合、既定外のスタイルに復元されること")]
     [InlineData("")]
     [InlineData("   ")]
     [InlineData("TestStyle")]
     public void FontStyleName_InvalidValue_ShouldFallbackToDefault_3(string invalidFontStyleName)
     {
-        var settingsService = new SettingsService();
+        // Regular/Normal/Medium 以外のスタイル名しか持たないフォントを動的に選択する。
+        // 特定のフォント名をハードコードすると、フォント未導入環境でテストが失敗するため。
+        var targetFont = Fonts.SystemFontFamilies
+            .Select(family => new
+            {
+                Family = family,
+                StyleNames = family.GetTypefaces()
+                    .Select(typeface => typeface.FaceNames.FirstOrDefault().Value)
+                    .Where(styleName => !string.IsNullOrEmpty(styleName))
+                    .ToArray()
+            })
+            .FirstOrDefault(x =>
+                x.StyleNames.Length > 0 &&
+                x.StyleNames.All(styleName => !Defaults.FontStyleNames.Contains(styleName!)));
+
+        if (targetFont is null)
+        {
+            Assert.Skip("既定のスタイル名(Regular/Normal/Medium)を持たないフォントがインストールされていません。");
+        }
+
+        var fontFamilyName = targetFont.Family.Source;
+
+        using var settingsService = new SettingsService();
         var settings = new Settings();
-        settings.FontFamilyName.Value = "DejaVu Sans";
+        settings.FontFamilyName.Value = fontFamilyName;
         settings.FontStyleName.Value = invalidFontStyleName;
 
         settingsService.Validate(settings);
 
-        //Assert.Equal(settings.FontFamilyName.Value, Defaults.GetFontStyleName(settings.FontFamilyName.Value));
-        Assert.Equal("ExtraLight", settings.FontStyleName.Value);
+        var expectedStyleName = Defaults.GetFontStyleName(fontFamilyName);
+        Assert.Equal(expectedStyleName, settings.FontStyleName.Value);
+        Assert.DoesNotContain(expectedStyleName, Defaults.FontStyleNames);
     }
     #endregion
 
@@ -182,7 +206,7 @@ public class SettingsTests
         var settings = new Settings();
         settings.FontSize.Value = validFontSize;
 
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         settingsService.Validate(settings);
 
         Assert.Equal(settings.FontSize.Value, validFontSize);
@@ -197,7 +221,7 @@ public class SettingsTests
         var settings = new Settings();
         settings.FontSize.Value = invalidFontSize;
 
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         settingsService.Validate(settings);
 
         Assert.Equal(settings.FontSize.Value, Defaults.FontSize);
@@ -221,7 +245,7 @@ public class SettingsTests
         var settings = new Settings();
         settings.ZoomLevel.Value = validZoomLevel;
 
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         settingsService.Validate(settings);
 
         Assert.Equal(settings.ZoomLevel.Value, validZoomLevel);
@@ -237,7 +261,7 @@ public class SettingsTests
         var settings = new Settings();
         settings.ZoomLevel.Value = invalidZoomLevel;
 
-        var settingsService = new SettingsService();
+        using var settingsService = new SettingsService();
         settingsService.Validate(settings);
 
         Assert.Equal(settings.ZoomLevel.Value, Defaults.ZoomLevel);
