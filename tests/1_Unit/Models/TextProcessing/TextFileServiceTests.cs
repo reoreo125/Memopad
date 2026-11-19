@@ -221,6 +221,60 @@ public class TextFileServiceTests
         
         Assert.False(result.IsSuccess);
     }
+
+    [Theory(DisplayName = "【正常系】Save:UTF-16でファイルが保存され、BOMの有無が反映されること")]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Save_ShouldSaveFile_UTF16(bool hasBom)
+    {
+        var service = new TextFileService();
+        var tempPath = Path.Combine(Path.GetTempPath(), $"test_save_{Guid.NewGuid()}.txt");
+        var content = "Test Content";
+
+        try
+        {
+            var result = service.Save(tempPath, content, Encoding.Unicode, hasBom, LineEnding.CRLF);
+
+            Assert.True(result.IsSuccess);
+            var fileBytes = File.ReadAllBytes(tempPath);
+            var preamble = Encoding.Unicode.GetPreamble();
+            Assert.Equal(hasBom, fileBytes.AsSpan().StartsWith(preamble));
+            Assert.Equal(content, File.ReadAllText(tempPath, Encoding.Unicode));
+        }
+        finally
+        {
+            if (File.Exists(tempPath))
+            {
+                File.Delete(tempPath);
+            }
+        }
+    }
+
+    [Fact(DisplayName = "【正常系】Save:UTF-32(BOM有り)でファイルが保存されること")]
+    public void Save_ShouldSaveFile_UTF32_WithBOM()
+    {
+        var service = new TextFileService();
+        var tempPath = Path.Combine(Path.GetTempPath(), $"test_save_{Guid.NewGuid()}.txt");
+        var content = "Test Content";
+
+        try
+        {
+            var result = service.Save(tempPath, content, Encoding.UTF32, true, LineEnding.CRLF);
+
+            Assert.True(result.IsSuccess);
+            var fileBytes = File.ReadAllBytes(tempPath);
+            var preamble = Encoding.UTF32.GetPreamble();
+            Assert.True(fileBytes.AsSpan().StartsWith(preamble));
+            Assert.Equal(content, File.ReadAllText(tempPath, Encoding.UTF32));
+        }
+        finally
+        {
+            if (File.Exists(tempPath))
+            {
+                File.Delete(tempPath);
+            }
+        }
+    }
     #endregion
 
     #region Load
@@ -359,6 +413,112 @@ public class TextFileServiceTests
         var result = service.Load(tempPath);
 
         Assert.False(result.IsSuccess);
+    }
+
+    [Fact(DisplayName = "【正常系】Load:UTF-16(BOM有り)のファイルが読み込めること")]
+    public void Load_ShouldReadFile_UTF16_WithBOM()
+    {
+        var service = new TextFileService();
+        var tempPath = Path.Combine(Path.GetTempPath(), $"test_load_{Guid.NewGuid()}.txt");
+        var content = "Test Content";
+        File.WriteAllText(tempPath, content, new UnicodeEncoding(false, true));
+
+        try
+        {
+            var result = service.Load(tempPath);
+
+            Assert.True(result.IsSuccess);
+            Assert.Equal(content, result.Content);
+            Assert.Equal(Encoding.Unicode.CodePage, result.Encoding.CodePage);
+            Assert.True(result.HasBOM);
+        }
+        finally
+        {
+            if (File.Exists(tempPath))
+            {
+                File.Delete(tempPath);
+            }
+        }
+    }
+
+    [Fact(DisplayName = "【正常系】Load:UTF-32(BOM有り)のファイルが読み込めること")]
+    public void Load_ShouldReadFile_UTF32_WithBOM()
+    {
+        var service = new TextFileService();
+        var tempPath = Path.Combine(Path.GetTempPath(), $"test_load_{Guid.NewGuid()}.txt");
+        var content = "Test Content";
+        File.WriteAllText(tempPath, content, new UTF32Encoding(false, true));
+
+        try
+        {
+            var result = service.Load(tempPath);
+
+            Assert.True(result.IsSuccess);
+            Assert.Equal(content, result.Content);
+            Assert.Equal(Encoding.UTF32.CodePage, result.Encoding.CodePage);
+            Assert.True(result.HasBOM);
+        }
+        finally
+        {
+            if (File.Exists(tempPath))
+            {
+                File.Delete(tempPath);
+            }
+        }
+    }
+
+    [Fact(DisplayName = "【正常系】Load:US-ASCIIのファイルがUTF-8として読み込まれること")]
+    public void Load_ShouldReadAsciiFile_AsUtf8()
+    {
+        var service = new TextFileService();
+        var tempPath = Path.Combine(Path.GetTempPath(), $"test_load_{Guid.NewGuid()}.txt");
+        var content = "Plain ASCII text";
+        File.WriteAllBytes(tempPath, Encoding.ASCII.GetBytes(content));
+
+        try
+        {
+            var result = service.Load(tempPath);
+
+            Assert.True(result.IsSuccess);
+            Assert.Equal(content, result.Content);
+            Assert.Equal(Encoding.UTF8.CodePage, result.Encoding.CodePage);
+            Assert.False(result.HasBOM);
+        }
+        finally
+        {
+            if (File.Exists(tempPath))
+            {
+                File.Delete(tempPath);
+            }
+        }
+    }
+
+    [Theory(DisplayName = "【正常系】Load:改行コードを検出し、本文をCRLFに正規化すること")]
+    [InlineData("Line1\r\nLine2", LineEnding.CRLF)]
+    [InlineData("Line1\nLine2", LineEnding.LF)]
+    [InlineData("Line1\rLine2", LineEnding.CR)]
+    [InlineData("Line1", LineEnding.Unknown)]
+    public void Load_ShouldDetectLineEndingAndNormalize(string content, LineEnding expectedLineEnding)
+    {
+        var service = new TextFileService();
+        var tempPath = Path.Combine(Path.GetTempPath(), $"test_load_{Guid.NewGuid()}.txt");
+        File.WriteAllText(tempPath, content, new UTF8Encoding(false));
+
+        try
+        {
+            var result = service.Load(tempPath);
+
+            Assert.True(result.IsSuccess);
+            Assert.Equal(expectedLineEnding, result.LineEnding);
+            Assert.Equal(TextFileService.NormalizeLineEndingsToCRLF(content), result.Content);
+        }
+        finally
+        {
+            if (File.Exists(tempPath))
+            {
+                File.Delete(tempPath);
+            }
+        }
     }
     #endregion
 
