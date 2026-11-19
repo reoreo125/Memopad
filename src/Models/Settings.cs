@@ -128,6 +128,7 @@ public class PageSettings : IPageSettings
         Changed = Observable.Merge
             (
                 PaperSizeName.AsUnitObservable(),
+                InputBin.AsUnitObservable(),
                 Orientation.AsUnitObservable(),
                 MarginLeft.AsUnitObservable(),
                 MarginTop.AsUnitObservable(),

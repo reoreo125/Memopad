@@ -7,18 +7,65 @@ namespace Reoreo125.Memopad.Tests.Unit.Models;
 public class PageSettingsTests
 {
     #region Changed
-    [Fact(DisplayName = "【正常系】Changed:プロパティがどれか一つでも変更されると通知されること")]
-    public void Changed_AnyPropertyChanged_ShouldNotify()
+    public static IEnumerable<object[]> ChangedPropertyCases()
+    {
+        yield return new object[] { nameof(PageSettings.PaperSizeName) };
+        yield return new object[] { nameof(PageSettings.InputBin) };
+        yield return new object[] { nameof(PageSettings.Orientation) };
+        yield return new object[] { nameof(PageSettings.MarginLeft) };
+        yield return new object[] { nameof(PageSettings.MarginTop) };
+        yield return new object[] { nameof(PageSettings.MarginRight) };
+        yield return new object[] { nameof(PageSettings.MarginBottom) };
+        yield return new object[] { nameof(PageSettings.Header) };
+        yield return new object[] { nameof(PageSettings.Footer) };
+    }
+
+    [Theory(DisplayName = "【正常系】Changed:いずれかのプロパティが変更されると通知されること")]
+    [MemberData(nameof(ChangedPropertyCases))]
+    public void Changed_EachPropertyChanged_ShouldNotify(string propertyName)
     {
         var pageSettings = new PageSettings();
         var result = false;
         using (pageSettings.Changed.Subscribe(_ => result = true))
         {
-            pageSettings.MarginLeft.Value = Defaults.MarginLeft + 2;
+            switch (propertyName)
+            {
+                case nameof(PageSettings.PaperSizeName):
+                    pageSettings.PaperSizeName.Value = PageMediaSizeName.NorthAmericaLetter;
+                    break;
+                case nameof(PageSettings.InputBin):
+                    pageSettings.InputBin.Value = InputBin.Manual;
+                    break;
+                case nameof(PageSettings.Orientation):
+                    pageSettings.Orientation.Value = PageOrientation.Landscape;
+                    break;
+                case nameof(PageSettings.MarginLeft):
+                    pageSettings.MarginLeft.Value = Defaults.MarginLeft + 1;
+                    break;
+                case nameof(PageSettings.MarginTop):
+                    pageSettings.MarginTop.Value = Defaults.MarginTop + 1;
+                    break;
+                case nameof(PageSettings.MarginRight):
+                    pageSettings.MarginRight.Value = Defaults.MarginRight + 1;
+                    break;
+                case nameof(PageSettings.MarginBottom):
+                    pageSettings.MarginBottom.Value = Defaults.MarginBottom + 1;
+                    break;
+                case nameof(PageSettings.Header):
+                    pageSettings.Header.Value = "Header";
+                    break;
+                case nameof(PageSettings.Footer):
+                    pageSettings.Footer.Value = "Footer";
+                    break;
+                default:
+                    Assert.Fail($"未定義のプロパティ: {propertyName}");
+                    break;
+            }
         }
 
-        Assert.True(result);
+        Assert.True(result, $"{propertyName} の変更が通知されませんでした。");
     }
+
     [Fact(DisplayName = "【正常系】Changed:プロパティが同じ値で変更されると通知すること")]
     public void Changed_AnyPropertyChangedSameValue_ShouldNotify()
     {
