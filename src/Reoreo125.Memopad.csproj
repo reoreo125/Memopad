@@ -45,5 +45,18 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Reoreo125.Memopad.Tests" />
   </ItemGroup>
+
+  <!--
+    依存パッケージの DLL を bin サブフォルダーへ配置する。
+    RuntimeCopyLocalItems に DestinationSubDirectory を設定すると、
+    deps.json の localPath も bin/... になり、ホストがそのまま解決できる。
+    Memopad.exe / Memopad.dll / deps.json / runtimeconfig.json はルートに残す。
+  -->
+  <Target Name="MovePackageAssembliesToBin" AfterTargets="ResolvePackageAssets">
+    <ItemGroup>
+      <RuntimeCopyLocalItems Update="@(RuntimeCopyLocalItems)"
+                             DestinationSubDirectory="bin\" />
+    </ItemGroup>
+  </Target>
   
 </Project>
