@@ -32,6 +32,12 @@ public class DialogService : IDialogService
     [Dependency]
     public ISettingsService? SettingsService { get; set; }
 
+    /// <summary>
+    /// モードレスダイアログの検索に使用するウィンドウ一覧。テストから差し替え可能にするため internal。
+    /// </summary>
+    internal Func<IEnumerable<Window>> WindowProvider { get; set; }
+        = () => Application.Current.Windows.Cast<Window>();
+
     public IDialogResult? ShowConfirmSave(string fileNameWithoutExtension)
     {
         var parameters = new DialogParameters
@@ -176,8 +182,7 @@ public class DialogService : IDialogService
     private IDialogResult? ShowModelessWithoutParameters(Type dialogType)
     {
         // 同じダイアログが既に開いている場合は閉じずに前面へ出す
-        var existingWindow = Application.Current.Windows
-            .Cast<Window>()
+        var existingWindow = WindowProvider()
             .FirstOrDefault(w => w is PrismDialogWindow && w.Content?.GetType().Name == dialogType.Name);
         if (existingWindow is not null)
         {
@@ -187,8 +192,7 @@ public class DialogService : IDialogService
         }
 
         // 別種のモードレスダイアログ（検索/置換の反対側）が開いている場合は閉じてから新規表示する
-        var otherWindow = Application.Current.Windows
-            .Cast<Window>()
+        var otherWindow = WindowProvider()
             .FirstOrDefault(w => w is PrismDialogWindow);
         otherWindow?.Close();
 
